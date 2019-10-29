@@ -683,4 +683,12 @@ public class NetManager {
 	  
 	  return colourB;
   }
+    
+    public Group getCubieG() {
+    	return cubieG;
+    }
+    
+    public ArrayList<ImageView> getCubieArray() {
+    	return cubieArray;
+    }
 }

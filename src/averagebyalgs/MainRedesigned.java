@@ -2,6 +2,7 @@ package averagebyalgs;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Map;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -80,7 +81,7 @@ public class MainRedesigned extends Application {
         loadingGif.setLayoutX(596);
         loadingGif.setLayoutY(63.5);
         p.getChildren().add(loadingGif);
-        loadingGif.setVisible(true);
+        loadingGif.setVisible(false);
         
         Label modeSelect = new Label("");
         modeSelect.setGraphic(cstimer);
@@ -154,7 +155,30 @@ public class MainRedesigned extends Application {
         
         NetManager nm = new NetManager();
         p = nm.init(p);
+        
+        
+        Button go = new Button("");
+        go.setMaxHeight(100);
+        go.setMinHeight(100);
+        go.setMaxWidth(45);
+        go.setMinWidth(45);
+        go.setLayoutX(700);
+        go.setLayoutY(600);
+        go.setOnAction(new EventHandler<ActionEvent> () {
+        	
+        	@Override
+        	public void handle(ActionEvent arg0) {
+        		Map<Double, String> results = InputParse.start(MainRedesigned.graphic,userTextField.getText());
+        		StatisticsBoard sb = new StatisticsBoard();
+        		sb.processResults(results, nm.getCubieArray(), nm.getCubieG());
+        	}
+        });
+        p.getChildren().add(go);
+        
+        
 
     }
+    
+
 
 }
