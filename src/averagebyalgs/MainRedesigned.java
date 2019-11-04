@@ -34,8 +34,8 @@ import javafx.util.Duration;
  
 public class MainRedesigned extends Application {
 	
-	public static String edgeBuf;
-	public static String cornerBuf;
+	public static String edgeBuf = "UF";
+	public static String cornerBuf = "UFR";
 	
 	private Image icon = new Image("/resources/FYP-Logo-FINAL3.png");
 	private ImageView loading = new ImageView(new Image("/resources/loadingGIF.gif"));
@@ -46,6 +46,27 @@ public class MainRedesigned extends Application {
 	static boolean graphic = true;
 	public static boolean paritySwap = false;
 	
+	private ArrayList<ImageView> cubieArray = new ArrayList<ImageView>();
+	private Group cubieG = new Group();
+	private Pane p = new Pane();
+	
+	public static Image topColour;
+	public static Image frontColour;
+	public static Image leftColour;
+	public static Image rightColour;
+	public static Image backColour;
+	public static Image bottomColour;
+	
+	private Image cubeNet = new Image("resources/CubeNet.png");
+    private ImageView iv1 = new ImageView();
+	
+	public ArrayList<Image> colours = new ArrayList<Image>();
+	public ArrayList<Image> colourSet = new ArrayList<Image>();
+	
+	private String uFace;
+	
+	
+	
     public static void main(String[] args) {
         launch(args);
     }
@@ -53,8 +74,6 @@ public class MainRedesigned extends Application {
     @SuppressWarnings("unchecked")
 	@Override
     public void start(Stage primaryStage) {
-    	
-    	Pane p = new Pane();
     	
     	primaryStage.setTitle("AverageByAlgs - BLD Tool");
     	Scene scene = new Scene(p, 1500, 750);
@@ -81,7 +100,7 @@ public class MainRedesigned extends Application {
         loadingGif.setLayoutX(596);
         loadingGif.setLayoutY(63.5);
         p.getChildren().add(loadingGif);
-        loadingGif.setVisible(false);
+        loadingGif.setVisible(true);
         
         Label modeSelect = new Label("");
         modeSelect.setGraphic(cstimer);
@@ -143,19 +162,16 @@ public class MainRedesigned extends Application {
 
 			@Override
 			public void handle(ActionEvent arg0) {
-				VBox v = new VBox();
-				Scene settingsScene = new Scene(v, 200,200);
-				Stage settingsWindow = new Stage();
-				settingsWindow.setScene(settingsScene);
-				settingsWindow.show();
+				SettingsMenu setmen = new SettingsMenu();
 			}
         	
         });
         p.getChildren().add(settings);
         
-        NetManager nm = new NetManager();
-        p = nm.init(p);
+        System.out.println("CUBIEARRAY SIZE: "+cubieArray.size());
         
+        NetManager nm = new NetManager();
+        p = nm.init(p, cubieArray, cubieG);
         
         Button go = new Button("");
         go.setMaxHeight(100);
@@ -170,7 +186,7 @@ public class MainRedesigned extends Application {
         	public void handle(ActionEvent arg0) {
         		Map<Double, String> results = InputParse.start(MainRedesigned.graphic,userTextField.getText());
         		StatisticsBoard sb = new StatisticsBoard();
-        		sb.processResults(results, nm.getCubieArray(), nm.getCubieG());
+        		sb.processResults(results, nm.getCubieArray(), nm.getCubieG(), p);
         	}
         });
         p.getChildren().add(go);
@@ -179,6 +195,5 @@ public class MainRedesigned extends Application {
 
     }
     
-
 
 }

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import javafx.scene.Group;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.Pane;
 
 public class MoveManager {
 	
@@ -70,13 +71,23 @@ public class MoveManager {
 			
 	
 	private Group g, cubieG;
+	private Pane p;
 	private ArrayList<ImageView> cubieArray;
 	private ImageView iv1;
+	private boolean mode;
 	
 	public MoveManager(Group group, ArrayList<ImageView> cA, Group cubG) {
 		g = group;
 		cubieArray = cA;
 		cubieG = cubG;
+		mode = true;
+	}
+	
+	public MoveManager(Pane pane, ArrayList<ImageView> cA, Group cubG) {
+		p = pane;
+		cubieArray = cA;
+		cubieG = cubG;
+		mode = false;
 	}
 
 	
@@ -241,13 +252,20 @@ public class MoveManager {
         iv1.setScaleY(0.5);
         iv1.setPreserveRatio(true);
         iv1.setSmooth(true);
-        iv1.setLayoutX(-320);
-        iv1.setLayoutY(-50);
+        iv1.setLayoutX(NetManager.netX);
+        iv1.setLayoutY(NetManager.netY);
         
-		g.getChildren().remove(cubieG);
-		g.getChildren().remove(iv1);
-		g.getChildren().add(cubieGee);
-		g.getChildren().add(iv1);
+        if (mode) {
+			g.getChildren().remove(cubieG);
+			g.getChildren().remove(iv1);
+			g.getChildren().add(cubieGee);
+			g.getChildren().add(iv1);
+        } else {
+        	p.getChildren().remove(cubieG);
+			p.getChildren().remove(iv1);
+			p.getChildren().add(cubieGee);
+			p.getChildren().add(iv1);
+        }
 		
 		return cubieArray;
 		
@@ -255,17 +273,17 @@ public class MoveManager {
 	void caReset() {
 		for (int i = 0; i < 54; i++) {
     		if (i < 9) {
-	    		cubieArray.get(i).setImage(Main.topColour);
+	    		cubieArray.get(i).setImage(MainRedesigned.topColour);
     		} else if (i < 18) {
-    			cubieArray.get(i).setImage(Main.frontColour);
+    			cubieArray.get(i).setImage(MainRedesigned.frontColour);
     		} else if (i < 27) {
-    			cubieArray.get(i).setImage(Main.bottomColour);
+    			cubieArray.get(i).setImage(MainRedesigned.bottomColour);
     		} else if (i < 36) {
-    			cubieArray.get(i).setImage(Main.leftColour);
+    			cubieArray.get(i).setImage(MainRedesigned.leftColour);
     		} else if (i < 45) {
-    			cubieArray.get(i).setImage(Main.rightColour);
+    			cubieArray.get(i).setImage(MainRedesigned.rightColour);
     		} else {
-    			cubieArray.get(i).setImage(Main.backColour);
+    			cubieArray.get(i).setImage(MainRedesigned.backColour);
     		}
     	}
 	}

@@ -197,9 +197,14 @@ public class Main extends Application {
         g.getChildren().add(algCount);
         
         
+        System.out.println("CUBIEARRAY SIZE: "+cubieArray.size());
+        
         cubieG = cubieInit(g,"White-Green");
         g.getChildren().add(cubieG);
         g.getChildren().add(iv1);
+        
+        System.out.println("CUBIEARRAY SIZE: "+cubieArray.size());
+        System.out.println("CUBIEARRAY ELEMENT 1 IMG: "+cubieArray.get(0).getImage());
         
         Label parAvd = new Label("Parity Swap:");
         parAvd.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
@@ -302,7 +307,15 @@ public class Main extends Application {
 		} else {
 			paritySwap = false;
 		}
-		cubieArray = sm.submitted(userTextField.getText());   
+		
+		
+		
+		System.out.println("TEST CUBIE ARRAY: "+cubieArray.get(0).getImage());
+		cubieArray = sm.submitted("D B U R2 U' B2 R' U2 B2 U D2 L2 D' R2 L2 U R2 B2 D' F'");
+		System.out.println("TEST CUBIE ARRAY 2: "+cubieArray.get(0).getImage());
+		
+		cubieArray = sm.submitted(userTextField.getText()); 
+		System.out.println("TEST: "+cubieArray.get(0).getImage());
 		TargetCounter tm = new TargetCounter(sm, cubieArray);
 		int[] info = tm.getInfo();
 		

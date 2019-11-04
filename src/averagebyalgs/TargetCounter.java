@@ -66,8 +66,8 @@ public class TargetCounter {
 		 * And then average calculation :)
 		 */
 		
-		String edgeBuffer = Main.edgeBuf;
-		String cornerBuffer = Main.cornerBuf;
+		String edgeBuffer = MainRedesigned.edgeBuf;
+		String cornerBuffer = MainRedesigned.cornerBuf;
 		
 		MoveManager m = sm.getMoveMan();
 		
@@ -96,11 +96,11 @@ public class TargetCounter {
 			hasParity = false;
 		}
 		
-		ArrayList<Integer> solvedEdges = solvedEdges(cubieArray, edgeBuffer, Main.paritySwap);
+		ArrayList<Integer> solvedEdges = solvedEdges(cubieArray, edgeBuffer, MainRedesigned.paritySwap);
 		
 
 		
-		int edges = traceEdges(edgePositions, edgeBuffer, solvedEdges, flippedEdges, Main.paritySwap);
+		int edges = traceEdges(edgePositions, edgeBuffer, solvedEdges, flippedEdges, MainRedesigned.paritySwap);
 		//edges+= flipped;
 		
 		System.out.println(flipped);
@@ -116,7 +116,7 @@ public class TargetCounter {
 		//System.out.println("in");
 		int[] cornerOrientations = {0,0,0,0,0,0,0,0};
 		for (int i = 0; i < 8; i++) {
-			//System.out.println("GetImage: "+cubieArray.get(cornersCW[i]).getImage()+" and U: "+U);
+			System.out.println("GetImage: "+cubieArray.get(0).getImage());
 			if (cubieArray.get(cornersACW[i]).getImage().equals(U) || cubieArray.get(cornersACW[i]).getImage().equals(D)) {
 				System.out.println("Sticker "+cornersACW[i]+" should be W/Y");
 				cornerOrientations[i] = 2;
@@ -142,10 +142,10 @@ public class TargetCounter {
 				int[] compare2 = {1,2,3,4,5,6,7,8,9,10,11,12};
 				compare = compare2;
 			} else {
-				if (Main.cornerBuf.equals("UBL")) {
+				if (MainRedesigned.cornerBuf.equals("UBL")) {
 					int[] compare2 = {4,2,3,1,5,6,7,8,9,10,11,12};
 					compare = compare2;
-				} else if (Main.cornerBuf.equals("UFR")) {
+				} else if (MainRedesigned.cornerBuf.equals("UFR")) {
 					int[] compare2 = {1,3,2,4,5,6,7,8,9,10,11,12};
 					compare = compare2;
 				}
@@ -383,7 +383,7 @@ Parity, one flipped one solved incorrect loc = -3 +'
 		int oneLoc = 0;
 		int twoLoc = 0;
 		
-		if (Main.cornerBuf.equals("UBL")) {
+		if (MainRedesigned.cornerBuf.equals("UBL")) {
 			for (int i = 0; i < edgePositions.length; i++) {
 				if (edgePositions[i] == 1) {
 					oneLoc = i;
@@ -391,7 +391,7 @@ Parity, one flipped one solved incorrect loc = -3 +'
 					twoLoc = i;
 				}
 			}
-		} else if (Main.cornerBuf.equals("UFR")) {
+		} else if (MainRedesigned.cornerBuf.equals("UFR")) {
 			for (int i = 0; i < edgePositions.length; i++) {
 				if (edgePositions[i] == 2) {
 					oneLoc = i;
@@ -404,9 +404,9 @@ Parity, one flipped one solved incorrect loc = -3 +'
 		
 		if (paritySwap) {
 			if (hasParity) {
-				if (Main.cornerBuf.equals("UBL")) {
+				if (MainRedesigned.cornerBuf.equals("UBL")) {
 					compare = new ArrayList<Integer>(Arrays.asList(4,2,3,1,5,6,7,8,9,10,11,12));
-				} else if (Main.cornerBuf.equals("UFR")) {
+				} else if (MainRedesigned.cornerBuf.equals("UFR")) {
 					compare = new ArrayList<Integer>(Arrays.asList(1,3,2,4,5,6,7,8,9,10,11,12));
 				}
 				
@@ -435,7 +435,7 @@ Parity, one flipped one solved incorrect loc = -3 +'
 			}
 		}
 		
-		if (Main.cornerBuf.equals("UFR")) {
+		if (MainRedesigned.cornerBuf.equals("UFR")) {
 			if (paritySwap && hasParity) {
 				buffer = 3;
 			}

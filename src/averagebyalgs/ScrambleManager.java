@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import javafx.scene.Group;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.Pane;
 
 public class ScrambleManager {
 	
@@ -28,11 +29,13 @@ public class ScrambleManager {
 	public ScrambleManager(Group g, ArrayList<ImageView> cubieArray, Group cubieG) {
 		m = new MoveManager(g, cubieArray, cubieG);
         
-
-
 	}
 	
-	public ArrayList<ImageView> submitted(String scramble) {
+	public ScrambleManager(Pane p, ArrayList<ImageView> cubieArray, Group cubieG) {
+		m = new MoveManager(p, cubieArray, cubieG);
+	}
+	
+	public ArrayList<ImageView> submitted(String scramble, ArrayList<ImageView> cubieArray, Group cubieG) {
 		String wideMove = "";
 		
 		ArrayList<String> moves = new ArrayList<String>();

@@ -48,12 +48,6 @@ public class NetManager {
 	private ImageView orangeIVS = new ImageView(new Image("resources/CubeORANGE-S.png"));
 	private ImageView blueIVS = new ImageView(new Image("resources/CubeBLUE-S.png"));
 	
-	public static Image topColour;
-	public static Image frontColour;
-	public static Image leftColour;
-	public static Image rightColour;
-	public static Image backColour;
-	public static Image bottomColour;
 	
 	private Image cubeNet = new Image("resources/CubeNet.png");
     private ImageView iv1 = new ImageView();
@@ -66,14 +60,17 @@ public class NetManager {
 	
 	private Group cubieG;
 	
-	Pane init(Pane p) {
+	static final public int netX = -300;
+	static final public int netY = -319;
+	
+	Pane init(Pane p, ArrayList<ImageView> cubieArray, Group cubieG) {
 		iv1.setImage(cubeNet);
 	    iv1.setScaleX(0.5);
 	    iv1.setScaleY(0.5);
 	    iv1.setPreserveRatio(true);
 	    iv1.setSmooth(true);
-	    iv1.setLayoutX(-300);
-	    iv1.setLayoutY(-319);
+	    iv1.setLayoutX(netX);
+	    iv1.setLayoutY(netY);
 	        
 
 	    colours.add(new Image("resources/CubeWHITE.png"));
@@ -455,33 +452,35 @@ public class NetManager {
     		case "Blue-White": Collections.addAll(colourSet, blue,white,green,orange,red,yellow); break;
     		case "Green-White": Collections.addAll(colourSet, green,white,blue,red,orange,yellow); break;
     	}
+    	
+        
 
-    	topColour = colourSet.get(0);
-    	frontColour = colourSet.get(1);
-    	bottomColour = colourSet.get(2);
-    	leftColour = colourSet.get(3);
-    	rightColour = colourSet.get(4);
-    	backColour = colourSet.get(5);
+    	MainRedesigned.topColour = colourSet.get(0);
+    	MainRedesigned.frontColour = colourSet.get(1);
+    	MainRedesigned.bottomColour = colourSet.get(2);
+    	MainRedesigned.leftColour = colourSet.get(3);
+    	MainRedesigned.rightColour = colourSet.get(4);
+    	MainRedesigned.backColour = colourSet.get(5);
     	
     	
     	for (int i = 0; i < 54; i++) {
     		if (i < 9) {
-	    		ImageView iv = new ImageView(topColour);
+	    		ImageView iv = new ImageView(MainRedesigned.topColour);
 	    		cubieArray.add(iv);
     		} else if (i < 18) {
-    			ImageView iv = new ImageView(frontColour);
+    			ImageView iv = new ImageView(MainRedesigned.frontColour);
 	    		cubieArray.add(iv);
     		} else if (i < 27) {
-    			ImageView iv = new ImageView(bottomColour);
+    			ImageView iv = new ImageView(MainRedesigned.bottomColour);
 	    		cubieArray.add(iv);
     		} else if (i < 36) {
-    			ImageView iv = new ImageView(leftColour);
+    			ImageView iv = new ImageView(MainRedesigned.leftColour);
 	    		cubieArray.add(iv);
     		} else if (i < 45) {
-    			ImageView iv = new ImageView(rightColour);
+    			ImageView iv = new ImageView(MainRedesigned.rightColour);
 	    		cubieArray.add(iv);
     		} else {
-    			ImageView iv = new ImageView(backColour);
+    			ImageView iv = new ImageView(MainRedesigned.backColour);
 	    		cubieArray.add(iv);
     		}
     	}

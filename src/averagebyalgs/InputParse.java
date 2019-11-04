@@ -3,6 +3,7 @@ package averagebyalgs;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
 public abstract class InputParse {
 
@@ -16,7 +17,7 @@ public abstract class InputParse {
 	
 	private static Map<Double, String> cstimerHandler(String fullResults) {
 		String results[] = fullResults.split("\\r?\\n");
-		Map<Double, String> resultsParsed = new HashMap<Double, String>();
+		Map<Double, String> resultsParsed = new TreeMap<Double, String>();
 		int DNFcount = 0;
 		double timeDub = 0.0;
 		
