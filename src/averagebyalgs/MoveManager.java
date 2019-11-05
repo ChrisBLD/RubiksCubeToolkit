@@ -2,6 +2,7 @@ package averagebyalgs;
 
 import java.util.ArrayList;
 
+import javafx.application.Platform;
 import javafx.scene.Group;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -140,9 +141,11 @@ public class MoveManager {
 		}
 		Group cubieGee = new Group();
 		
-		for (int x = 0; x < 54; x++) {
-    		cubieGee.getChildren().add(cubieArray.get(x));
-    	}
+		Platform.runLater(() -> {
+			for (int x = 0; x < 54; x++) {
+				cubieGee.getChildren().add(cubieArray.get(x));
+	    	}
+		});
 		
 		return cubieGee;
 		
@@ -245,6 +248,7 @@ public class MoveManager {
 			//System.out.print(move+" ");
 		}
 		
+		/*
 		Image image = new Image("resources/CubeNet.png");
         ImageView iv1 = new ImageView();
         iv1.setImage(image);
@@ -265,7 +269,7 @@ public class MoveManager {
 			p.getChildren().remove(iv1);
 			p.getChildren().add(cubieGee);
 			p.getChildren().add(iv1);
-        }
+        }*/
 		
 		return cubieArray;
 		

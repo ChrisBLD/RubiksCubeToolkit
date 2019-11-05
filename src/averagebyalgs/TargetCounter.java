@@ -53,6 +53,9 @@ public class TargetCounter {
 	
 	private int[] cornerOrientations;
 	
+	int[][] cornerAdjacency = {{2,4,8}, {1,3,7}, {2,4,6}, {1,3,5}, {6,8,4}, {5,7,3}, {6,8,2}, {5,7,1}}; //Defines Adjacency matrix
+	int[][] cornerOpposites = {{3,5,7}, {4,6,8}, {1,5,7}, {2,6,8}, {1,3,7}, {2,4,8}, {1,3,5}, {2,4,6}}; //Defines Opposite matrix
+	
 	
 	public TargetCounter(ScrambleManager sm, ArrayList<ImageView> cubieArray) {
 		
@@ -571,8 +574,6 @@ Parity, one flipped one solved incorrect loc = -3 +'
 
 	int twistCalculator(boolean dtBox, boolean otBox) {
 		ArrayList<String> adjacents = new ArrayList<String>();
-		int[][] cornerAdjacency = {{2,4,8}, {1,3,7}, {2,4,6}, {1,3,5}, {6,8,4}, {5,7,3}, {6,8,2}, {5,7,1}}; //Defines Adjacency matrix
-		int[][] cornerOpposites = {{3,5,7}, {4,6,8}, {1,5,7}, {2,6,8}, {1,3,7}, {2,4,8}, {1,3,5}, {2,4,6}}; //Defines Opposite matrix
 		
 		int twistAlgs = twistedCorners.size(); //Sets the twist algs to the total number of twists. This is the max possible twist alg count.
 

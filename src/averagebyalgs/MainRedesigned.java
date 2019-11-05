@@ -71,6 +71,10 @@ public class MainRedesigned extends Application {
 	public static boolean dt = false;
 	public static boolean ot = false;
 	
+	private static ArrayList<Double> timeList = new ArrayList<Double>();
+	private static ArrayList<String> scrambleList = new ArrayList<String>();
+	private static ArrayList<Integer> algList = new ArrayList<Integer>();
+	
     public static void main(String[] args) {
         launch(args);
     }
@@ -188,9 +192,10 @@ public class MainRedesigned extends Application {
         	
         	@Override
         	public void handle(ActionEvent arg0) {
-        		Map<Double, String> results = InputParse.start(MainRedesigned.graphic,userTextField.getText());
-        		StatisticsBoard sb = new StatisticsBoard();
-        		sb.processResults(results, nm.getCubieArray(), nm.getCubieG(), p);
+        		
+        		Runnable r = new AlgCalculator(userTextField, timeList, scrambleList, algList, nm, p);
+        		new Thread(r).start();
+        		
         	}
         });
         p.getChildren().add(go);

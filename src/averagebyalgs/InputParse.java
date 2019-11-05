@@ -6,48 +6,112 @@ import java.util.Map;
 import java.util.TreeMap;
 
 public abstract class InputParse {
+	
+	
+	static ArrayList<Double> timeList = new ArrayList<Double>();
+	static ArrayList<String> scrambleList = new ArrayList<String>();
 
-	static Map<Double, String> start(boolean inputType, String fullResults) {
+	static void start(boolean inputType, String fullResults) {
 		if (inputType) {
-			return cstimerHandler(fullResults);
+			cstimerHandler(fullResults);
 		} else {
-			return new HashMap<Double, String>();
+			csvHandler(fullResults);
 		}
 	}
 	
-	private static Map<Double, String> cstimerHandler(String fullResults) {
+	private static void cstimerHandler(String fullResults) {
 		String results[] = fullResults.split("\\r?\\n");
-		Map<Double, String> resultsParsed = new TreeMap<Double, String>();
+		
 		int DNFcount = 0;
 		double timeDub = 0.0;
+		String time, scramble;
+		int nAcc = 0;
+		int count = 0;
+		ArrayList<Integer> visited = new ArrayList<Integer>();
 		
 		for (String result : results) {
+			String orig = result;
 			result = result.substring(result.indexOf('.')+2);
-			if (result.indexOf('N') != -1) {
+			if (result.indexOf('N') != -1) { //Entered if DNF, solve can be discarded.
+				visited.add(Integer.valueOf(orig.substring(0,orig.indexOf('.'))));
+				//System.out.println(orig.substring(0,orig.indexOf('.'))+", RECOGNISED");
 				DNFcount++;
 			} else {
-				if (result.indexOf('+') != -1) {
-					result = result.replace("+","");
+				if (result.indexOf('+') != -1) { //Either +2 or splits mode on in session (or both)
+					int n = result.indexOf('=');
+					if (n != -1) { //Splits mode on in session
+						time = result.substring(0, n);
+						System.out.println("Time after split removal: "+time);
+						if (result.indexOf('+') != -1) { //Also a +2 to go
+							time = time.replace("+","");
+						}
+						scramble = result.substring(result.indexOf(' ')+3);
+						System.out.println("Time: "+time+", Scramble: "+scramble);
+					} else { //No split, just a +2
+						result = result.replace("+",""); 
+						//System.out.println(result); 
+						time = result.substring(0, result.indexOf(' '));
+						scramble = result.substring(result.indexOf(' ')+3);
+						System.out.println("Time: "+time+", Scramble: "+scramble);
+					}
+				} else {
+					//System.out.println(result); 
+					time = result.substring(0, result.indexOf(' '));
+					scramble = result.substring(result.indexOf(' ')+3);
+					System.out.println("Time: "+time+", Scramble: "+scramble);
 				}
-				System.out.println(result);
-				String time = result.substring(0, result.indexOf(' '));
-				String scramble = result.substring(result.indexOf(' ')+3);
-				System.out.println("Time: "+time+", Scramble: "+scramble);
+				
+				if (time.indexOf(':') != -1) {
+					try {
+						double min = Double.valueOf(time.substring(0,1));
+						min *= 60;
+						time = time.substring(time.indexOf(':')+1);
+						double timeDubTemp = Double.valueOf(time);
+						timeDubTemp += min;
+						time = ""+timeDubTemp;
+					} catch (Exception e) {
+						System.out.println("Not acceptable input.");
+						nAcc++;
+					}
+				}
 				
 				try {
-					timeDub = Double.parseDouble(time);
+					timeDub = Double.parseDouble(time);					
+					timeList.add(timeDub);
+					scrambleList.add(scramble);
+					count++;
+					//System.out.println(orig.substring(0,orig.indexOf('.'))+", RECOGNISED");
+					visited.add(Integer.valueOf(orig.substring(0,orig.indexOf('.'))));
+					//System.out.println("ADDED");
 				} catch (Exception e) {
 					System.out.println("Not acceptable input.");
+					nAcc++;
 				}
-				resultsParsed.put(timeDub, scramble);
+				
+				
+				System.out.println("COUNT: "+count+", TIMES: "+timeList.size()+", SCRAMBLES: "+scrambleList.size());
+				
 			}
 		}
+
+		System.out.println("TOTAL GOOD SOLVES: "+timeList.size());
+		System.out.println("TOTAL DNFS: "+DNFcount);
+		//System.out.println("TOTAL PARSED: "+resultsParsed.size()+DNFcount);
+		System.out.println("nAcc: "+nAcc);
 		
-		return resultsParsed;
+		//return resultsParsed;
 	}
 	
 	private static void csvHandler(String times) {
 		
+	}
+	
+	public static ArrayList<Double> getTimeList() {
+		return timeList;
+	}
+	
+	public static ArrayList<String> getScrambleList() {
+		return scrambleList;
 	}
 }
 

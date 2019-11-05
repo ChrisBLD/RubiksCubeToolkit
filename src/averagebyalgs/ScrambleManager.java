@@ -180,6 +180,5 @@ public class ScrambleManager {
 	MoveManager getMoveMan() {
 		return m;
 	}
-
-
+	
 }

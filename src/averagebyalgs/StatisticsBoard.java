@@ -1,5 +1,7 @@
 package averagebyalgs;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Set;
@@ -12,40 +14,51 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 
 public class StatisticsBoard {
+	
+	private ArrayList<Double> algCountByNum = new ArrayList<Double>();
 
 	
-	public void processResults(Map<Double, String> results, ArrayList<ImageView> cubieArray, Group cubieG, Pane p) {
+	public ArrayList<Integer> processResults(ArrayList<Double> timeList, ArrayList<String> scrambleList, ArrayList<ImageView> cubieArray, Group cubieG, Pane p) {
 		
-		ArrayList<Integer> algCount = new ArrayList<Integer>();
+		ArrayList<Integer> algList = new ArrayList<Integer>();
 
 		ScrambleManager sm = new ScrambleManager(p, cubieArray, cubieG);
 		boolean first = true;
 		String fastScram = "";
-		Double fastTime;
+		Double fastTime = 0.0;
+		TargetCounter tm;
 		
-		Map<Double, Integer> timeAlgMap = new TreeMap<Double, Integer>();
+		
 
-		for (Map.Entry<Double, String> entry : results.entrySet()) {
+		for (int i = 0; i < timeList.size(); i++) {
 			if (first) {
-				fastScram = entry.getValue();
-				fastTime = entry.getKey();
+				fastScram = scrambleList.get(i);
+				fastTime = timeList.get(i);
 				first = false;
 			}
-			cubieArray = sm.submitted(entry.getValue(), cubieArray, cubieG);
+			cubieArray = sm.submitted(scrambleList.get(i), cubieArray, cubieG);
 			System.out.println("TEST: "+cubieArray.get(0).getImage());
-			TargetCounter tm = new TargetCounter(sm, cubieArray);
-			countAlgs(tm);
+			tm = new TargetCounter(sm, cubieArray);
+			int algs = countAlgs(tm);
+			
+			algList.add(algs);
+			
+	
+			tm = null;
 		}
+		
+		sm = null;
 		
 		
 		//NOTE: Net shows fastest scramble. Add labels that let the user knows this as well as showing their result next to it!
 		
-		System.out.println("Fastest Scramble: "+fastScram);
+		System.out.println("Fastest Scramble: "+fastScram+", Time: "+fastTime);
 		//cubieArray = sm.submitted(fastScram, cubieArray, cubieG);
-			
+		
+		return algList;
 	}
 
-	private void countAlgs(TargetCounter tm) {
+	private int countAlgs(TargetCounter tm) {
 		boolean paritySwap = MainRedesigned.paritySwap;
 		boolean quadFlip = MainRedesigned.quadFlip;
 		boolean dt = MainRedesigned.dt;
@@ -110,5 +123,50 @@ public class StatisticsBoard {
 		System.out.println("This scramble is: "+targets);
 		System.out.println("Alg Count: "+(totalAlgs));
 		System.out.println("PARITY AVD?: "+paritySwap);
+		
+		return totalAlgs;
+	}
+
+	public void sort(ArrayList<Double> timeList, ArrayList<Integer> algList) {
+		for (int i = 0; i < 9; i++) {
+			algCountByNum.add((double)0);
+		}
+		for (int z = 0; z < timeList.size(); z++) {
+			switch (algList.get(z)) {
+				case 6: algCountByNum.set(0, algCountByNum.get(0)+1); break;
+				case 7: algCountByNum.set(1, algCountByNum.get(1)+1); break;
+				case 8: algCountByNum.set(2, algCountByNum.get(2)+1); break;
+				case 9: algCountByNum.set(3, algCountByNum.get(3)+1); break;
+				case 10: algCountByNum.set(4, algCountByNum.get(4)+1); break;
+				case 11: algCountByNum.set(5, algCountByNum.get(5)+1); break;
+				case 12: algCountByNum.set(6, algCountByNum.get(6)+1); break;
+				case 13: algCountByNum.set(7, algCountByNum.get(7)+1); break;
+				default: algCountByNum.set(8, algCountByNum.get(8)+1); break;
+			}
+			System.out.print(", "+timeList.get(z));
+		}
+		System.out.println("");
+		
+		double totalResults = timeList.size();
+		
+		System.out.println("This session had "+totalResults+" total successess");
+		System.out.println("There are "+algCountByNum.get(0).intValue()+" six algers in this dataset, which is "+round(((algCountByNum.get(0)/totalResults)*100), 2)+"% of all scrambles.");
+		System.out.println("There are "+algCountByNum.get(1).intValue()+" seven algers in this dataset, which is "+round(((algCountByNum.get(1)/totalResults)*100), 2)+"% of all scrambles.");
+		System.out.println("There are "+algCountByNum.get(2).intValue()+" eight algers in this dataset, which is "+round(((algCountByNum.get(2)/totalResults)*100), 2)+"% of all scrambles.");
+		System.out.println("There are "+algCountByNum.get(3).intValue()+" nine algers in this dataset, which is "+round(((algCountByNum.get(3)/totalResults)*100), 2)+"% of all scrambles.");
+		System.out.println("There are "+algCountByNum.get(4).intValue()+" ten algers in this dataset, which is "+round(((algCountByNum.get(4)/totalResults)*100), 2)+"% of all scrambles.");;
+		System.out.println("There are "+algCountByNum.get(5).intValue()+" eleven algers in this dataset, which is "+round(((algCountByNum.get(5)/totalResults)*100), 2)+"% of all scrambles.");
+		System.out.println("There are "+algCountByNum.get(6).intValue()+" twelve algers in this dataset, which is "+round(((algCountByNum.get(6)/totalResults)*100), 2)+"% of all scrambles.");
+		System.out.println("There are "+algCountByNum.get(7).intValue()+" thirteen algers in this dataset, which is "+round(((algCountByNum.get(7)/totalResults)*100), 2)+"% of all scrambles.");
+		
+		
+	}
+	
+	public static double round(double value, int places) {
+	    if (places < 0) throw new IllegalArgumentException();
+
+	    BigDecimal bd = BigDecimal.valueOf(value);
+	    bd = bd.setScale(places, RoundingMode.HALF_UP);
+	    return bd.doubleValue();
 	}
 }
