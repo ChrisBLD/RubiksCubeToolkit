@@ -87,6 +87,8 @@ public class TargetCounter {
 			System.out.print(i);
 		}		
 		
+		System.out.println("PARITY AVD TC: "+MainRedesigned.paritySwap);
+		
 		ArrayList<Integer> solvedCorners = solvedCorners(cubieArray, cornerOrientations, cornerBuffer);
 		int corners = traceCorners(cornerPositions, cornerBuffer, solvedCorners, twistedCorners);
 		
@@ -138,7 +140,7 @@ public class TargetCounter {
 	private ArrayList<Integer> solvedEdges(ArrayList<ImageView> cubieArray, String edgeBuffer, boolean paritySwap) {
 		int[] compare = {1,2,3,4,5,6,7,8,9,10,11,12};
 		if (paritySwap) {
-			if (hasParity) {
+			if (!hasParity) {
 				int[] compare2 = {1,2,3,4,5,6,7,8,9,10,11,12};
 				compare = compare2;
 			} else {
@@ -146,6 +148,7 @@ public class TargetCounter {
 					int[] compare2 = {4,2,3,1,5,6,7,8,9,10,11,12};
 					compare = compare2;
 				} else if (MainRedesigned.cornerBuf.equals("UFR")) {
+					System.out.println("BUFFER IS UFR!!!");
 					int[] compare2 = {1,3,2,4,5,6,7,8,9,10,11,12};
 					compare = compare2;
 				}
@@ -154,6 +157,8 @@ public class TargetCounter {
 			int[] compare2 = {1,2,3,4,5,6,7,8,9,10,11,12};
 			compare = compare2;
 		}
+		
+		System.out.println("SOLVED EDGES: PARITY SWAP: "+paritySwap+ ", HAS PARITY: "+hasParity+", CORNER BUF: "+MainRedesigned.cornerBuf);
 		int[] stickers = {1,5,7,3,12,14,48,50,19,23,25,21};
 		ArrayList<Integer> solvedEdges = new ArrayList<Integer>();
 		
@@ -407,14 +412,18 @@ Parity, one flipped one solved incorrect loc = -3 +'
 				if (MainRedesigned.cornerBuf.equals("UBL")) {
 					compare = new ArrayList<Integer>(Arrays.asList(4,2,3,1,5,6,7,8,9,10,11,12));
 				} else if (MainRedesigned.cornerBuf.equals("UFR")) {
+					System.out.println("CORRECTLY SEEN PARITY!");
 					compare = new ArrayList<Integer>(Arrays.asList(1,3,2,4,5,6,7,8,9,10,11,12));
 				}
-				
-			} else {
-				compare = new ArrayList<Integer>(Arrays.asList(1,2,3,4,5,6,7,8,9,10,11,12));
 				int temp = edgePositions[oneLoc];
 				edgePositions[oneLoc] = edgePositions[twoLoc];
 				edgePositions[twoLoc] = temp;
+				
+			} else {
+				compare = new ArrayList<Integer>(Arrays.asList(1,2,3,4,5,6,7,8,9,10,11,12));
+				//int temp = edgePositions[oneLoc];
+				//edgePositions[oneLoc] = edgePositions[twoLoc];
+				//edgePositions[twoLoc] = temp;
 			}
 		} else {
 			compare = new ArrayList<Integer>(Arrays.asList(1,2,3,4,5,6,7,8,9,10,11,12));
@@ -560,7 +569,7 @@ Parity, one flipped one solved incorrect loc = -3 +'
 		return twistedCorners;
 	}
 
-	int twistCalculator(CheckBox dtBox, CheckBox otBox, ComboBox cornerBuffer) {
+	int twistCalculator(boolean dtBox, boolean otBox) {
 		ArrayList<String> adjacents = new ArrayList<String>();
 		int[][] cornerAdjacency = {{2,4,8}, {1,3,7}, {2,4,6}, {1,3,5}, {6,8,4}, {5,7,3}, {6,8,2}, {5,7,1}}; //Defines Adjacency matrix
 		int[][] cornerOpposites = {{3,5,7}, {4,6,8}, {1,5,7}, {2,6,8}, {1,3,7}, {2,4,8}, {1,3,5}, {2,4,6}}; //Defines Opposite matrix
@@ -571,14 +580,14 @@ Parity, one flipped one solved incorrect loc = -3 +'
 			return twistAlgs;
 		}
 		
-		if (dtBox.isSelected()) { //If DT selected:
-			if (!otBox.isSelected()) { //If OT isn't selected, we can just run DT as it's the only one selected.
+		if (dtBox) { //If DT selected:
+			if (!otBox) { //If OT isn't selected, we can just run DT as it's the only one selected.
 				return dtSelected(adjacents, cornerAdjacency, twistAlgs);
 			} else { //If OT and DT are selected, then we simply run the adjacent corner section before running the opposite corner section.
 				twistAlgs = dtSelected(adjacents, cornerAdjacency, twistAlgs);
 				return dtSelected(new ArrayList<String>(), cornerOpposites, twistAlgs);
 			}
-		} else if (otBox.isSelected()){ //If adjacent twists aren't selected, then we just need to run opposite twists and return.
+		} else if (otBox){ //If adjacent twists aren't selected, then we just need to run opposite twists and return.
 			return dtSelected(adjacents, cornerOpposites, twistAlgs);
 		} else { //If neither are selected, then the total alg count = number of twists. So return that.
 			return twistAlgs;

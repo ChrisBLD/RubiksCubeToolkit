@@ -44,7 +44,6 @@ public class MainRedesigned extends Application {
 	private ImageView helpIcon = new ImageView(new Image("/resources/HelpIconSmall.png"));
 
 	static boolean graphic = true;
-	public static boolean paritySwap = false;
 	
 	private ArrayList<ImageView> cubieArray = new ArrayList<ImageView>();
 	private Group cubieG = new Group();
@@ -65,7 +64,12 @@ public class MainRedesigned extends Application {
 	
 	private String uFace;
 	
+	private static boolean[] settingArr = {false,false,false,false};
 	
+	public static boolean paritySwap = false;
+	public static boolean quadFlip = false;
+	public static boolean dt = false;
+	public static boolean ot = false;
 	
     public static void main(String[] args) {
         launch(args);
@@ -74,6 +78,7 @@ public class MainRedesigned extends Application {
     @SuppressWarnings("unchecked")
 	@Override
     public void start(Stage primaryStage) {
+
     	
     	primaryStage.setTitle("AverageByAlgs - BLD Tool");
     	Scene scene = new Scene(p, 1500, 750);
@@ -159,12 +164,11 @@ public class MainRedesigned extends Application {
         settings.setLayoutX(655);
         settings.setLayoutY(535);
         settings.setOnAction(new EventHandler<ActionEvent> () {
-
-			@Override
-			public void handle(ActionEvent arg0) {
-				SettingsMenu setmen = new SettingsMenu();
-			}
-        	
+	        SettingsMenu sMen = new SettingsMenu();
+				@Override
+				public void handle(ActionEvent arg0) {
+					sMen.show();
+				}   	
         });
         p.getChildren().add(settings);
         
@@ -195,5 +199,4 @@ public class MainRedesigned extends Application {
 
     }
     
-
 }

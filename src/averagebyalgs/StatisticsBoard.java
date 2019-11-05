@@ -18,10 +18,12 @@ public class StatisticsBoard {
 		ArrayList<Integer> algCount = new ArrayList<Integer>();
 		
 		//Hard coded settings that need to be implemented
-		boolean paritySwap = true;
+		boolean paritySwap = MainRedesigned.paritySwap;
 		String edgeBuf = "UF";
 		String cornerBuf = "UFR";
-		boolean quadBox = true;
+		boolean quadFlip = MainRedesigned.quadFlip;
+		boolean dt = MainRedesigned.dt;
+		boolean ot = MainRedesigned.ot;
 		
 
 		ScrambleManager sm = new ScrambleManager(p, cubieArray, cubieG);
@@ -68,7 +70,7 @@ public class StatisticsBoard {
 			
 			int totalAlgs = edgeAlgs+cornerAlgs;
 			int flipAlgs = 0;
-			if (quadBox) {
+			if (quadFlip) {
 				if (dashCount == 0) {
 					flipAlgs = 0;
 			    } else if (dashCount < 5) {
@@ -87,20 +89,18 @@ public class StatisticsBoard {
 					flipAlgs = (dashCount+1)/2;
 				}
 			}
-			CheckBox dtBox = new CheckBox();
-			CheckBox otBox = new CheckBox();
-			ComboBox cornerBufChoose = new ComboBox();
-			cornerBufChoose.setValue(cornerBuf);
-			int twistAlgs = tm.twistCalculator(dtBox, otBox, cornerBufChoose);
+
+			int twistAlgs = tm.twistCalculator(dt, ot);
 			System.out.println(twistAlgs);
 	
 			totalAlgs += flipAlgs + twistAlgs;
 			System.out.println("This scramble is: "+targets);
 			System.out.println("Alg Count: "+(totalAlgs));
+			System.out.println("PARITY AVD?: "+paritySwap);
 		}
 		
 		System.out.println("Fastest Scramble: "+fastScram);
-		cubieArray = sm.submitted(fastScram, cubieArray, cubieG);
+		//cubieArray = sm.submitted(fastScram, cubieArray, cubieG);
 			
 	}
 }
