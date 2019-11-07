@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public abstract class InputParse {
 	
@@ -29,68 +31,27 @@ public abstract class InputParse {
 		int count = 0;
 		ArrayList<Integer> visited = new ArrayList<Integer>();
 		
+		Pattern scramPat = Pattern.compile("([BDFLRU]w?[\'2]?\\s?)+$");
+		Pattern timePat = Pattern.compile("(DNF\\()?\\d+\\.\\d+\\+?(\\))?");
+		
+		
 		for (String result : results) {
-			String orig = result;
-			result = result.substring(result.indexOf('.')+2);
-			if (result.indexOf('N') != -1) { //Entered if DNF, solve can be discarded.
-				visited.add(Integer.valueOf(orig.substring(0,orig.indexOf('.'))));
-				//System.out.println(orig.substring(0,orig.indexOf('.'))+", RECOGNISED");
-				DNFcount++;
-			} else {
-				if (result.indexOf('+') != -1) { //Either +2 or splits mode on in session (or both)
-					int n = result.indexOf('=');
-					if (n != -1) { //Splits mode on in session
-						time = result.substring(0, n);
-						System.out.println("Time after split removal: "+time);
-						if (result.indexOf('+') != -1) { //Also a +2 to go
-							time = time.replace("+","");
-						}
-						scramble = result.substring(result.indexOf(' ')+3);
-						System.out.println("Time: "+time+", Scramble: "+scramble);
-					} else { //No split, just a +2
-						result = result.replace("+",""); 
-						//System.out.println(result); 
-						time = result.substring(0, result.indexOf(' '));
-						scramble = result.substring(result.indexOf(' ')+3);
-						System.out.println("Time: "+time+", Scramble: "+scramble);
-					}
-				} else {
-					//System.out.println(result); 
-					time = result.substring(0, result.indexOf(' '));
-					scramble = result.substring(result.indexOf(' ')+3);
-					System.out.println("Time: "+time+", Scramble: "+scramble);
-				}
-				
-				if (time.indexOf(':') != -1) {
-					try {
-						double min = Double.valueOf(time.substring(0,1));
-						min *= 60;
-						time = time.substring(time.indexOf(':')+1);
-						double timeDubTemp = Double.valueOf(time);
-						timeDubTemp += min;
-						time = ""+timeDubTemp;
-					} catch (Exception e) {
-						System.out.println("Not acceptable input.");
-						nAcc++;
-					}
-				}
-				
+			
+			Matcher scramMatch = scramPat.matcher(result);
+			if (scramMatch.find()) {
+				System.out.println("Match: "+scramMatch.group(0));
+				scrambleList.add(scramMatch.group(0));
+			}
+			
+			Matcher timeMatch = timePat.matcher(result);
+			if (timeMatch.find()) {
+				System.out.println("Time: "+timeMatch.group(0));
 				try {
-					timeDub = Double.parseDouble(time);					
+					timeDub = Double.parseDouble(timeMatch.group(0));
 					timeList.add(timeDub);
-					scrambleList.add(scramble);
-					count++;
-					//System.out.println(orig.substring(0,orig.indexOf('.'))+", RECOGNISED");
-					visited.add(Integer.valueOf(orig.substring(0,orig.indexOf('.'))));
-					//System.out.println("ADDED");
 				} catch (Exception e) {
-					System.out.println("Not acceptable input.");
-					nAcc++;
+					System.out.println("DNF. Discarding");
 				}
-				
-				
-				System.out.println("COUNT: "+count+", TIMES: "+timeList.size()+", SCRAMBLES: "+scrambleList.size());
-				
 			}
 		}
 
