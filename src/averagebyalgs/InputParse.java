@@ -32,25 +32,38 @@ public abstract class InputParse {
 		ArrayList<Integer> visited = new ArrayList<Integer>();
 		
 		Pattern scramPat = Pattern.compile("([BDFLRU]w?[\'2]?\\s?)+$");
-		Pattern timePat = Pattern.compile("(DNF\\()?\\d+\\.\\d+\\+?(\\))?");
-		
+		Pattern timePat = Pattern.compile("(DNF\\()?\\d+[:.]\\d+(\\.\\d+)?(\\))?");
+		boolean flag;
 		
 		for (String result : results) {
+			
+			flag = false;
 			
 			Matcher scramMatch = scramPat.matcher(result);
 			if (scramMatch.find()) {
 				System.out.println("Match: "+scramMatch.group(0));
 				scrambleList.add(scramMatch.group(0));
+				flag = true;
 			}
 			
-			Matcher timeMatch = timePat.matcher(result);
-			if (timeMatch.find()) {
-				System.out.println("Time: "+timeMatch.group(0));
-				try {
-					timeDub = Double.parseDouble(timeMatch.group(0));
-					timeList.add(timeDub);
-				} catch (Exception e) {
-					System.out.println("DNF. Discarding");
+			if (flag) {
+				Matcher timeMatch = timePat.matcher(result);
+				if (timeMatch.find()) {
+					if (timeMatch.group(0).indexOf('N') == -1) {
+						System.out.println("Time: "+timeMatch.group(0));
+						int colonInd = timeMatch.group(0).indexOf(':');
+						if (colonInd != -1) {
+							int mins = Integer.valueOf(timeMatch.group(0).substring(0, colonInd));
+							mins *= 60;
+							Double remainder = Double.parseDouble(timeMatch.group(0).substring(colonInd+1));
+							timeDub = remainder + mins;
+						} else {
+							timeDub = Double.parseDouble(timeMatch.group(0));
+						}
+						timeList.add(timeDub);
+					} else {
+						System.out.println("DNF. Discarding");
+					}
 				}
 			}
 		}
