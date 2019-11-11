@@ -44,7 +44,6 @@ public abstract class InputParse {
 			Matcher scramMatch = scramPat.matcher(result);
 			if (scramMatch.find()) {
 				//System.out.println("Match: "+scramMatch.group(0));
-				scrambleList.add(scramMatch.group(0));
 				flag = true;
 			}
 			
@@ -63,6 +62,7 @@ public abstract class InputParse {
 							timeDub = Double.parseDouble(timeMatch.group(0));
 						}
 						timeList.add(timeDub);
+						scrambleList.add(scramMatch.group(0));
 					} else {
 						//System.out.println("DNF. Discarding");
 					}

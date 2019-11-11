@@ -2,12 +2,15 @@ package averagebyalgs;
 
 import java.util.ArrayList;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
@@ -24,6 +27,9 @@ public class SettingsMenu {
 	Scene settingsScene;
 	Stage settingsWindow;
 	CheckBox paritySwap, quadFlip, dtBox, otBox;
+	ComboBox<String> eBuff, cBuff;
+	ObservableList<String> edgeBufList = FXCollections.observableArrayList("UF", "DF");
+	ObservableList<String> cornerBufList = FXCollections.observableArrayList("UBL","UFR");
 
 	
 	public SettingsMenu() {
@@ -110,6 +116,29 @@ public class SettingsMenu {
         });
         g.getChildren().add(save);
         
+        Label cornerBuffer = new Label("Corner Buffer:");
+        cornerBuffer.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
+        cornerBuffer.setLayoutX(initX);
+        cornerBuffer.setLayoutY(initY+160);
+        g.getChildren().add(cornerBuffer);
+        cBuff = new ComboBox<String>(cornerBufList);
+        cBuff.setValue("UFR");
+        cBuff.setLayoutX(initX+190);
+        cBuff.setLayoutY(initY+163);
+        g.getChildren().add(cBuff);
+        
+        Label edgeBuffer = new Label("Edge Buffer:");
+        edgeBuffer.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
+        edgeBuffer.setLayoutX(initX);
+        edgeBuffer.setLayoutY(initY+200);
+        g.getChildren().add(edgeBuffer);
+        eBuff = new ComboBox<String>(edgeBufList);
+        eBuff.setValue("UF");
+        eBuff.setLayoutX(initX+190);
+        eBuff.setLayoutY(initY+203);
+        g.getChildren().add(eBuff);
+        
+        
         
         
         
@@ -157,5 +186,7 @@ public class SettingsMenu {
 		} else {
 			MainRedesigned.ot = false;
 		}
+		MainRedesigned.edgeBuf = eBuff.getValue();
+		MainRedesigned.cornerBuf = cBuff.getValue();
 	}
 }

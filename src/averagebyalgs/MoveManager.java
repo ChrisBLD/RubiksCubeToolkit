@@ -178,10 +178,10 @@ public class MoveManager {
 			int old = change[0];
 			int nuevo = change[1];
 				
-			System.out.println("Old: "+old+", New: "+nuevo);
+		//System.out.println("Old: "+old+", New: "+nuevo);
 			cornerPositionsNEW[old-1] = cornerPositions[nuevo-1];
 			for (int i : cornerPositionsNEW) {
-				System.out.print(i+", ");
+				//System.out.print(i+", ");
 			}
 		}
 
@@ -213,10 +213,10 @@ public class MoveManager {
 			int old = change[0];
 			int nuevo = change[1];
 				
-			System.out.println("Old: "+old+", New: "+nuevo);
+			//System.out.println("Old: "+old+", New: "+nuevo);
 			edgePositionsNEW[old-1] = edgePositions[nuevo-1];
 			for (int i : edgePositionsNEW) {
-				System.out.print(i+", ");
+				//System.out.print(i+", ");
 			}
 		}
 		
@@ -226,18 +226,20 @@ public class MoveManager {
 	}
 	
 	
-	ArrayList<ImageView> applyMoves(ArrayList<String> moves) {
+	ArrayList<ImageView> applyMoves(ArrayList<String> moves, boolean draw) {
 		caReset();
-		if (Main.paritySwap) {
-			if (Main.cornerBuf.equals("UBL")) {
+		/*
+		if (MainRedesigned.paritySwap) {
+			if (MainRedesigned.cornerBuf.equals("UBL")) {
 				edgePositions = edgePositionsPARITYUBL.clone();
-			} else if (Main.cornerBuf.equals("UFR")) {
+			} else if (MainRedesigned.cornerBuf.equals("UFR")) {
 				edgePositions = edgePositionsPARITYUFR.clone();
-				System.out.println("Set to parity");
+				//System.out.println("Set to parity");
 			}
 		} else {
 			edgePositions = edgePositionsDEFAULT.clone();
-		}
+		}*/
+		edgePositions = edgePositionsDEFAULT.clone();
 		cornerPositions = cornerPositionsDEFAULT.clone();
 		cornerOrientations = cornerOrientationsDEFAULT.clone();
 		Group cubieGee = new Group();
@@ -248,28 +250,29 @@ public class MoveManager {
 			//System.out.print(move+" ");
 		}
 		
-		/*
-		Image image = new Image("resources/CubeNet.png");
-        ImageView iv1 = new ImageView();
-        iv1.setImage(image);
-        iv1.setScaleX(0.5);
-        iv1.setScaleY(0.5);
-        iv1.setPreserveRatio(true);
-        iv1.setSmooth(true);
-        iv1.setLayoutX(NetManager.netX);
-        iv1.setLayoutY(NetManager.netY);
-        
-        if (mode) {
-			g.getChildren().remove(cubieG);
-			g.getChildren().remove(iv1);
-			g.getChildren().add(cubieGee);
-			g.getChildren().add(iv1);
-        } else {
-        	p.getChildren().remove(cubieG);
-			p.getChildren().remove(iv1);
-			p.getChildren().add(cubieGee);
-			p.getChildren().add(iv1);
-        }*/
+		if (draw) {
+			Image image = new Image("resources/CubeNet.png");
+	        ImageView iv1 = new ImageView();
+	        iv1.setImage(image);
+	        iv1.setScaleX(0.5);
+	        iv1.setScaleY(0.5);
+	        iv1.setPreserveRatio(true);
+	        iv1.setSmooth(true);
+	        iv1.setLayoutX(NetManager.netX);
+	        iv1.setLayoutY(NetManager.netY);
+	        final Group cubieGeeFin = cubieGee;
+	        Platform.runLater(new Runnable() {
+	      
+	        	@Override
+	        	public void run() {
+	        		p.getChildren().remove(cubieG);
+	 				p.getChildren().remove(iv1);
+	 				p.getChildren().add(cubieGeeFin);
+	 				p.getChildren().add(iv1);
+	        	}
+	        });
+
+		}
 		
 		return cubieArray;
 		

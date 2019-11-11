@@ -32,7 +32,7 @@ public class AlgCalculator implements Runnable {
 		scrambleList = InputParse.getScrambleList();
 		StatisticsBoard sb = new StatisticsBoard();
 		algList = sb.processResults(timeList, scrambleList, nm.getCubieArray(), nm.getCubieG(), p);
-		sb.sort(timeList, algList);	
+		sb.sort(timeList, algList, scrambleList);	
 	}
 
 }

@@ -35,7 +35,7 @@ public class ScrambleManager {
 		m = new MoveManager(p, cubieArray, cubieG);
 	}
 	
-	public ArrayList<ImageView> submitted(String scramble, ArrayList<ImageView> cubieArray, Group cubieG, boolean draw, boolean mode) {
+	public ArrayList<ImageView> submitted(String scramble, ArrayList<ImageView> cubieArray, Group cubieG, boolean draw) {
 		String wideMove = "";
 		
 		ArrayList<String> moves = new ArrayList<String>();
@@ -174,7 +174,7 @@ public class ScrambleManager {
 			//System.out.print(move);
 		//}
 
-		return m.applyMoves(moves, draw, mode);
+		return m.applyMoves(moves, draw);
 	}
 	
 	MoveManager getMoveMan() {

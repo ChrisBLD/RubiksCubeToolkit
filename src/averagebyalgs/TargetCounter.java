@@ -85,13 +85,13 @@ public class TargetCounter {
 		D = cubieArray.get(22).getImage();
 		
 		cornerOrientations = calculateCornerOrientations(cubieArray);
-		/*
+		
 		for (int i : cornerOrientations) {
 			System.out.print(i);
 		}
-		*/		
+				
 		
-		//System.out.println("PARITY AVD TC: "+MainRedesigned.paritySwap);
+		System.out.println("PARITY AVD TC: "+MainRedesigned.paritySwap);
 		
 		ArrayList<Integer> solvedCorners = solvedCorners(cubieArray, cornerOrientations, cornerBuffer);
 		int corners = traceCorners(cornerPositions, cornerBuffer, solvedCorners, twistedCorners);
@@ -109,9 +109,9 @@ public class TargetCounter {
 		int edges = traceEdges(edgePositions, edgeBuffer, solvedEdges, flippedEdges, MainRedesigned.paritySwap);
 		//edges+= flipped;
 		
-		//System.out.println(flipped);
-		//System.out.println(corners+" is the total number of corner targets (excluding twists)");
-		//System.out.println(edges+" is the total number of edge targets (excluding flips)");
+		System.out.println(flipped);
+		System.out.println(corners+" is the total number of corner targets (excluding twists)");
+		System.out.println(edges+" is the total number of edge targets (excluding flips)");
 		
 		edgeCount = edges;
 		cornerCount = corners;
@@ -119,22 +119,22 @@ public class TargetCounter {
 	}
 	
 	private int[] calculateCornerOrientations(ArrayList<ImageView> cubieArray) {
-		//System.out.println("in");
+		System.out.println("in");
 		int[] cornerOrientations = {0,0,0,0,0,0,0,0};
 		for (int i = 0; i < 8; i++) {
-			//System.out.println("GetImage: "+cubieArray.get(0).getImage());
+			System.out.println("GetImage: "+cubieArray.get(0).getImage());
 			if (cubieArray.get(cornersACW[i]).getImage().equals(U) || cubieArray.get(cornersACW[i]).getImage().equals(D)) {
-				//System.out.println("Sticker "+cornersACW[i]+" should be W/Y");
+				System.out.println("Sticker "+cornersACW[i]+" should be W/Y");
 				cornerOrientations[i] = 2;
 			}
 		}
-		//for (int s : cornerOrientations) {
-			//System.out.print(s);
-		//}	
+		for (int s : cornerOrientations) {
+			System.out.print(s);
+	    }	
 			
 		for (int a = 0; a < 8; a++) {
 			if (cubieArray.get(cornersCW[a]).getImage().equals(U) || cubieArray.get(cornersCW[a]).getImage().equals(D)) {
-				//System.out.println("Sticker "+cornersCW[a]+" should be W/Y");
+				System.out.println("Sticker "+cornersCW[a]+" should be W/Y");
 				cornerOrientations[a] = 1;
 			}
 		}
@@ -143,6 +143,7 @@ public class TargetCounter {
 	
 	private ArrayList<Integer> solvedEdges(ArrayList<ImageView> cubieArray, String edgeBuffer, boolean paritySwap) {
 		int[] compare = {1,2,3,4,5,6,7,8,9,10,11,12};
+		int[] compareDefault = {1,2,3,4,5,6,7,8,9,10,11,12};
 		if (paritySwap) {
 			if (!hasParity) {
 				int[] compare2 = {1,2,3,4,5,6,7,8,9,10,11,12};
@@ -162,7 +163,7 @@ public class TargetCounter {
 			compare = compare2;
 		}
 		
-		//System.out.println("SOLVED EDGES: PARITY SWAP: "+paritySwap+ ", HAS PARITY: "+hasParity+", CORNER BUF: "+MainRedesigned.cornerBuf);
+		System.out.println("SOLVED EDGES: PARITY SWAP: "+paritySwap+ ", HAS PARITY: "+hasParity+", CORNER BUF: "+MainRedesigned.cornerBuf);
 		int[] stickers = {1,5,7,3,12,14,48,50,19,23,25,21};
 		ArrayList<Integer> solvedEdges = new ArrayList<Integer>();
 		
@@ -172,55 +173,55 @@ public class TargetCounter {
 				buffer = compare[i];
 			}
 		}
-		//System.out.println("COMPARE:");
-		//for (int i : compare) {
-		//	System.out.print(i);
-		//}
-		//System.out.println("EDGEPOS:");
-		//for (int i : edgePositions) {
-		//	System.out.print(i);
-		//}
+		System.out.println("COMPARE:");
+		for (int i : compare) {
+			System.out.print(i);
+		}
+	    System.out.println("EDGEPOS:");
+		for (int i : edgePositions) {
+			System.out.print(i);
+		}
 		for (int i = 0; i < 12; i++) {
 			if (compare[i] == edgePositions[i]) {
-				//System.out.println("Edge in place. compare[i]: "+compare[i]+", buffer: "+buffer+", edgePositions[i]: "+edgePositions[i]);
+				System.out.println("Edge in place. compare[i]: "+compare[i]+", buffer: "+buffer+", edgePositions[i]: "+edgePositions[i]);
 				if (compare[i] == buffer) {
 					//
 				} else if (i < 4) {
 					if (cubieArray.get(stickers[i]).getImage().equals(U)) {
-						//System.out.println(edgeKey[i]+" is solved");
-						solvedEdges.add(compare[i]);
+						System.out.println(edgeKey[i]+" is solved");
+						solvedEdges.add(compareDefault[i]);
 					} else { 
-						//System.out.println(edgeKey[i]+" is twisted");
-						flippedEdges.add(compare[i]);
+						System.out.println(edgeKey[i]+" is twisted");
+						flippedEdges.add(compareDefault[i]);
 						flipped++;
 					}
 				} else if (i < 6) {
 					if (cubieArray.get(stickers[i]).getImage().equals(F)) {
-						//System.out.println(edgeKey[i]+" is solved");
-						solvedEdges.add(compare[i]);
+						System.out.println(edgeKey[i]+" is solved");
+						solvedEdges.add(compareDefault[i]);
 					} else { 
-						//System.out.println(edgeKey[i]+" is twisted");
-						flippedEdges.add(compare[i]);
+						System.out.println(edgeKey[i]+" is twisted");
+						flippedEdges.add(compareDefault[i]);
 						flipped++;
 					}
 				} else if (i < 8) {
 					if (cubieArray.get(stickers[i]).getImage().equals(B)) {
-						//System.out.println(edgeKey[i]+" is solved");
-						solvedEdges.add(compare[i]);
+						System.out.println(edgeKey[i]+" is solved");
+						solvedEdges.add(compareDefault[i]);
 					} else { 
-						//System.out.println(edgeKey[i]+" is twisted");
-						flippedEdges.add(compare[i]);
+						System.out.println(edgeKey[i]+" is twisted");
+						flippedEdges.add(compareDefault[i]);
 						flipped++;
 					}
 				} else {
 					if (cubieArray.get(stickers[i]).getImage().equals(D)) {
-						//System.out.println(stickers[i]);
-						//System.out.println(edgeKey[i]+" is solved");
-						//System.out.println("D did it");
-						solvedEdges.add(compare[i]);
+						System.out.println(stickers[i]);
+						System.out.println(edgeKey[i]+" is solved");
+						System.out.println("D did it");
+						solvedEdges.add(compareDefault[i]);
 					} else { 
-						//System.out.println(edgeKey[i]+" is twisted");
-						flippedEdges.add(compare[i]);
+						System.out.println(edgeKey[i]+" is twisted");
+						flippedEdges.add(compareDefault[i]);
 						flipped++;
 					}
 				}
@@ -244,10 +245,10 @@ public class TargetCounter {
 		for (int i = 0; i < 8; i++) {
 			if (compare[i] == cornerPositions[i]) {
 				if (cornerOrientations[i] == 0) {
-					//System.out.println(cornerKey[i]+" is solved");
+					System.out.println(cornerKey[i]+" is solved");
 					solvedCorners.add(compare[i]);
 				} else {
-					//System.out.println(cornerKey[i]+" is twisted");
+					System.out.println(cornerKey[i]+" is twisted");
 					if (compare[i] != buffer) {
 						twistedCorners.add(compare[i]);
 						twisted++;
@@ -289,8 +290,8 @@ public class TargetCounter {
 				targetInPos = cornerPositions[targetInPos-1];
 			}
 
-			//System.out.println("targetInPos: "+targetInPos+", next targetInPos: "+cornerPositions[targetInPos-1]);
-			//System.out.println("Getting remove: "+targetInPos);
+			System.out.println("targetInPos: "+targetInPos+", next targetInPos: "+cornerPositions[targetInPos-1]);
+			System.out.println("Getting remove: "+targetInPos);
 			
 			compare.remove((Integer)targetInPos);
 			if (compare.isEmpty() == false) {
@@ -307,38 +308,38 @@ public class TargetCounter {
 				}
 			}
 
-			//System.out.println(count);
+			System.out.println(count);
 			whileCount++;
 		}
 		
 
 		for (int i : compare) {
-			//System.out.print(i);
+			System.out.print(i);
 		}
 		
 		//B' D2 F2 R2 B2 L2 F2 L' U2 R' D2 F2 L' U' L D' B2 R D' F' R2 D' F'
 		
 		while (compare.isEmpty() == false) {
-			//for (int i : compare) {
-			//	System.out.print(">"+i+"<");
-			//}
-			//System.out.println();
+			for (int i : compare) {
+				System.out.print(">"+i+"<");
+			}
+			System.out.println();
 			buffer = compare.get(0); //buffer = 3
-			//System.out.println("New buffer is position: "+buffer);
+			System.out.println("New buffer is position: "+buffer);
 			targetInPos = cornerPositions[buffer-1]; //targetinPos = 
 			compare.remove((Integer)targetInPos);
 			int newCount = 0;
-			//System.out.println("targetInPos: "+targetInPos+", buffer: "+buffer+", count: "+count);
+			System.out.println("targetInPos: "+targetInPos+", buffer: "+buffer+", count: "+count);
 			while (targetInPos != buffer) {
-				//System.out.println("targetInPos: "+targetInPos+", next targetInPos: "+cornerPositions[targetInPos-1]);
+				System.out.println("targetInPos: "+targetInPos+", next targetInPos: "+cornerPositions[targetInPos-1]);
 				targetInPos = cornerPositions[targetInPos-1];
 				compare.remove((Integer)targetInPos);
 				count++;
 				newCount++;
-				//System.out.println(count);
-				//for (int i : compare) {
-				//	System.out.print(i);
-				//}
+				System.out.println(count);
+				for (int i : compare) {
+					System.out.print(i);
+				}
 			}
 			
 			if (newCount != 0) {
@@ -349,7 +350,7 @@ public class TargetCounter {
 			}
 		}
 		
-		//System.out.println(count+"  is the total number of targets (I hope");
+		System.out.println(count+"  is the total number of targets (I hope");
 		
 		
 		return count;
@@ -377,16 +378,16 @@ Parity, one flipped one solved incorrect loc = -3 +'
 		compare = new ArrayList<Integer>(Arrays.asList(1,2,3,4,5,6,7,8,9,10,11,12));
 	}*/
 		
-		//for (int i : edgePositions) {
-			//System.out.print(i);
-		//}
+		for (int i : edgePositions) {
+			System.out.print(i);
+		}
 		
 		if (solvedEdges.size() == 11) {
-			//System.out.println("All edges solved lol.");
+			System.out.println("All edges solved lol.");
 			return 0;
 		}
 		
-		//System.out.println("*************PARITY SWAP: "+paritySwap+", hasParity: "+hasParity);
+		System.out.println("*************PARITY SWAP: "+paritySwap+", hasParity: "+hasParity);
 		ArrayList<Integer> compare = new ArrayList<Integer>();
 		
 		int oneLoc = 0;
@@ -416,7 +417,7 @@ Parity, one flipped one solved incorrect loc = -3 +'
 				if (MainRedesigned.cornerBuf.equals("UBL")) {
 					compare = new ArrayList<Integer>(Arrays.asList(4,2,3,1,5,6,7,8,9,10,11,12));
 				} else if (MainRedesigned.cornerBuf.equals("UFR")) {
-					//System.out.println("CORRECTLY SEEN PARITY!");
+					System.out.println("CORRECTLY SEEN PARITY!");
 					compare = new ArrayList<Integer>(Arrays.asList(1,3,2,4,5,6,7,8,9,10,11,12));
 				}
 				int temp = edgePositions[oneLoc];
@@ -434,16 +435,16 @@ Parity, one flipped one solved incorrect loc = -3 +'
 		}
 		
 		
-		//for (int i : edgePositions) {
-			//System.out.print(i+" ");
-		//}
+		for (int i : edgePositions) {
+			System.out.print(i+" ");
+		}
 		
 		
 		int buffer = 0;
 		for (int i = 0; i < edgeKey.length; i++) {
-			//System.out.println("edgeKey[i]: "+edgeKey[i]+", edgeBuffer: "+edgeBuffer);
+			System.out.println("edgeKey[i]: "+edgeKey[i]+", edgeBuffer: "+edgeBuffer);
 			if (edgeKey[i].equals(edgeBuffer)) {
-				//System.out.println("entered uwu");
+				System.out.println("entered uwu");
 				buffer = compare.get(i);
 			}
 		}
@@ -454,23 +455,24 @@ Parity, one flipped one solved incorrect loc = -3 +'
 			}
 		}
 		
-		//System.out.println();
-		//for (int i: compare) {
-		//	System.out.print(i);
-		//}
-		//System.out.println();
+		System.out.println();
+		for (int i: compare) {
+			System.out.print(i);
+		}
+		System.out.println();
 		
-		//for (int i : compare) {
-		//	System.out.print(i+" ");
-		//}
+		for (int i : compare) {
+			System.out.print(i+" ");
+		}
 		
 		compare.remove((Integer) buffer);
 		
-		//for (int i : compare) {
-		//	System.out.print(i+" ");
-		//}
+		for (int i : compare) {
+			System.out.print(i+" ");
+		}
 		
 		for (int edge : solvedEdges) {
+			System.out.println("Edge solved: "+edge);
 			compare.remove((Integer) edge);
 		}
 		for (int fedge : flippedEdges) {
@@ -481,7 +483,7 @@ Parity, one flipped one solved incorrect loc = -3 +'
 		int targetInPos = 0;
 		int whileCount = 0;
 		int count = 0;
-		//System.out.println("BUFFER: "+buffer);
+		System.out.println("BUFFER: "+buffer);
 		while (targetInPos != buffer) {
 
 			if (whileCount == 0) {
@@ -490,12 +492,12 @@ Parity, one flipped one solved incorrect loc = -3 +'
 				targetInPos = edgePositions[targetInPos-1];
 			}
 
-			//System.out.println("targetInPos: "+targetInPos+", next targetInPos: "+edgePositions[targetInPos-1]);
-			//System.out.println("Getting remove: "+targetInPos);
+			System.out.println("targetInPos: "+targetInPos+", next targetInPos: "+edgePositions[targetInPos-1]);
+			System.out.println("Getting remove: "+targetInPos);
 			
 			compare.remove((Integer)targetInPos);
 			if (compare.isEmpty() == false) {
-				//System.out.println("in");
+				System.out.println("in");
 				if (targetInPos == edgePositions[buffer-1]) {
 					if (whileCount == 0 ) {
 						count = 1;
@@ -513,47 +515,47 @@ Parity, one flipped one solved incorrect loc = -3 +'
 				}
 			}
 
-			//System.out.println(count);
+			System.out.println(count);
 			whileCount++;
 		}
 		
 		for (int i : compare) {
-			//System.out.print(i);
+			System.out.print(i);
 		}
 		
 		//B' D2 F2 R2 B2 L2 F2 L' U2 R' D2 F2 L' U' L D' B2 R D' F' R2 D' F'
 		
 		while (compare.isEmpty() == false) {
 			for (int i : compare) {
-				//System.out.print(">"+i+"<");
+				System.out.print(">"+i+"<");
 			}
-			//System.out.println();
+			System.out.println();
 			buffer = compare.get(0); //buffer = 3
-			//System.out.println("New buffer is position: "+buffer);
+			System.out.println("New buffer is position: "+buffer);
 			targetInPos = edgePositions[buffer-1]; //targetinPos = 
 			compare.remove((Integer)targetInPos);
 			int newCount = 0;
-			//System.out.println("targetInPos: "+targetInPos+", buffer: "+buffer+", count: "+count);
+			System.out.println("targetInPos: "+targetInPos+", buffer: "+buffer+", count: "+count);
 			while (targetInPos != buffer) {
-				//System.out.println("targetInPos: "+targetInPos+", next targetInPos: "+edgePositions[targetInPos-1]);
+				System.out.println("targetInPos: "+targetInPos+", next targetInPos: "+edgePositions[targetInPos-1]);
 				targetInPos = edgePositions[targetInPos-1];
 				compare.remove((Integer)targetInPos);
 				count++;
 				newCount++;
-				///System.out.println(count);
+				System.out.println(count);
 			}
 			
 			if (newCount != 0) {
-				//System.out.println("PLUS");
+				System.out.println("PLUS");
 				count++;
 			} 
 			if (compare.isEmpty() == false) {
-				//System.out.println("PLUS");
+				System.out.println("PLUS");
 				count++;
 			}
 		}
 		
-		//System.out.println(count+"  is the total number of edge targets (I hope");
+		System.out.println(count+"  is the total number of edge targets (I hope");
 		
 		
 		return count;
@@ -600,15 +602,15 @@ Parity, one flipped one solved incorrect loc = -3 +'
 	
 	private int dtSelected(ArrayList<String> adjacents, int[][] cornerAdjacency, int twistAlgs) {
 		for (int i : twistedCorners) {
-			//System.out.println("Twisted Corner: "+i);
+			System.out.println("Twisted Corner: "+i);
 			for (int t : twistedCorners) {
 				if (t != i) {
-					//System.out.println("Other twists: "+t);
+					System.out.println("Other twists: "+t);
 					for (int a : cornerAdjacency[i-1]) {
 						if (t == a) {
-							//System.out.println("Adjacent found. "+i+" is adjacent to "+a);
+							System.out.println("Adjacent found. "+i+" is adjacent to "+a);
 							String word = i+"."+a;
-							//System.out.println("String: "+word);
+							System.out.println("String: "+word);
 							adjacents.add(word);
 						}
 					}
@@ -623,38 +625,38 @@ Parity, one flipped one solved incorrect loc = -3 +'
 			char one = s.toCharArray()[0];
 			char two = s.toCharArray()[2];
 			String inv = two+"."+one;
-			//System.out.print("S: "+s+", inv: "+inv);
+			System.out.print("S: "+s+", inv: "+inv);
 			if (!uniqueAdjacents.contains(inv)) {
 				uniqueAdjacents.add(s);
 			}
 		}
 		
-		//for (String s: uniqueAdjacents) {
-			//System.out.println("IN UNIQUEADJ: "+s);
-		//}
+		for (String s: uniqueAdjacents) {
+			System.out.println("IN UNIQUEADJ: "+s);
+		}
 		
 		int wellCount = 0;
 		ArrayList<String> uAgoodTwists = new ArrayList<String>();
 		for (String s : uniqueAdjacents) {
 			int a = Character.getNumericValue(s.toCharArray()[0]);
 			int b = Character.getNumericValue(s.toCharArray()[2]);
-			//System.out.println("a: "+a+" b: "+b);
+			System.out.println("a: "+a+" b: "+b);
 			int orientation1 = cornerOrientations[a-1];
 			int orientation2 = cornerOrientations[b-1];
 			
 			if (orientation1+orientation2 == 3) {
 				wellCount++;
-				//System.out.println("Twisted well.");
+				System.out.println("Twisted well.");
 				uAgoodTwists.add(s);
 			}
 		}
 		
 		
 		for (String s : uAgoodTwists) {
-			//System.out.println("#############");
+			System.out.println("#############");
 			int a = Character.getNumericValue(s.toCharArray()[0]);
 			int b = Character.getNumericValue(s.toCharArray()[2]);
-			//System.out.println("a: "+a+" b: "+b);
+			System.out.println("a: "+a+" b: "+b);
 		}
 		
 		
@@ -669,31 +671,31 @@ Parity, one flipped one solved incorrect loc = -3 +'
 			int f = Character.getNumericValue(uAgoodTwists.get(2).toCharArray()[2]);
 			
 			if (a+d == e+f || b+c == e+f) {
-				//System.out.println("e+f contains elements from both. Removing.");
+				System.out.println("e+f contains elements from both. Removing.");
 				uAgoodTwists.remove(2);
 			} else if (a+f == c+d || b+e == c+d) {
-				//System.out.println("c+d contains elements from both. Removing.");
+				System.out.println("c+d contains elements from both. Removing.");
 				uAgoodTwists.remove(1);
 			} else if (c+f == a+b || d+e == a+b) {
-				//System.out.println("a+b contains elements from both. Removing.");
+				System.out.println("a+b contains elements from both. Removing.");
 				uAgoodTwists.remove(0);
 			}
 		}
 		
 		
-		//System.out.println("Twist algs: "+twistAlgs);
-		//System.out.println("All in uAgoodTwists: ");
-		//for (String s : uAgoodTwists) {
-			//System.out.print(s+", ");
-		//}
-		//System.out.println("");
+		System.out.println("Twist algs: "+twistAlgs);
+		System.out.println("All in uAgoodTwists: ");
+		for (String s : uAgoodTwists) {
+			System.out.print(s+", ");
+		}
+		System.out.println("");
 		
-		//System.out.println("Twist algs: "+twistAlgs);
-		//System.out.println("All in twist algs stripped: ");
-		//for (String s : finalDuos) {
-		//	System.out.print(s+", ");
-		//}
-		//System.out.println("");
+		System.out.println("Twist algs: "+twistAlgs);
+		System.out.println("All in twist algs stripped: ");
+		for (String s : finalDuos) {
+			System.out.print(s+", ");
+		}
+		System.out.println("");
 		
 		for (String s : finalDuos) {
 			int one = Character.getNumericValue(s.toCharArray()[0]);
@@ -724,7 +726,7 @@ Parity, one flipped one solved incorrect loc = -3 +'
 				visit = false;
 				for (int i : visited) {
 					if (i == one || i == two) {
-						//System.out.println("Visited. Skipping");
+						System.out.println("Visited. Skipping");
 						visit = true;
 					}
 				}
