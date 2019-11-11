@@ -363,11 +363,11 @@ public class NetManager {
 			if (spec == 0) {
 				uButtons.get(2).setGraphic(redIVS);
 				uButtons.get(3).setGraphic(orangeIV);
-				uFace = "Orange";
+				uFace = "Red";
 			} else {
 				uButtons.get(3).setGraphic(orangeIVS);
 				uButtons.get(2).setGraphic(redIV);
-				uFace = "Red";
+				uFace = "Orange";
 			} 
 			uButtons.get(0).setGraphic(whiteIV);
 			uButtons.get(1).setGraphic(yellowIV);
