@@ -35,7 +35,7 @@ public class ScrambleManager {
 		m = new MoveManager(p, cubieArray, cubieG);
 	}
 	
-	public ArrayList<ImageView> submitted(String scramble, ArrayList<ImageView> cubieArray, Group cubieG) {
+	public ArrayList<ImageView> submitted(String scramble, ArrayList<ImageView> cubieArray, Group cubieG, boolean draw, boolean mode) {
 		String wideMove = "";
 		
 		ArrayList<String> moves = new ArrayList<String>();
@@ -53,11 +53,11 @@ public class ScrambleManager {
 						if (wideMove == "") {
 							wideMove+= c;
 							wideMove+= "w";
-							System.out.println("Character: "+c);
+							//System.out.println("Character: "+c);
 							try {
 								if (scramChars[i+2] == '\'') {
 									wideMove+= "'";
-									System.out.println("Character: "+c);
+									//System.out.println("Character: "+c);
 									
 									switch (c) {
 									case 'U': moves.add('D'+"p"); break;
@@ -126,7 +126,7 @@ public class ScrambleManager {
 								}
 							}
 
-							System.out.println("First Wide Move: "+wideMove+", Second Wide Move: "+secondMove+", Converted Second Wide Move: "+convertedMove);
+							//System.out.println("First Wide Move: "+wideMove+", Second Wide Move: "+secondMove+", Converted Second Wide Move: "+convertedMove);
 							
 							if (convertedMove.length() == 2) {
 								switch (convertedMove.toCharArray()[0]) {
@@ -164,17 +164,17 @@ public class ScrambleManager {
 						moves.add(Character.toString(c));
 					}
 				} catch (Exception e) {
-					System.out.println("FUCK");
+					//System.out.println("FUCK");
 					moves.add(Character.toString(c));
 				}
 			}
 		}	
 		
-		for (String move : moves) {
-			System.out.print(move);
-		}
-		
-		return m.applyMoves(moves);
+		//for (String move : moves) {
+			//System.out.print(move);
+		//}
+
+		return m.applyMoves(moves, draw, mode);
 	}
 	
 	MoveManager getMoveMan() {
