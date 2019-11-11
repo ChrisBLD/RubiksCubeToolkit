@@ -22,6 +22,8 @@ public abstract class InputParse {
 	}
 	
 	private static void cstimerHandler(String fullResults) {
+		timeList.clear();
+		scrambleList.clear();
 		String results[] = fullResults.split("\\r?\\n");
 		
 		int DNFcount = 0;
@@ -41,7 +43,7 @@ public abstract class InputParse {
 			
 			Matcher scramMatch = scramPat.matcher(result);
 			if (scramMatch.find()) {
-				System.out.println("Match: "+scramMatch.group(0));
+				//System.out.println("Match: "+scramMatch.group(0));
 				scrambleList.add(scramMatch.group(0));
 				flag = true;
 			}
@@ -50,7 +52,7 @@ public abstract class InputParse {
 				Matcher timeMatch = timePat.matcher(result);
 				if (timeMatch.find()) {
 					if (timeMatch.group(0).indexOf('N') == -1) {
-						System.out.println("Time: "+timeMatch.group(0));
+						//System.out.println("Time: "+timeMatch.group(0));
 						int colonInd = timeMatch.group(0).indexOf(':');
 						if (colonInd != -1) {
 							int mins = Integer.valueOf(timeMatch.group(0).substring(0, colonInd));
@@ -62,16 +64,16 @@ public abstract class InputParse {
 						}
 						timeList.add(timeDub);
 					} else {
-						System.out.println("DNF. Discarding");
+						//System.out.println("DNF. Discarding");
 					}
 				}
 			}
 		}
 
-		System.out.println("TOTAL GOOD SOLVES: "+timeList.size());
-		System.out.println("TOTAL DNFS: "+DNFcount);
+		//System.out.println("TOTAL GOOD SOLVES: "+timeList.size());
+		//System.out.println("TOTAL DNFS: "+DNFcount);
 		//System.out.println("TOTAL PARSED: "+resultsParsed.size()+DNFcount);
-		System.out.println("nAcc: "+nAcc);
+		//System.out.println("nAcc: "+nAcc);
 		
 		//return resultsParsed;
 	}
