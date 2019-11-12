@@ -212,10 +212,12 @@ public class MainRedesigned extends Application {
         		
         		GraphDisplay.process();
         		ArrayList<Label> barArray = GraphDisplay.getBarArray();
-        		for (Label l : barArray) {
-        			l.setLayoutX(400);
-        			l.setLayoutY(300);
-        			p.getChildren().add(l);
+        		int x = 200;
+        		for (Label label : barArray) {
+        			label.setLayoutX(x);
+        			label.setLayoutY(300);
+        			p.getChildren().add(label);
+        			x+= 40;
         		}
         		
         		
