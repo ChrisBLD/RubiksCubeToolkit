@@ -420,7 +420,7 @@ public class NetManager {
     
     private Group cubieInit(Pane g, Object value) {
     	
-    	System.out.println("Called with value "+value);
+    	//System.out.println("Called with value "+value);
     	colourSet.clear();
     	cubieArray.clear();
     	

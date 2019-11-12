@@ -171,7 +171,7 @@ public class Main extends Application {
         enterOrientation.setLayoutY(180);
         g.getChildren().add(enterOrientation);
         
-        System.out.println(orientationBox.getValue());
+        //System.out.println(orientationBox.getValue());
         enterOrientation.setOnAction(new EventHandler<ActionEvent>() {
         	@Override
         	public void handle(ActionEvent e) {
@@ -197,14 +197,14 @@ public class Main extends Application {
         g.getChildren().add(algCount);
         
         
-        System.out.println("CUBIEARRAY SIZE: "+cubieArray.size());
+        //System.out.println("CUBIEARRAY SIZE: "+cubieArray.size());
         
         cubieG = cubieInit(g,"White-Green");
         g.getChildren().add(cubieG);
         g.getChildren().add(iv1);
         
-        System.out.println("CUBIEARRAY SIZE: "+cubieArray.size());
-        System.out.println("CUBIEARRAY ELEMENT 1 IMG: "+cubieArray.get(0).getImage());
+        //System.out.println("CUBIEARRAY SIZE: "+cubieArray.size());
+        //System.out.println("CUBIEARRAY ELEMENT 1 IMG: "+cubieArray.get(0).getImage());
         
         Label parAvd = new Label("Parity Swap:");
         parAvd.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
@@ -310,12 +310,12 @@ public class Main extends Application {
 		
 		
 		
-		System.out.println("TEST CUBIE ARRAY: "+cubieArray.get(0).getImage());
+		//System.out.println("TEST CUBIE ARRAY: "+cubieArray.get(0).getImage());
 		cubieArray = sm.submitted("D B U R2 U' B2 R' U2 B2 U D2 L2 D' R2 L2 U R2 B2 D' F'");
-		System.out.println("TEST CUBIE ARRAY 2: "+cubieArray.get(0).getImage());
+		//System.out.println("TEST CUBIE ARRAY 2: "+cubieArray.get(0).getImage());
 		
 		cubieArray = sm.submitted(userTextField.getText()); 
-		System.out.println("TEST: "+cubieArray.get(0).getImage());
+		//System.out.println("TEST: "+cubieArray.get(0).getImage());
 		TargetCounter tm = new TargetCounter(sm, cubieArray);
 		int[] info = tm.getInfo();
 		
@@ -332,7 +332,7 @@ public class Main extends Application {
 			
 			targets += "'";
 		}
-		System.out.println("FORMAL NOTATION: "+targets);
+		//System.out.println("FORMAL NOTATION: "+targets);
 		int edgeAlgs = 0;
 		int cornerAlgs = 0;
 		if (info[0] % 2 == 0) {
@@ -371,7 +371,7 @@ public class Main extends Application {
 		}
 		
 		int twistAlgs = tm.twistCalculator(dtBox, otBox, cornerBufChoose);
-		System.out.println(twistAlgs);
+		//System.out.println(twistAlgs);
 
 		totalAlgs += flipAlgs + twistAlgs;
 		notation.setText("This scramble is: "+targets);
@@ -380,7 +380,7 @@ public class Main extends Application {
     
     private Group cubieInit(Group g, Object value) {
     	
-    	System.out.println("Called with value "+value);
+    	//System.out.println("Called with value "+value);
     	colourSet.clear();
     	cubieArray.clear();
     	

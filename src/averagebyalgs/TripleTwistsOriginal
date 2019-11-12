@@ -1,5 +1,5 @@
 if (ttBox.isSelected()){ //If user said they use triple twists but not double twists (unlikely, but possible)
-			System.out.println("HERE WITH DT ON !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+			//System.out.println("HERE WITH DT ON !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 			if (twistedCorners.size() < 2) { //If there's less than 2 twisted corners we can also ignore this
 				return twistAlgs;
 			} else if (!buffTwist) { //If buffer isn't twisted, we need to see if it will be at the end.
@@ -11,11 +11,11 @@ if (ttBox.isSelected()){ //If user said they use triple twists but not double tw
 				int buffInt = 0;
 					
 				if (cornerBuffer.getValue().equals("UBL")) {
-					System.out.println("UBL buffer found");
+					//System.out.println("UBL buffer found");
 					bufferAdjacency = cornerAdjacency[0];
 						
 				} else if (cornerBuffer.getValue().equals("UFR")) {
-					System.out.println("UFR buffer found");
+					//System.out.println("UFR buffer found");
 					bufferAdjacency = cornerAdjacency[2];
 				}
 					
@@ -25,21 +25,21 @@ if (ttBox.isSelected()){ //If user said they use triple twists but not double tw
 					} else if (!otBox.isSelected()){
 						return dtSelected(adjacents, cornerAdjacency, twistAlgs, new ArrayList<String>(), 0).getKey();
 					} else {
-						System.out.println("ALL THREE SELECTED SHIT");
+						//System.out.println("ALL THREE SELECTED SHIT");
 						return otdtBoth(adjacents, cornerAdjacency, cornerOpposites, twistAlgs);
 					}
 				} else {
 					boolean adjToBuff = false;
-					System.out.println("PossTrios NOT 0");
+					//System.out.println("PossTrios NOT 0");
 					ArrayList<String> goodTrios = new ArrayList<String>();
 					for (String s : possTrios) {
-						System.out.println("-------------------s: "+s);
+						//System.out.println("-------------------s: "+s);
 						int a = Character.getNumericValue(s.toCharArray()[0]);
 						int b = Character.getNumericValue(s.toCharArray()[2]);
-						System.out.println("-------------------a: "+a+", b: "+b);
+						//System.out.println("-------------------a: "+a+", b: "+b);
 						for (int i : bufferAdjacency) {
 							if (i == a || i == b) {
-								System.out.println("Bad duo adjacent to buffer. ");
+								//System.out.println("Bad duo adjacent to buffer. ");
 								adjToBuff = true;
 								goodTrios.add(""+a+b);
 							}
@@ -51,11 +51,11 @@ if (ttBox.isSelected()){ //If user said they use triple twists but not double tw
 					}
 					
 					if (!otBox.isSelected()) {
-						System.out.println("HERE WITHOUT DTBOX!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+						//System.out.println("HERE WITHOUT DTBOX!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 						ArrayList<String> uAgoodTwists = dtSelected(adjacents, cornerAdjacency, twistAlgs, goodTrios, 2).getValue();
-						System.out.println("////////////////////// Good Trios Size: "+goodTrios.size());
+						//System.out.println("////////////////////// Good Trios Size: "+goodTrios.size());
 						for (String s : uAgoodTwists) {
-							System.out.println("GOOD TWIST: "+s);
+							//System.out.println("GOOD TWIST: "+s);
 						}
 							
 						twistAlgs = minAlgDeducer(twistAlgs, goodTrios, uAgoodTwists);
@@ -77,14 +77,14 @@ if (ttBox.isSelected()){ //If user said they use triple twists but not double tw
 					
 			} else {
 					
-				System.out.println("tt selected, 2+ twists");
+				//System.out.println("tt selected, 2+ twists");
 				int[][] trios = {{}};
 				ArrayList<String> goodTrios = new ArrayList<String>();
 				
 				Pair<Integer, String> p = ttSelected(dtBox, otBox, cornerBuffer, twistAlgs, trios, goodTrios);
 				twistAlgs = p.getKey();
 				String trioSelected = p.getValue();
-				System.out.println("Trios twistAlgs: "+twistAlgs);
+				//System.out.println("Trios twistAlgs: "+twistAlgs);
 				if (trioSelected.equals("NONE")) {
 					
 				}
@@ -94,18 +94,18 @@ if (ttBox.isSelected()){ //If user said they use triple twists but not double tw
 					if (!otBox.isSelected()) {
 						return twistAlgs;
 					} else {
-						System.out.println("We have currently: "+twistAlgs+". Entering DTSelect.");
+						//System.out.println("We have currently: "+twistAlgs+". Entering DTSelect.");
 						return dtSelected(adjacents, cornerOpposites, twistAlgs, goodTrios, 0).getKey();
 					}
 				} else {
 					if (!otBox.isSelected()) {
-						System.out.println("Twist Algs going in: "+twistAlgs);
+						//System.out.println("Twist Algs going in: "+twistAlgs);
 						for (String s : goodTrios) {
-							System.out.print(s+",");
+							//System.out.print(s+",");
 						}
 						return dtSelected(adjacents, cornerAdjacency, twistAlgs, goodTrios, 0).getKey();
 					} else {
-						System.out.println("TRIO SELECTED: "+trioSelected);
+						//System.out.println("TRIO SELECTED: "+trioSelected);
 						twistedCorners.remove(Integer.valueOf(trioSelected.toCharArray()[0]));
 						twistedCorners.remove(Integer.valueOf(trioSelected.toCharArray()[1]));
 						return otdtBoth(adjacents, cornerAdjacency, cornerOpposites, twistAlgs);
@@ -132,7 +132,7 @@ private Pair<Integer, String> ttSelected(CheckBox dtBox, CheckBox otBox, ComboBo
 		
 		for (int[] trio : trios) {
 			if (twistedCorners.contains(trio[0]) && twistedCorners.contains(trio[1])) {
-				System.out.println("Trio found. a: "+trio[0]+", b: "+trio[1]);
+				//System.out.println("Trio found. a: "+trio[0]+", b: "+trio[1]);
 				triosPresent.add(""+trio[0]+trio[1]);
 			}
 		}
@@ -145,7 +145,7 @@ private Pair<Integer, String> ttSelected(CheckBox dtBox, CheckBox otBox, ComboBo
 			int b = Character.getNumericValue(c[1]);
 			if (cornerOrientations[a-1] == cornerOrientations[b-1]) {
 				if (cornerOrientations[a-1] == buffOrient) {
-					System.out.println("Good trio twist.");
+					//System.out.println("Good trio twist.");
 					if (dtBox.isSelected()) {
 						goodTrios.add(trio);
 					} else if (otBox.isSelected()) {
@@ -157,16 +157,16 @@ private Pair<Integer, String> ttSelected(CheckBox dtBox, CheckBox otBox, ComboBo
 						break;
 					}							
 				} else {
-					System.out.println("bad trio twist >:(");
+					//System.out.println("bad trio twist >:(");
 				}
 			} else {
-				System.out.println("bad trio twist >:(");
+				//System.out.println("bad trio twist >:(");
 			} 
 		}
 		
-		System.out.print("GoodTrios: ");
+		//System.out.print("GoodTrios: ");
 		for (String s: goodTrios) {
-			System.out.print(s);
+			//System.out.print(s);
 		}
 		if (goodTrios.size() != 0) {
 			twistAlgs--;
@@ -184,14 +184,14 @@ INSIDE DTSELECTED
 		if (goodTrios.size() == 0) {
 			
 			for (int i : twistedCorners) {
-				System.out.println("IN TWISTED CORNERS: "+i);
+				//System.out.println("IN TWISTED CORNERS: "+i);
 			}
 			for (String x : uAgoodTwists) {
-				System.out.println("IN GOOD TWISTED CORNERS: "+x);
+				//System.out.println("IN GOOD TWISTED CORNERS: "+x);
 				int a = Character.getNumericValue(x.toCharArray()[0]);
 				int b = Character.getNumericValue(x.toCharArray()[2]);
 				if (!(visited.contains(a)) && !(visited.contains(b))) {
-					System.out.println("TWIST ALG DEDUCTED.");
+					//System.out.println("TWIST ALG DEDUCTED.");
 					twistAlgs--;
 					visited.add(a);
 					visited.add(b);
@@ -212,7 +212,7 @@ INSIDE DTSELECTED
 ACCESSORY FUNCTIONS
 
 	private int minAlgDeducer(int twistAlgs, ArrayList<String> goodTrios, ArrayList<String> uAgoodTwists) {
-		System.out.println("We here: "+twistAlgs);
+		//System.out.println("We here: "+twistAlgs);
 		if (uAgoodTwists.size() == 0) {
 			return twistAlgs;
 		} else {
@@ -220,14 +220,14 @@ ACCESSORY FUNCTIONS
 			int duoCount = 0;
 			int maxDuo = 0;
 			for (String s : goodTrios) {
-				System.out.println("This is a good trio: "+s);
+				//System.out.println("This is a good trio: "+s);
 				goodDuos = duoCounter(uAgoodTwists, s);
 				if (goodDuos.size() < 2) {
 					duoCount = goodDuos.size();
 				} else {
 					duoCount = crossoverStrip(goodDuos);
 				}
-				System.out.println("It has "+duoCount+" duos.");
+				//System.out.println("It has "+duoCount+" duos.");
 				if (duoCount > maxDuo) {
 					maxDuo = duoCount;
 				}
@@ -253,7 +253,7 @@ ACCESSORY FUNCTIONS
 				visit = false;
 				for (int i : visited) {
 					if (i == one || i == two) {
-						System.out.println("Visited. Skipping");
+						//System.out.println("Visited. Skipping");
 						visit = true;
 					}
 				}
@@ -272,7 +272,7 @@ ACCESSORY FUNCTIONS
 		for (String a : uAgoodTwists) {
 			char one = a.toCharArray()[0];
 			char two = a.toCharArray()[2];
-			System.out.println("CURRENT A: "+a+", CURRENT S: "+s);
+			//System.out.println("CURRENT A: "+a+", CURRENT S: "+s);
 			if (s.toCharArray()[0] != one && s.toCharArray()[0] != two) {
 				if (s.toCharArray()[1] != one && s.toCharArray()[1] != two) {
 					goodDuos.add(a);
@@ -294,10 +294,10 @@ ACCESSORY FUNCTIONS
 			if (twistedCornersLeft.size() < 2) {
 				return twistAlgs;
 			} else { 									 //If we still have two twists, then we need to remove the twists we've dealt with from twistedCorners.
-				System.out.println("Entered two+ left ################################# Twist Algs: "+twistAlgs);
+				//System.out.println("Entered two+ left ################################# Twist Algs: "+twistAlgs);
 				twistedCorners.clear(); 				 //This is done by grabbing a list of remaining twists from the dtSelected method, and then overwriting
 				for (String s : twistedCornersLeft) {    //the main list of twistedCorners with it, before running OT with what's left
-					System.out.println("s in twistedCornersLeft: "+s); //U' R R D' R' D R D' R' U R D R' D' R D R' U' R' U R D' L' D L D' L' D R' D' L D L' D' L D 
+					//System.out.println("s in twistedCornersLeft: "+s); //U' R R D' R' D R D' R' U R D R' D' R D R' U' R' U R D' L' D L D' L' D R' D' L D L' D' L D 
 					twistedCorners.add(Integer.valueOf(s)); 
 				}
 				return dtSelected(new ArrayList<String>(), cornerOpposites, twistAlgs, new ArrayList<String>(), 0);

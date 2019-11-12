@@ -13,15 +13,18 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 
-public class StatisticsBoard {
+public abstract class StatisticsBoard {
 	
-	private ArrayList<Double> algCountByNum = new ArrayList<Double>();
-
+	private static ArrayList<Double> algCountByNum = new ArrayList<Double>();
+	private static ArrayList<Integer> algList = new ArrayList<Integer>();
+	private static ArrayList<Double> timeList;
+	private static ArrayList<String> scrambleList;
 	
-	public ArrayList<Integer> processResults(ArrayList<Double> timeList, ArrayList<String> scrambleList, ArrayList<ImageView> cubieArray, Group cubieG, Pane p) {
+	public static ArrayList<Integer> processResults(ArrayList<Double> tList, ArrayList<String> sList, ArrayList<ImageView> cubieArray, Group cubieG, Pane p) {
 		
-		ArrayList<Integer> algList = new ArrayList<Integer>();
-
+		algList.clear();
+		timeList = tList;
+		scrambleList = sList;
 		ScrambleManager sm = new ScrambleManager(p, cubieArray, cubieG);
 		String fastScram = "";
 		Double fastTime = 999999.999;
@@ -50,7 +53,7 @@ public class StatisticsBoard {
 		
 		//NOTE: Net shows fastest scramble. Add labels that let the user knows this as well as showing their result next to it!
 		
-		System.out.println("Fastest Scramble: "+fastScram+", Time: "+fastTime);
+		//System.out.println("Fastest Scramble: "+fastScram+", Time: "+fastTime);
 		cubieArray = sm.submitted(fastScram, cubieArray, cubieG, true);
 		
 		sm = null;
@@ -59,7 +62,7 @@ public class StatisticsBoard {
 		return algList;
 	}
 
-	private int countAlgs(TargetCounter tm) {
+	private static int countAlgs(TargetCounter tm) {
 		boolean paritySwap = MainRedesigned.paritySwap;
 		boolean quadFlip = MainRedesigned.quadFlip;
 		boolean dt = MainRedesigned.dt;
@@ -128,7 +131,7 @@ public class StatisticsBoard {
 		return totalAlgs;
 	}
 
-	public void sort(ArrayList<Double> timeList, ArrayList<Integer> algList, ArrayList<String> scrambleList) {
+	public static void sort(ArrayList<Double> timeList, ArrayList<Integer> algList, ArrayList<String> scrambleList) {
 		for (int i = 0; i < 9; i++) {
 			algCountByNum.add((double)0);
 		}
@@ -144,9 +147,9 @@ public class StatisticsBoard {
 				case 13: algCountByNum.set(7, algCountByNum.get(7)+1); break;
 				default: algCountByNum.set(8, algCountByNum.get(8)+1); break;
 			}
-			System.out.print(", "+timeList.get(z));
+			//System.out.print(", "+timeList.get(z));
 		}
-		System.out.println("");
+		//System.out.println("");
 		
 		double totalResults = timeList.size();
 		
@@ -186,9 +189,9 @@ public class StatisticsBoard {
 			}
 		}
 		
-		for (int a = 0; a < timeList.size(); a++) {
-			System.out.println("Time: "+timeList.get(a)+", Alg Count: "+algList.get(a)+", Scramble: "+scrambleList.get(a));
-		}
+		//for (int a = 0; a < timeList.size(); a++) {
+		//	//System.out.println("Time: "+timeList.get(a)+", Alg Count: "+algList.get(a)+", Scramble: "+scrambleList.get(a));
+		//}
 		
 		System.out.println("Your mean time on six alg scrambles was: "+getMean(sixAlgers));
 		System.out.println("Your mean time on seven alg scrambles was: "+getMean(sevenAlgers));
@@ -202,7 +205,7 @@ public class StatisticsBoard {
 	}
 	
 	
-	private double getMean(ArrayList<Double> times) {
+	private static double getMean(ArrayList<Double> times) {
 		if (times.size() == 0) {
 			return 0;
 		}
@@ -215,11 +218,19 @@ public class StatisticsBoard {
 		return sum;
 	}
 	
-	public static double round(double value, int places) {
+	private static double round(double value, int places) {
 	    if (places < 0) throw new IllegalArgumentException();
 
 	    BigDecimal bd = BigDecimal.valueOf(value);
 	    bd = bd.setScale(places, RoundingMode.HALF_UP);
 	    return bd.doubleValue();
+	}
+	
+	public static ArrayList<Integer> getAlgList() {
+		return algList;
+	}
+	
+	public static ArrayList<Double> getAlgCountByNum() {
+		return algCountByNum;
 	}
 }

@@ -18,7 +18,7 @@ public class TimerFix {
 		Matcher m = pattern.matcher(in);
 		
 		while (m.find()) {
-			System.out.println("s");
+			//System.out.println("s");
 			solves.add(m.group());
 		}
 		return solves;
@@ -32,14 +32,14 @@ public class TimerFix {
 			out += solves.get(i)+", ";
 		}
 		
-		System.out.println(out);
+		//System.out.println(out);
 			
 	}
 
 	public static void main(String[] args) {
 		Scanner in = new Scanner(System.in);
 		
-		System.out.println("Enter time list:");
+		//System.out.println("Enter time list:");
 		String inp = in.next();
 		
 		

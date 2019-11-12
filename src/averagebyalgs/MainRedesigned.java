@@ -176,10 +176,17 @@ public class MainRedesigned extends Application {
         });
         p.getChildren().add(settings);
         
-        System.out.println("CUBIEARRAY SIZE: "+cubieArray.size());
+        //System.out.println("CUBIEARRAY SIZE: "+cubieArray.size());
         
         NetManager nm = new NetManager();
         p = nm.init(p, cubieArray, cubieG);
+        
+        Label loading = new Label("Processing");
+        loading.setTextFill(Color.ANTIQUEWHITE);
+        loading.setLayoutX(350);
+        loading.setLayoutY(100);
+        p.getChildren().add(loading);
+        loading.setVisible(false);
         
         Button go = new Button("");
         go.setMaxHeight(100);
@@ -193,12 +200,31 @@ public class MainRedesigned extends Application {
         	@Override
         	public void handle(ActionEvent arg0) {
         		
-        		Runnable r = new AlgCalculator(userTextField, timeList, scrambleList, algList, nm, p);
-        		new Thread(r).start();
+        		loading.setVisible(true);
+        		Runnable r = new AlgCalculator(userTextField, timeList, scrambleList, algList, nm, p, loading);
+        		Thread t1 = new Thread(r);
+        		t1.run();
+        		try {
+					t1.join();
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+        		
+        		GraphDisplay.process();
+        		ArrayList<Label> barArray = GraphDisplay.getBarArray();
+        		for (Label l : barArray) {
+        			l.setLayoutX(400);
+        			l.setLayoutY(300);
+        			p.getChildren().add(l);
+        		}
+        		
+        		
         		
         	}
         });
         p.getChildren().add(go);
+        
+        
         
         
 
