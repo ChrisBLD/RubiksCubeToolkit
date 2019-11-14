@@ -28,50 +28,73 @@ public abstract class GraphDisplay {
 		barArray = new ArrayList<Label>();
 		percentArray = new ArrayList<Double>();
 		
-		int totalTimes = algList.size();
-		System.out.println(algCountByNum.get(3));
+		double totalTimes = algList.size();
+		System.out.println(algCountByNum.get(3)+" divided by "+totalTimes+" equals" +(algCountByNum.get(3) / totalTimes)*100d);
 		
 		
-		percentArray.add(round(((algCountByNum.get(0)) / totalTimes)*100, 0));
-		percentArray.add(round(((algCountByNum.get(1)) / totalTimes)*100, 0));
-		percentArray.add(round(((algCountByNum.get(2)) / totalTimes)*100, 0));
-		percentArray.add(round(((algCountByNum.get(4)) / totalTimes)*100, 0));
-		percentArray.add(round(((algCountByNum.get(5)) / totalTimes)*100, 0));
-		percentArray.add(round(((algCountByNum.get(6)) / totalTimes)*100, 0));
-		percentArray.add(round(((algCountByNum.get(7)) / totalTimes)*100, 0));
-		percentArray.add(round(((algCountByNum.get(8)) / totalTimes)*100, 0));
+		percentArray.add(((algCountByNum.get(0)) / totalTimes)*100D);
+		percentArray.add(((algCountByNum.get(1)) / totalTimes)*100D);
+		percentArray.add(((algCountByNum.get(2)) / totalTimes)*100D);
+		percentArray.add(((algCountByNum.get(3)) / totalTimes)*100D);
+		percentArray.add(((algCountByNum.get(4)) / totalTimes)*100D);
+		percentArray.add(((algCountByNum.get(5)) / totalTimes)*100D);
+		percentArray.add(((algCountByNum.get(6)) / totalTimes)*100D);
+		percentArray.add(((algCountByNum.get(7)) / totalTimes)*100D);
+		percentArray.add(((algCountByNum.get(8)) / totalTimes)*100D);
 		
-		System.out.println("\n6: "+sixAlgPercent+"\n7: "+sevenAlgPercent+"\n8: "+eightAlgPercent+"\n9: "+nineAlgPercent+"\n10: "+tenAlgPercent+
-				"\n11: "+elevenAlgPercent+"\n12: "+twelveAlgPercent+"\n13: "+thirteenAlgPercent);
 		
+		for (int i = 0; i < 8; i++) {
+			double d = percentArray.get(i);
+			double e = roundToFives(d);
+			percentArray.set(i, e);
+		}
+				
 		initIvs();
 		
 		generateBarArray();
 	}
 	
 	private static void generateBarArray() {
-		barSix = barSeven = barEight = barNine = barTen = barEleven = barTwelve = barThirteen = new Label();
-		barArray.add(barSix); barArray.add(barSeven); barArray.add(barEight); barArray.add(barSeven); barArray.add(barSeven);
-		barArray.add(barSeven); barArray.add(barSeven); barArray.add(barSeven); 
+		barSix = new Label(); barSeven = new Label(); barEight = new Label(); barNine = new Label(); barTen = new Label();
+		barEleven = new Label(); barTwelve = new Label(); barThirteen = new Label();
+
 		
-		for (int i = 0; i < 8; i++) {
-			updateBar(barArray.get(i), percentArray.get(i));
-		}		
+		barSix = updateBar(barSix, percentArray.get(0));
+		barSeven = updateBar(barSeven, percentArray.get(1));
+		barEight = updateBar(barEight, percentArray.get(2));
+		barNine = updateBar(barNine, percentArray.get(3));
+		barTen = updateBar(barTen, percentArray.get(4));
+		barEleven = updateBar(barEleven, percentArray.get(5));
+		barTwelve = updateBar(barTwelve, percentArray.get(6));
+		barThirteen = updateBar(barThirteen, percentArray.get(7));
+
+		barArray.add(barSix); barArray.add(barSeven); barArray.add(barEight); barArray.add(barNine); barArray.add(barTen);
+		barArray.add(barEleven); barArray.add(barTwelve); barArray.add(barThirteen); 
 	}
 	
-	private static double round(double value, int places) {
-	    if (places < 0) throw new IllegalArgumentException();
-
-	    BigDecimal bd = BigDecimal.valueOf(value);
-	    bd = bd.setScale(places, RoundingMode.HALF_UP);
-	    return bd.doubleValue();
+	private static int roundToFives(double d) {
+	    
+		float inp = (float) d;
+		float rem = inp%5.0F;
+		int fives = (int) (inp-rem);
+		fives /= 5;
+		
+		System.out.println("double "+d+" has "+fives+" many fives");
+		
+		int plus;
+		if (rem >= 2.5 ) {
+			plus = 5;
+		} else {
+			plus = 0;
+		}
+		
+		return (fives*5)+plus;
 	}
 	
 	private static Label updateBar(Label bar, Double percent) {
 		
-		int percInt = percent.intValue();
-		percInt = 5*(Math.round(percInt/5));
-		System.out.println(percInt);
+		int percInt = (int) Math.round(percent);
+		
 		switch (percInt) {
 			case 0: bar.setGraphic(ivZero); break;
 			case 5: bar.setGraphic(ivFive); break;

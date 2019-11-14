@@ -132,6 +132,8 @@ public abstract class StatisticsBoard {
 	}
 
 	public static void sort(ArrayList<Double> timeList, ArrayList<Integer> algList, ArrayList<String> scrambleList) {
+		
+		algCountByNum.clear();
 		for (int i = 0; i < 9; i++) {
 			algCountByNum.add((double)0);
 		}
