@@ -29,7 +29,7 @@ public abstract class GraphDisplay {
 		percentArray = new ArrayList<Double>();
 		
 		double totalTimes = algList.size();
-		System.out.println(algCountByNum.get(3)+" divided by "+totalTimes+" equals" +(algCountByNum.get(3) / totalTimes)*100d);
+		//System.out.println(algCountByNum.get(3)+" divided by "+totalTimes+" equals" +(algCountByNum.get(3) / totalTimes)*100d);
 		
 		
 		percentArray.add(((algCountByNum.get(0)) / totalTimes)*100D);
@@ -79,7 +79,7 @@ public abstract class GraphDisplay {
 		int fives = (int) (inp-rem);
 		fives /= 5;
 		
-		System.out.println("double "+d+" has "+fives+" many fives");
+		//System.out.println("double "+d+" has "+fives+" many fives");
 		
 		int plus;
 		if (rem >= 2.5 ) {

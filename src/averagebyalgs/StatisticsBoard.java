@@ -19,15 +19,24 @@ public abstract class StatisticsBoard {
 	private static ArrayList<Integer> algList = new ArrayList<Integer>();
 	private static ArrayList<Double> timeList;
 	private static ArrayList<String> scrambleList;
+	private static ArrayList<Double> sixAlgers, sevenAlgers, eightAlgers, nineAlgers, tenAlgers, elevenAlgers, 
+									 twelveAlgers, thirteenAlgers;
+	private static ArrayList<Double> bestTimeArray = new ArrayList<Double>();
+	private static ArrayList<String> bestScrambleArray = new ArrayList<String>();
+	private static ArrayList<Double> meanArray = new ArrayList<Double>();
+	private static String fastScram;
+	private static Double fastTime;
+	private static int totalResults;
+	
 	
 	public static ArrayList<Integer> processResults(ArrayList<Double> tList, ArrayList<String> sList, ArrayList<ImageView> cubieArray, Group cubieG, Pane p) {
-		
+
 		algList.clear();
 		timeList = tList;
 		scrambleList = sList;
 		ScrambleManager sm = new ScrambleManager(p, cubieArray, cubieG);
-		String fastScram = "";
-		Double fastTime = 999999.999;
+		fastScram = "";
+		fastTime = 999999.999;
 		TargetCounter tm;
 		
 		
@@ -53,7 +62,7 @@ public abstract class StatisticsBoard {
 		
 		//NOTE: Net shows fastest scramble. Add labels that let the user knows this as well as showing their result next to it!
 		
-		//System.out.println("Fastest Scramble: "+fastScram+", Time: "+fastTime);
+		System.out.println("Fastest Scramble: "+fastScram+", Time: "+fastTime);
 		cubieArray = sm.submitted(fastScram, cubieArray, cubieG, true);
 		
 		sm = null;
@@ -153,30 +162,20 @@ public abstract class StatisticsBoard {
 		}
 		//System.out.println("");
 		
-		double totalResults = timeList.size();
+		totalResults = timeList.size();
 		
 		if (totalResults < 1) {
 			return;
 		}
-		
-		System.out.println("This session had "+totalResults+" total successess");
-		System.out.println("There are "+algCountByNum.get(0).intValue()+" six algers in this dataset, which is "+round(((algCountByNum.get(0)/totalResults)*100), 2)+"% of all scrambles.");
-		System.out.println("There are "+algCountByNum.get(1).intValue()+" seven algers in this dataset, which is "+round(((algCountByNum.get(1)/totalResults)*100), 2)+"% of all scrambles.");
-		System.out.println("There are "+algCountByNum.get(2).intValue()+" eight algers in this dataset, which is "+round(((algCountByNum.get(2)/totalResults)*100), 2)+"% of all scrambles.");
-		System.out.println("There are "+algCountByNum.get(3).intValue()+" nine algers in this dataset, which is "+round(((algCountByNum.get(3)/totalResults)*100), 2)+"% of all scrambles.");
-		System.out.println("There are "+algCountByNum.get(4).intValue()+" ten algers in this dataset, which is "+round(((algCountByNum.get(4)/totalResults)*100), 2)+"% of all scrambles.");;
-		System.out.println("There are "+algCountByNum.get(5).intValue()+" eleven algers in this dataset, which is "+round(((algCountByNum.get(5)/totalResults)*100), 2)+"% of all scrambles.");
-		System.out.println("There are "+algCountByNum.get(6).intValue()+" twelve algers in this dataset, which is "+round(((algCountByNum.get(6)/totalResults)*100), 2)+"% of all scrambles.");
-		System.out.println("There are "+algCountByNum.get(7).intValue()+" thirteen algers in this dataset, which is "+round(((algCountByNum.get(7)/totalResults)*100), 2)+"% of all scrambles.");
-		
-		ArrayList<Double> sixAlgers = new ArrayList<Double>();
-		ArrayList<Double> sevenAlgers = new ArrayList<Double>();
-		ArrayList<Double> eightAlgers = new ArrayList<Double>();
-		ArrayList<Double> nineAlgers = new ArrayList<Double>();
-		ArrayList<Double> tenAlgers = new ArrayList<Double>();
-		ArrayList<Double> elevenAlgers = new ArrayList<Double>();
-		ArrayList<Double> twelveAlgers = new ArrayList<Double>();
-		ArrayList<Double> thirteenAlgers = new ArrayList<Double>();
+	
+		sixAlgers = new ArrayList<Double>();
+		sevenAlgers = new ArrayList<Double>();
+		eightAlgers = new ArrayList<Double>();
+		nineAlgers = new ArrayList<Double>();
+		tenAlgers = new ArrayList<Double>();
+		elevenAlgers = new ArrayList<Double>();
+		twelveAlgers = new ArrayList<Double>();
+		thirteenAlgers = new ArrayList<Double>();
 		
 		for (int i = 0; i < timeList.size(); i++) {
 			switch (algList.get(i)) {
@@ -195,14 +194,15 @@ public abstract class StatisticsBoard {
 		//	//System.out.println("Time: "+timeList.get(a)+", Alg Count: "+algList.get(a)+", Scramble: "+scrambleList.get(a));
 		//}
 		
-		System.out.println("Your mean time on six alg scrambles was: "+getMean(sixAlgers));
-		System.out.println("Your mean time on seven alg scrambles was: "+getMean(sevenAlgers));
-		System.out.println("Your mean time on eight alg scrambles was: "+getMean(eightAlgers));
-		System.out.println("Your mean time on nine alg scrambles was: "+getMean(nineAlgers));
-		System.out.println("Your mean time on ten alg scrambles was: "+getMean(tenAlgers));
-		System.out.println("Your mean time on eleven alg scrambles was: "+getMean(elevenAlgers));
-		System.out.println("Your mean time on twelve alg scrambles was: "+getMean(twelveAlgers));
-		System.out.println("Your mean time on thirteen alg scrambles was: "+getMean(thirteenAlgers));
+		meanArray.clear();
+		meanArray.add(getMean(sixAlgers));
+		meanArray.add(getMean(sevenAlgers));
+		meanArray.add(getMean(eightAlgers));
+		meanArray.add(getMean(nineAlgers));
+		meanArray.add(getMean(tenAlgers));
+		meanArray.add(getMean(elevenAlgers));
+		meanArray.add(getMean(twelveAlgers));
+		meanArray.add(getMean(thirteenAlgers));
 		
 	}
 	
@@ -221,18 +221,85 @@ public abstract class StatisticsBoard {
 	}
 	
 	private static double round(double value, int places) {
-	    if (places < 0) throw new IllegalArgumentException();
+	    try {
+			if (places < 0) throw new IllegalArgumentException();
+			
+		    BigDecimal bd = BigDecimal.valueOf(value);
+		    bd = bd.setScale(places, RoundingMode.HALF_UP);
+		    return bd.doubleValue();
+	    } catch (Exception e) {
+	    	System.out.println("Got unroundable value. Returning value given");
+	    	return value;
+	    }
+	}
 
-	    BigDecimal bd = BigDecimal.valueOf(value);
-	    bd = bd.setScale(places, RoundingMode.HALF_UP);
-	    return bd.doubleValue();
+	public static void calculate() {
+		
+		bestTimeArray.clear();
+		bestScrambleArray.clear();
+		for (int i = 0; i < 8; i++) {
+			bestTimeArray.add(99999.999);
+			bestScrambleArray.add("");
+		}
+		
+		
+
+		for (double sixRes : sixAlgers) {if (Double.compare(sixRes, bestTimeArray.get(0)) < 0) {bestTimeArray.set(0, sixRes);}};
+		for (double sevenRes : sevenAlgers) {if (Double.compare(sevenRes, bestTimeArray.get(1)) < 0) {bestTimeArray.set(1, sevenRes);}};
+		for (double eightRes : eightAlgers) {if (Double.compare(eightRes, bestTimeArray.get(2)) < 0) {bestTimeArray.set(2, eightRes);}};
+		for (double nineRes : nineAlgers) {if (Double.compare(nineRes, bestTimeArray.get(3)) < 0) {bestTimeArray.set(3, nineRes);}};
+		for (double tenRes : tenAlgers) {if (Double.compare(tenRes, bestTimeArray.get(4)) < 0) {bestTimeArray.set(4, tenRes);}};
+		for (double elevenRes : elevenAlgers) {if (Double.compare(elevenRes, bestTimeArray.get(5)) < 0) {bestTimeArray.set(5, elevenRes);}};
+		for (double twelveRes : twelveAlgers) {if (Double.compare(twelveRes, bestTimeArray.get(6)) < 0) {bestTimeArray.set(6, twelveRes);}};
+		for (double thirteenRes : thirteenAlgers) {if (Double.compare(thirteenRes, bestTimeArray.get(7)) < 0) {bestTimeArray.set(7, thirteenRes);}};
+		
+		
+		for (int a = 0; a < 8; a++) {
+			try {
+				bestScrambleArray.set(a, scrambleList.get(timeList.indexOf(bestTimeArray.get(a))));
+			} catch (IndexOutOfBoundsException ioobe) {
+				System.out.println("No results with "+(a+6)+" algs.");
+			}
+		}
+ 	}
+
+	public static void display() {
+		
+		
+		System.out.println("This session had "+totalResults+" total successess");
+		System.out.println("There are "+algCountByNum.get(0).intValue()+" six algers in this dataset, which is "+round(((algCountByNum.get(0)/totalResults)*100), 2)+"% of all scrambles.");
+		System.out.println("There are "+algCountByNum.get(1).intValue()+" seven algers in this dataset, which is "+round(((algCountByNum.get(1)/totalResults)*100), 2)+"% of all scrambles.");
+		System.out.println("There are "+algCountByNum.get(2).intValue()+" eight algers in this dataset, which is "+round(((algCountByNum.get(2)/totalResults)*100), 2)+"% of all scrambles.");
+		System.out.println("There are "+algCountByNum.get(3).intValue()+" nine algers in this dataset, which is "+round(((algCountByNum.get(3)/totalResults)*100), 2)+"% of all scrambles.");
+		System.out.println("There are "+algCountByNum.get(4).intValue()+" ten algers in this dataset, which is "+round(((algCountByNum.get(4)/totalResults)*100), 2)+"% of all scrambles.");;
+		System.out.println("There are "+algCountByNum.get(5).intValue()+" eleven algers in this dataset, which is "+round(((algCountByNum.get(5)/totalResults)*100), 2)+"% of all scrambles.");
+		System.out.println("There are "+algCountByNum.get(6).intValue()+" twelve algers in this dataset, which is "+round(((algCountByNum.get(6)/totalResults)*100), 2)+"% of all scrambles.");
+		System.out.println("There are "+algCountByNum.get(7).intValue()+" thirteen algers in this dataset, which is "+round(((algCountByNum.get(7)/totalResults)*100), 2)+"% of all scrambles.");
+		
+		System.out.println("Your mean time on six alg scrambles was "+meanArray.get(0)+", with a best of "+bestTimeArray.get(0)+" on this scramble: "+bestScrambleArray.get(0));
+		System.out.println("Your mean time on seven alg scrambles was "+meanArray.get(1)+", with a best of "+bestTimeArray.get(1)+" on this scramble: "+bestScrambleArray.get(1));
+		System.out.println("Your mean time on eight alg scrambles was "+meanArray.get(2)+", with a best of "+bestTimeArray.get(2)+" on this scramble: "+bestScrambleArray.get(2));
+		System.out.println("Your mean time on nine alg scrambles was "+meanArray.get(3)+", with a best of "+bestTimeArray.get(3)+" on this scramble: "+bestScrambleArray.get(3));
+		System.out.println("Your mean time on ten alg scrambles was "+meanArray.get(4)+", with a best of "+bestTimeArray.get(4)+" on this scramble: "+bestScrambleArray.get(4));
+		System.out.println("Your mean time on eleven alg scrambles was "+meanArray.get(5)+", with a best of "+bestTimeArray.get(5)+" on this scramble: "+bestScrambleArray.get(5));
+		System.out.println("Your mean time on twelve alg scrambles was "+meanArray.get(6)+", with a best of "+bestTimeArray.get(6)+" on this scramble: "+bestScrambleArray.get(6));
+		System.out.println("Your mean time on thirteen alg scrambles was "+meanArray.get(7)+", with a best of "+bestTimeArray.get(7)+" on this scramble: "+bestScrambleArray.get(7));
+
+		System.out.println("");
+		System.out.println("");
+		System.out.println("");
+		System.out.println("Seven Alg scrambles: ");
+		for (int ai = 0; ai < algList.size(); ai++) {
+			if (algList.get(ai) == 7) {
+				System.out.println("Time: "+timeList.get(ai)+", Scramble: "+scrambleList.get(ai));
+			}
+		}
+	}
+	public static ArrayList<Double> getAlgCountByNum() {
+		return algCountByNum;
 	}
 	
 	public static ArrayList<Integer> getAlgList() {
 		return algList;
-	}
-	
-	public static ArrayList<Double> getAlgCountByNum() {
-		return algCountByNum;
 	}
 }

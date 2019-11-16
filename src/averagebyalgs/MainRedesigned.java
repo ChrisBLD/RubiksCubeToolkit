@@ -229,6 +229,9 @@ public class MainRedesigned extends Application {
         		p.getChildren().add(barArray.get(6));
         		p.getChildren().add(barArray.get(7));
         		
+        		StatisticsBoard.calculate();
+        		StatisticsBoard.display();
+        		
         		
         	}
         });
