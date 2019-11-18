@@ -26,6 +26,13 @@ import javafx.stage.Stage;
  * @author JosePereda
  */
 public class RubiksCube extends Application {
+	
+	
+	
+	
+	
+	//https://stackoverflow.com/questions/38164068/how-to-overlay-gui-over-3d-scene-in-javafx 
+	//FOR SUBSCENE TO OVERLAY GUI ^^^^^^^^^^^^^^^^
     
     public static final int RED     = 0;
     public static final int GREEN   = 1;
