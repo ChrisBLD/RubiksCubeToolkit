@@ -187,6 +187,7 @@ public abstract class StatisticsBoard {
 			case 11: elevenAlgers.add(timeList.get(i)); break;
 			case 12: twelveAlgers.add(timeList.get(i)); break;
 			case 13: thirteenAlgers.add(timeList.get(i)); break;
+			default: System.out.println("uhh"); System.out.println("time: "+timeList.get(i)+", scram: "+scrambleList.get(i)); break;
 			}
 		}
 		
@@ -220,7 +221,7 @@ public abstract class StatisticsBoard {
 		return sum;
 	}
 	
-	private static double round(double value, int places) {
+	protected static double round(double value, int places) {
 	    try {
 			if (places < 0) throw new IllegalArgumentException();
 			
@@ -275,6 +276,8 @@ public abstract class StatisticsBoard {
 		System.out.println("There are "+algCountByNum.get(5).intValue()+" eleven algers in this dataset, which is "+round(((algCountByNum.get(5)/totalResults)*100), 2)+"% of all scrambles.");
 		System.out.println("There are "+algCountByNum.get(6).intValue()+" twelve algers in this dataset, which is "+round(((algCountByNum.get(6)/totalResults)*100), 2)+"% of all scrambles.");
 		System.out.println("There are "+algCountByNum.get(7).intValue()+" thirteen algers in this dataset, which is "+round(((algCountByNum.get(7)/totalResults)*100), 2)+"% of all scrambles.");
+		System.out.println("There are "+algCountByNum.get(8).intValue()+" fourteen+ algers in this dataset, which is "+round(((algCountByNum.get(8)/totalResults)*100), 2)+"% of all scrambles.");
+		
 		
 		System.out.println("Your mean time on six alg scrambles was "+meanArray.get(0)+", with a best of "+bestTimeArray.get(0)+" on this scramble: "+bestScrambleArray.get(0));
 		System.out.println("Your mean time on seven alg scrambles was "+meanArray.get(1)+", with a best of "+bestTimeArray.get(1)+" on this scramble: "+bestScrambleArray.get(1));
