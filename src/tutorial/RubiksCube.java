@@ -4,13 +4,18 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import javafx.application.Application;
+import javafx.geometry.Orientation;
 import javafx.geometry.Point3D;
 import javafx.scene.AmbientLight;
 import javafx.scene.Group;
 import javafx.scene.PerspectiveCamera;
 import javafx.scene.Scene;
 import javafx.scene.SceneAntialiasing;
+import javafx.scene.SubScene;
+import javafx.scene.control.Button;
+import javafx.scene.control.ToolBar;
 import javafx.scene.image.Image;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.Box;
@@ -57,14 +62,15 @@ public class RubiksCube extends Application {
     
     @Override
     public void start(Stage primaryStage) {
+
         Group sceneRoot = new Group();
-        Scene scene = new Scene(sceneRoot, 600, 600, true, SceneAntialiasing.BALANCED);
-        scene.setFill(Color.BLACK);
+        SubScene subScene = new SubScene(sceneRoot, 600, 600, true, SceneAntialiasing.BALANCED);
+        subScene.setFill(Color.BLACK);
         PerspectiveCamera camera = new PerspectiveCamera(true);
         camera.setNearClip(0.1);
         camera.setFarClip(10000.0);
         camera.setTranslateZ(-10);
-        scene.setCamera(camera);
+        subScene.setCamera(camera);
 
         PhongMaterial mat = new PhongMaterial();
         mat.setDiffuseMap(new Image(getClass().getResourceAsStream("/resources/tutcolours.png")));
@@ -89,7 +95,18 @@ public class RubiksCube extends Application {
         
         Box box = new Box(500,500,500);
         sceneRoot.getChildren().add(box);
-
+        
+        BorderPane pane = new BorderPane();
+        pane.setCenter(subScene);
+        Button button = new Button("Reset");
+        ToolBar toolBar = new ToolBar(button);
+        toolBar.setOrientation(Orientation.VERTICAL);
+        pane.setRight(toolBar);
+        pane.setPrefSize(400, 400);
+        
+        Scene scene = new Scene(pane);
+        scene.setFill(Color.BLACK);
+        
         scene.setOnMousePressed(me -> {
             mouseOldX = me.getSceneX();
             mouseOldY = me.getSceneY();
@@ -103,6 +120,9 @@ public class RubiksCube extends Application {
             mouseOldX = mousePosX;
             mouseOldY = mousePosY;
         });
+        
+        
+        
         
         primaryStage.setTitle("Simple Rubik's Cube - JavaFX");
         primaryStage.setScene(scene);
