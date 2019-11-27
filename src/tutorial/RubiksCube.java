@@ -175,6 +175,10 @@ public class RubiksCube extends Application {
         		makeUmove(sceneRoot, meshGroup, false);
         	} else if (e.getCode() == KeyCode.Y) {
         		makeUmove(sceneRoot, meshGroup, true);
+        	} else if (e.getCode() == KeyCode.F) {
+        		makeFmove(sceneRoot, meshGroup, false);
+        	} else if (e.getCode() == KeyCode.G) {
+        		makeFmove(sceneRoot, meshGroup, true);
         	}
         });
         
@@ -256,17 +260,60 @@ public class RubiksCube extends Application {
 	            BLD, BD, BRD, BL, B, BR, BLU, BU, BRU);
 	}
 	
-	private static void cycleColours(int[] list, int one, int two, int three) {
-		int temp = list[three];
-		list[three] = list[two];
-		list[two] = list[one];
-		list[one] = temp;
-
+	private void makeFmove(Group sceneRoot, Group meshGroup, boolean prime) {
+		int elem = 0;
+		for (int x = 0; x < frontFacePoints.size(); x++) {
+			elem = x*2;
+			MeshView msh = (MeshView) sceneRoot.getChildren().get(elem);
+        	Point3D pt = frontFacePoints.get(x);
+        	msh.getTransforms().clear();
+        	msh.getTransforms().add(new Translate(pt.getX(), pt.getY(), pt.getZ()));
+        	RotateTransition rt = new RotateTransition(Duration.millis(300), msh);
+        	rt.setAxis(Rotate.Z_AXIS);
+        	if (prime) {
+        		rt.setByAngle(-90);
+        	} else { 
+        		rt.setByAngle(90);
+        	}
+        	rt.setOnFinished(e -> buildMesh(sceneRoot, mat, meshGroup));
+        	rt.setCycleCount(1);
+        	rt.play();
+        	sceneRoot.getChildren().set(elem, msh);
+        }
+		
+		if (prime) {
+			int[] temp1 = FLU; int[] temp2 = FU;
+			FLU = FRU; FU = FR; FRU = FRD; FR = FD; FRD = FLD; FD = FL; FLD = temp1; FL = temp2;
+			Point3D ptemp1 = pFLU; Point3D ptemp2 = pFU;
+			pFLU = pFRU; pFU = pFR; pFRU = pFRD; pFR = pFD; pFRD = pFLD; pFD = pFL; pFLD = ptemp1; pFL = ptemp2;
+			cycleColours(FRU, D_FACE, R_FACE, U_FACE);
+			cycleColours(FR, D_FACE, R_FACE, U_FACE);
+			cycleColours(FRD, L_FACE, D_FACE, R_FACE);
+			cycleColours(FD, L_FACE, D_FACE, R_FACE);
+			cycleColours(FLD, U_FACE, L_FACE, D_FACE);
+			cycleColours(FL, U_FACE, L_FACE, D_FACE);
+			cycleColours(FLU, R_FACE, U_FACE, L_FACE);
+			cycleColours(FU, R_FACE, U_FACE, L_FACE);			
+		} else {
+			int[] temp1 = FU; int[] temp2 = FLU;
+			FU = FL; FLU = FLD; FL = FD; FLD = FRD; FD = FR; FRD = FRU; FR = temp1; FRU = temp2;
+			Point3D ptemp1 = pFU; Point3D ptemp2 = pFLU;
+			pFU = pFL; pFLU = pFLD; pFL = pFD; pFLD = pFRD; pFD = pFR; pFRD = pFRU; pFR = ptemp1; pFRU = ptemp2;
+			cycleColours(FRU, L_FACE, U_FACE, R_FACE);
+			cycleColours(FR, L_FACE, U_FACE, R_FACE);
+			cycleColours(FRD, U_FACE, R_FACE, D_FACE);
+			cycleColours(FD, U_FACE, R_FACE, D_FACE);
+			cycleColours(FLD, R_FACE, D_FACE, L_FACE);
+			cycleColours(FL, R_FACE, D_FACE, L_FACE);
+			cycleColours(FLU, D_FACE, L_FACE, U_FACE);
+			cycleColours(FU, D_FACE, L_FACE, U_FACE);
+		}		
+		patternFaceF = Arrays.asList(    		
+	            FLD, FD, FRD, FL, F, FR, FLU, FU, FRU,
+	            CLD, CD, CRD, CL, C, CR, CLU, CU, CRU,
+	            BLD, BD, BRD, BL, B, BR, BLU, BU, BRU);
+		
 	}
-
-	
-	//For these moves I'm going to have to do some form of overwriting for the "Points" i.e after a move has been made I need to have my program
-	//remember what pieces are now on which face in case a move is made that affects those faces next.
 	
 	private void makeUmove(Group sceneRoot, Group meshGroup, boolean prime) {
 		int elem = 0;
@@ -326,15 +373,22 @@ public class RubiksCube extends Application {
 			cycleColours(BLU, F_FACE, L_FACE, B_FACE);
 			cycleColours(CLU, R_FACE, F_FACE, L_FACE);
 			cycleColours(FLU, R_FACE, F_FACE, L_FACE);	
-		}	
-
-
-		
+		}		
 		patternFaceF = Arrays.asList(    		
 	            FLD, FD, FRD, FL, F, FR, FLU, FU, FRU,
 	            CLD, CD, CRD, CL, C, CR, CLU, CU, CRU,
 	            BLD, BD, BRD, BL, B, BR, BLU, BU, BRU);
 		
+	}
+	
+	
+	
+	
+	private static void cycleColours(int[] list, int one, int two, int three) {
+		int temp = list[three];
+		list[three] = list[two];
+		list[two] = list[one];
+		list[one] = temp;
 	}
     
     //These definitions go "layer by layer", defining the colours for each side of a single piece. 
@@ -414,6 +468,9 @@ public class RubiksCube extends Application {
     
     private static List<Point3D> upFacePoints = Arrays.asList(
     		pFLU, pFU, pFRU, pCLU, pCU, pCRU, pBLU, pBU, pBRU);
+    
+    private static List<Point3D> frontFacePoints = Arrays.asList(
+    		pFLD, pFD, pFRD, pFL, pF, pFR, pFLU, pFU, pFRU);
     
     private static final List<Point3D> pointsFaceF = Arrays.asList(
             pFLD, pFD, pFRD, pFL, pF, pFR, pFLU, pFU, pFRU,
