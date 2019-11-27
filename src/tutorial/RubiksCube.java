@@ -173,6 +173,8 @@ public class RubiksCube extends Application {
         		makeRmove(sceneRoot, meshGroup, true);
         	} else if (e.getCode() == KeyCode.U) {
         		makeUmove(sceneRoot, meshGroup, false);
+        	} else if (e.getCode() == KeyCode.Y) {
+        		makeUmove(sceneRoot, meshGroup, true);
         	}
         });
         
@@ -299,26 +301,32 @@ public class RubiksCube extends Application {
         }		
 		
 		if (prime) {
-			int[] temp1 = FRU; int[] temp2 = CRU;		
-			FRU = BRU; CRU = FU; BRU = BLU; BU = CLU; BLU = FLU; CLU = FU; FLU = temp1; FU = temp2;
-			Point3D ptemp1 = pFRU; Point3D ptemp2 = pCRU;
-			pFRU = pBRU; pCRU = pFU; pBRU = pBLU; pBU = pCLU; pBLU = pFLU; pCLU = pFU; pFLU = ptemp1; pFU = ptemp2;		
+			int[] temp1 = FRU; int[] temp2 = FU;
+			FRU = FLU; FU = CLU; FLU = BLU; CLU = BU; BLU = BRU; BU = CRU; BRU = temp1; CRU = temp2; 
+			Point3D ptemp1 = pFRU; Point3D ptemp2 = pFU;
+			pFRU = pFLU; pFU = pCLU; pFLU = pBLU; pCLU = pBU; pBLU = pBRU; pBU = pCRU; pBRU = ptemp1; pCRU = ptemp2;	
+			cycleColours(FU, L_FACE, F_FACE, R_FACE);
+			cycleColours(FRU, L_FACE, F_FACE, R_FACE);
+			cycleColours(CRU, F_FACE, R_FACE, B_FACE);
+			cycleColours(BRU, F_FACE, R_FACE, B_FACE);
+			cycleColours(BU, R_FACE,  B_FACE, L_FACE);
+			cycleColours(BLU, R_FACE, B_FACE, L_FACE);
+			cycleColours(CLU, B_FACE, L_FACE, F_FACE);
+			cycleColours(FLU, B_FACE, L_FACE, F_FACE);
 		} else {
 			int[] temp1 = FRU; int[] temp2 = CRU;		
 			FRU = BRU; CRU = BU; BRU = BLU; BU = CLU; BLU = FLU; CLU = FU; FLU = temp1; FU = temp2;
 			Point3D ptemp1 = pFRU; Point3D ptemp2 = pCRU;
 			pFRU = pBRU; pCRU = pFU; pBRU = pBLU; pBU = pCLU; pBLU = pFLU; pCLU = pFU; pFLU = ptemp1; pFU = ptemp2;
-		}
-
-		//FRUBLD
-		cycleColours(FU, B_FACE, R_FACE, F_FACE);
-		cycleColours(FRU, B_FACE, R_FACE, F_FACE);
-		cycleColours(CRU, L_FACE, B_FACE, R_FACE);
-		cycleColours(BRU, L_FACE, B_FACE, R_FACE);
-		cycleColours(BU, F_FACE, L_FACE, B_FACE);
-		cycleColours(BLU, F_FACE, L_FACE, B_FACE);
-		cycleColours(CLU, R_FACE, F_FACE, L_FACE);
-		cycleColours(FLU, R_FACE, F_FACE, L_FACE);		
+			cycleColours(FU, B_FACE, R_FACE, F_FACE);
+			cycleColours(FRU, B_FACE, R_FACE, F_FACE);
+			cycleColours(CRU, L_FACE, B_FACE, R_FACE);
+			cycleColours(BRU, L_FACE, B_FACE, R_FACE);
+			cycleColours(BU, F_FACE, L_FACE, B_FACE);
+			cycleColours(BLU, F_FACE, L_FACE, B_FACE);
+			cycleColours(CLU, R_FACE, F_FACE, L_FACE);
+			cycleColours(FLU, R_FACE, F_FACE, L_FACE);	
+		}	
 
 
 		
