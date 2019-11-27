@@ -1,6 +1,7 @@
 package tutorial;
 
 import java.awt.RenderingHints.Key;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -34,6 +35,7 @@ import javafx.scene.shape.Box;
 import javafx.scene.shape.MeshView;
 import javafx.scene.shape.TriangleMesh;
 import javafx.scene.transform.Rotate;
+import javafx.scene.transform.Transform;
 import javafx.scene.transform.Translate;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -68,10 +70,23 @@ public class RubiksCube extends Application {
     public static final float X_WHITE   = 5.5f / 7f;
     public static final float X_GRAY    = 6.5f / 7f;
     
+    private static final int F_FACE = 0;
+    private static final int R_FACE = 1;
+    private static final int U_FACE = 2;
+    private static final int B_FACE = 3;
+    private static final int L_FACE = 4;
+    private static final int D_FACE = 5;
+    
+    
+    
     private double mousePosX;
     private double mousePosY;
     private double mouseOldX;
     private double mouseOldY;
+    
+    private int moveCounter = 0;
+    
+    private PhongMaterial mat = new PhongMaterial();
     
     @Override
     public void start(Stage primaryStage) {
@@ -106,21 +121,10 @@ public class RubiksCube extends Application {
         timeline.play();
         subScene.setCamera(camera);
 
-        PhongMaterial mat = new PhongMaterial();
         mat.setDiffuseMap(new Image(getClass().getResourceAsStream("/resources/tutcolours.png")));
-
         Group meshGroup = new Group();
 
-        AtomicInteger cont = new AtomicInteger();
-        for (int i = 0; i < patternFaceF.size(); i++) {
-        	MeshView meshP = new MeshView();
-            meshP.setMesh(createCube(patternFaceF.get(i)));
-            meshP.setMaterial(mat);
-            Point3D pt = pointsFaceF.get(cont.getAndIncrement());
-            meshP.getTransforms().addAll(new Translate(pt.getX(), pt.getY(), pt.getZ()));
-            meshGroup.getChildren().add(meshP);
-            sceneRoot.getChildren().addAll(meshP, new AmbientLight(Color.WHITE));
-        }
+        buildMesh(sceneRoot, mat, meshGroup);
 
 
         
@@ -164,9 +168,11 @@ public class RubiksCube extends Application {
         });*/
         scene.setOnKeyPressed(e -> {
         	if (e.getCode() == KeyCode.R) {
-        		makeRmove(sceneRoot);
+        		makeRmove(sceneRoot, meshGroup, false);
+        	} else if (e.getCode() == KeyCode.E) {
+        		makeRmove(sceneRoot, meshGroup, true);
         	} else if (e.getCode() == KeyCode.U) {
-        		makeUmove(sceneRoot);
+        		makeUmove(sceneRoot, meshGroup, false);
         	}
         });
         
@@ -178,7 +184,22 @@ public class RubiksCube extends Application {
         primaryStage.show();
     }
 
-	private void makeRmove(Group sceneRoot) {
+	private void buildMesh(Group sceneRoot, PhongMaterial mat, Group meshGroup) {
+		meshGroup = new Group();
+		sceneRoot.getChildren().clear();
+		AtomicInteger cont = new AtomicInteger();
+        for (int i = 0; i < patternFaceF.size(); i++) {
+        	MeshView meshP = new MeshView();
+            meshP.setMesh(createCube(patternFaceF.get(i)));
+            meshP.setMaterial(mat);
+            Point3D pt = pointsFaceF.get(cont.getAndIncrement());
+            meshP.getTransforms().addAll(new Translate(pt.getX(), pt.getY(), pt.getZ()));
+            meshGroup.getChildren().add(meshP);
+            sceneRoot.getChildren().addAll(meshP, new AmbientLight(Color.WHITE));
+        }
+	}
+
+	private void makeRmove(Group sceneRoot, Group meshGroup, boolean prime) {
 		for (int x = 0; x < rightFacePoints.size(); x++) {
         	MeshView msh = (MeshView) sceneRoot.getChildren().get(((x+1)*6)-2);
         	Point3D pt = rightFacePoints.get(x);
@@ -186,14 +207,66 @@ public class RubiksCube extends Application {
         	msh.getTransforms().add(new Translate(pt.getX(), pt.getY(), pt.getZ()));
         	RotateTransition rt = new RotateTransition(Duration.millis(300), msh);
         	rt.setAxis(Rotate.X_AXIS);
-        	rt.setByAngle(-90);
+        	if (prime) {
+        		rt.setByAngle(90);
+        	} else {
+        		rt.setByAngle(-90);
+        	}
         	rt.setCycleCount(1);
+    		rt.setOnFinished(e -> buildMesh(sceneRoot, mat, meshGroup));
         	rt.play();
         	sceneRoot.getChildren().set(((x+1)*6)-2, msh);
         }
+		
+		if (prime) {
+			int[] temp1 = CRU; int[] temp2 = BRU;
+			CRU = BR; BRU = BRD; BR = CRD; BRD = FRD; CRD = FR; FRD = FRU; FR = temp1; FRU = temp2;
+			Point3D ptemp1 = pCRU; Point3D ptemp2 = pBRU;
+			pCRU = pBR; pBRU = pBRD; pBR = pCRD; pBRD = pFRD; pCRD = pFR; pFRD = pFRU; pFR = ptemp1; pFRU = ptemp2;
+			cycleColours(FR, B_FACE, U_FACE, F_FACE);
+			cycleColours(FRU, B_FACE, U_FACE, F_FACE);
+			cycleColours(CRU, D_FACE, B_FACE, U_FACE);
+			cycleColours(BRU, D_FACE, B_FACE, U_FACE);
+			cycleColours(BR, F_FACE, D_FACE, B_FACE);
+			cycleColours(BRD, F_FACE, D_FACE, B_FACE);
+			cycleColours(CRD, U_FACE, F_FACE, D_FACE);
+			cycleColours(FRD, U_FACE, F_FACE, D_FACE);
+		} else {
+			int[] temp1 = FRD; int[] temp2 = FR;		
+			FR = CRD; FRD = BRD; CRD = BR; BRD = BRU; BR = CRU; BRU = FRU; CRU = temp2; FRU = temp1;
+			Point3D ptemp1 = pFRD; Point3D ptemp2 = pFR;
+			pFR = pCRD; pFRD = pBRD; pCRD = pBR; pBRD = pBRU; pBR = pCRU; pBRU = pFRU; pCRU = ptemp2; pFRU = ptemp1;
+			cycleColours(FR, D_FACE, F_FACE, U_FACE);
+			cycleColours(FRU, D_FACE, F_FACE, U_FACE);
+			cycleColours(CRU, F_FACE, U_FACE, B_FACE);
+			cycleColours(BRU, F_FACE, U_FACE, B_FACE);
+			cycleColours(BR, U_FACE, B_FACE, D_FACE);
+			cycleColours(BRD, U_FACE, B_FACE, D_FACE);
+			cycleColours(CRD, F_FACE, B_FACE, D_FACE);
+			cycleColours(FRD, F_FACE, B_FACE, D_FACE);
+		}
+
+
+		
+		patternFaceF = Arrays.asList(    		
+	            FLD, FD, FRD, FL, F, FR, FLU, FU, FRU,
+	            CLD, CD, CRD, CL, C, CR, CLU, CU, CRU,
+	            BLD, BD, BRD, BL, B, BR, BLU, BU, BRU);
 	}
 	
-	private void makeUmove(Group sceneRoot) {
+	private static void cycleColours(int[] list, int one, int two, int three) {
+		int temp = list[three];
+		list[three] = list[two];
+		list[two] = list[one];
+		list[one] = temp;
+
+	}
+
+	
+	//For these moves I'm going to have to do some form of overwriting for the "Points" i.e after a move has been made I need to have my program
+	//remember what pieces are now on which face in case a move is made that affects those faces next.
+	
+	private void makeUmove(Group sceneRoot, Group meshGroup, boolean prime) {
 		int elem = 0;
 		for (int x = 0; x < upFacePoints.size(); x++) {
 			switch(x) {
@@ -214,11 +287,46 @@ public class RubiksCube extends Application {
         	msh.getTransforms().add(new Translate(pt.getX(), pt.getY(), pt.getZ()));
         	RotateTransition rt = new RotateTransition(Duration.millis(300), msh);
         	rt.setAxis(Rotate.Y_AXIS);
-        	rt.setByAngle(-90);
+        	if (prime) {
+        		rt.setByAngle(-90);
+        	} else { 
+        		rt.setByAngle(90);
+        	}
+        	rt.setOnFinished(e -> buildMesh(sceneRoot, mat, meshGroup));
         	rt.setCycleCount(1);
         	rt.play();
         	sceneRoot.getChildren().set(elem, msh);
         }		
+		
+		if (prime) {
+			int[] temp1 = FRU; int[] temp2 = CRU;		
+			FRU = BRU; CRU = FU; BRU = BLU; BU = CLU; BLU = FLU; CLU = FU; FLU = temp1; FU = temp2;
+			Point3D ptemp1 = pFRU; Point3D ptemp2 = pCRU;
+			pFRU = pBRU; pCRU = pFU; pBRU = pBLU; pBU = pCLU; pBLU = pFLU; pCLU = pFU; pFLU = ptemp1; pFU = ptemp2;		
+		} else {
+			int[] temp1 = FRU; int[] temp2 = CRU;		
+			FRU = BRU; CRU = BU; BRU = BLU; BU = CLU; BLU = FLU; CLU = FU; FLU = temp1; FU = temp2;
+			Point3D ptemp1 = pFRU; Point3D ptemp2 = pCRU;
+			pFRU = pBRU; pCRU = pFU; pBRU = pBLU; pBU = pCLU; pBLU = pFLU; pCLU = pFU; pFLU = ptemp1; pFU = ptemp2;
+		}
+
+		//FRUBLD
+		cycleColours(FU, B_FACE, R_FACE, F_FACE);
+		cycleColours(FRU, B_FACE, R_FACE, F_FACE);
+		cycleColours(CRU, L_FACE, B_FACE, R_FACE);
+		cycleColours(BRU, L_FACE, B_FACE, R_FACE);
+		cycleColours(BU, F_FACE, L_FACE, B_FACE);
+		cycleColours(BLU, F_FACE, L_FACE, B_FACE);
+		cycleColours(CLU, R_FACE, F_FACE, L_FACE);
+		cycleColours(FLU, R_FACE, F_FACE, L_FACE);		
+
+
+		
+		patternFaceF = Arrays.asList(    		
+	            FLD, FD, FRD, FL, F, FR, FLU, FU, FRU,
+	            CLD, CD, CRD, CL, C, CR, CLU, CU, CRU,
+	            BLD, BD, BRD, BL, B, BR, BLU, BU, BRU);
+		
 	}
     
     //These definitions go "layer by layer", defining the colours for each side of a single piece. 
@@ -228,15 +336,15 @@ public class RubiksCube extends Application {
     //Next task is to figure out how to make these objects rotate together around a centre pivot located in the middle of thats face's centre.
     
                                               // F   R   U   B   L   D
-    private static final int[] FLD  = new int[]{GREEN, GRAY, GRAY, GRAY, ORANGE, YELLOW};
-    private static final int[] FD   = new int[]{GREEN, GRAY, GRAY, GRAY, GRAY, YELLOW};
-    private static final int[] FRD  = new int[]{GREEN, RED, GRAY, GRAY, GRAY, YELLOW};
-    private static final int[] FL   = new int[]{GREEN, GRAY, GRAY, GRAY, ORANGE, GRAY};
-    private static final int[] F    = new int[]{GREEN, GRAY, GRAY, GRAY, GRAY, GRAY}; //F face centre piece.
-    private static final int[] FR   = new int[]{GREEN, RED, GRAY, GRAY, GRAY, GRAY};
-    private static final int[] FLU  = new int[]{GREEN, GRAY, WHITE, GRAY, ORANGE, GRAY};
-    private static final int[] FU   = new int[]{GREEN, GRAY, WHITE, GRAY, GRAY, GRAY};
-    private static final int[] FRU  = new int[]{GREEN, RED, WHITE, GRAY, GRAY, GRAY};
+    private static int[] FLD  = new int[]{GREEN, GRAY, GRAY, GRAY, ORANGE, YELLOW};
+    private static int[] FD   = new int[]{GREEN, GRAY, GRAY, GRAY, GRAY, YELLOW};
+    private static int[] FRD  = new int[]{GREEN, RED, GRAY, GRAY, GRAY, YELLOW};
+    private static int[] FL   = new int[]{GREEN, GRAY, GRAY, GRAY, ORANGE, GRAY};
+    private static int[] F    = new int[]{GREEN, GRAY, GRAY, GRAY, GRAY, GRAY}; //F face centre piece.
+    private static int[] FR   = new int[]{GREEN, RED, GRAY, GRAY, GRAY, GRAY};
+    private static int[] FLU  = new int[]{GREEN, GRAY, WHITE, GRAY, ORANGE, GRAY};
+    private static int[] FU   = new int[]{GREEN, GRAY, WHITE, GRAY, GRAY, GRAY};
+    private static int[] FRU  = new int[]{GREEN, RED, WHITE, GRAY, GRAY, GRAY};
     
     private static Point3D pFLD   = new Point3D(-1.04,  1.04, -1.04);
     private static Point3D pFD    = new Point3D(   0,  1.04, -1.04);
@@ -248,15 +356,15 @@ public class RubiksCube extends Application {
     private static Point3D pFU    = new Point3D(   0, -1.04, -1.04);
     private static Point3D pFRU   = new Point3D( 1.04, -1.04, -1.04);
     
-    private static final int[] CLD  = new int[]{GRAY, GRAY, GRAY, GRAY, ORANGE, YELLOW};
-    private static final int[] CD   = new int[]{GRAY, GRAY, GRAY, GRAY, GRAY, YELLOW}; //D face centre piece
-    private static final int[] CRD  = new int[]{GRAY, RED, GRAY, GRAY, GRAY, YELLOW};
-    private static final int[] CL   = new int[]{GRAY, GRAY, GRAY, GRAY, ORANGE, GRAY}; //L face centre piece
-    private static final int[] C    = new int[]{GRAY, GRAY, GRAY, GRAY, GRAY, GRAY}; //Invisible core
-    private static final int[] CR   = new int[]{GRAY, RED, GRAY, GRAY, GRAY, GRAY}; //R face centre piece
-    private static final int[] CLU  = new int[]{GRAY, GRAY, WHITE, GRAY, ORANGE, GRAY};
-    private static final int[] CU   = new int[]{GRAY, GRAY, WHITE, GRAY, GRAY, GRAY}; //U face centre piece
-    private static final int[] CRU  = new int[]{GRAY, RED, WHITE, GRAY, GRAY, GRAY};
+    private static int[] CLD  = new int[]{GRAY, GRAY, GRAY, GRAY, ORANGE, YELLOW};
+    private static int[] CD   = new int[]{GRAY, GRAY, GRAY, GRAY, GRAY, YELLOW}; //D face centre piece
+    private static int[] CRD  = new int[]{GRAY, RED, GRAY, GRAY, GRAY, YELLOW};
+    private static int[] CL   = new int[]{GRAY, GRAY, GRAY, GRAY, ORANGE, GRAY}; //L face centre piece
+    private static int[] C    = new int[]{GRAY, GRAY, GRAY, GRAY, GRAY, GRAY}; //Invisible core
+    private static int[] CR   = new int[]{GRAY, RED, GRAY, GRAY, GRAY, GRAY}; //R face centre piece
+    private static int[] CLU  = new int[]{GRAY, GRAY, WHITE, GRAY, ORANGE, GRAY};
+    private static int[] CU   = new int[]{GRAY, GRAY, WHITE, GRAY, GRAY, GRAY}; //U face centre piece
+    private static int[] CRU  = new int[]{GRAY, RED, WHITE, GRAY, GRAY, GRAY};
     
     private static Point3D pCLD   = new Point3D(-1.04,  1.04, 0);
     private static Point3D pCD    = new Point3D(   0,  1.04, 0);
@@ -268,15 +376,15 @@ public class RubiksCube extends Application {
     private static Point3D pCU    = new Point3D(   0, -1.04, 0);
     private static Point3D pCRU   = new Point3D( 1.04, -1.04, 0);
     
-    private static final int[] BLD  = new int[]{GRAY, GRAY, GRAY, BLUE, ORANGE, YELLOW};
-    private static final int[] BD   = new int[]{GRAY, GRAY, GRAY, BLUE, GRAY, YELLOW};
-    private static final int[] BRD  = new int[]{GRAY, RED, GRAY, BLUE, GRAY, YELLOW};
-    private static final int[] BL   = new int[]{GRAY, GRAY, GRAY, BLUE, ORANGE, GRAY};
-    private static final int[] B    = new int[]{GRAY, GRAY, GRAY, BLUE, GRAY, GRAY}; //B face centre piece
-    private static final int[] BR   = new int[]{GRAY, RED, GRAY, BLUE, GRAY, GRAY};
-    private static final int[] BLU  = new int[]{GRAY, GRAY, WHITE, BLUE, ORANGE, GRAY};
-    private static final int[] BU   = new int[]{GRAY, GRAY, WHITE, BLUE, GRAY, GRAY};
-    private static final int[] BRU  = new int[]{GRAY, RED, WHITE, BLUE, GRAY, GRAY};
+    private static int[] BLD  = new int[]{GRAY, GRAY, GRAY, BLUE, ORANGE, YELLOW};
+    private static int[] BD   = new int[]{GRAY, GRAY, GRAY, BLUE, GRAY, YELLOW};
+    private static int[] BRD  = new int[]{GRAY, RED, GRAY, BLUE, GRAY, YELLOW};
+    private static int[] BL   = new int[]{GRAY, GRAY, GRAY, BLUE, ORANGE, GRAY};
+    private static int[] B    = new int[]{GRAY, GRAY, GRAY, BLUE, GRAY, GRAY}; //B face centre piece
+    private static int[] BR   = new int[]{GRAY, RED, GRAY, BLUE, GRAY, GRAY};
+    private static int[] BLU  = new int[]{GRAY, GRAY, WHITE, BLUE, ORANGE, GRAY};
+    private static int[] BU   = new int[]{GRAY, GRAY, WHITE, BLUE, GRAY, GRAY};
+    private static int[] BRU  = new int[]{GRAY, RED, WHITE, BLUE, GRAY, GRAY};
     
     private static Point3D pBLD   = new Point3D(-1.04,  1.04, 1.04);
     private static Point3D pBD    = new Point3D(   0,  1.04, 1.04);
@@ -288,16 +396,15 @@ public class RubiksCube extends Application {
     private static Point3D pBU    = new Point3D(   0, -1.04, 1.04);
     private static Point3D pBRU   = new Point3D( 1.04, -1.04, 1.04);
     
-    private static final List<int[]> patternFaceF = Arrays.asList(    		
+    private static List<int[]> patternFaceF = Arrays.asList(    		
             FLD, FD, FRD, FL, F, FR, FLU, FU, FRU,
             CLD, CD, CRD, CL, C, CR, CLU, CU, CRU,
             BLD, BD, BRD, BL, B, BR, BLU, BU, BRU);
     
-
-    private static final List<Point3D> rightFacePoints = Arrays.asList(
+    private static List<Point3D> rightFacePoints = Arrays.asList(
     		pFRD, pFR, pFRU, pCRD, pCR, pCRU, pBRD, pBR, pBRU);
     
-    private static final List<Point3D> upFacePoints = Arrays.asList(
+    private static List<Point3D> upFacePoints = Arrays.asList(
     		pFLU, pFU, pFRU, pCLU, pCU, pCRU, pBLU, pBU, pBRU);
     
     private static final List<Point3D> pointsFaceF = Arrays.asList(
