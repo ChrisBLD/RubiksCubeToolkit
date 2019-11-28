@@ -179,6 +179,10 @@ public class RubiksCube extends Application {
         		makeFmove(sceneRoot, meshGroup, false);
         	} else if (e.getCode() == KeyCode.G) {
         		makeFmove(sceneRoot, meshGroup, true);
+        	} else if (e.getCode() == KeyCode.D) { 
+        		makeDmove(sceneRoot, meshGroup, false);
+        	} else if (e.getCode() == KeyCode.V) {
+        		makeDmove(sceneRoot, meshGroup, true);
         	}
         });
         
@@ -380,8 +384,75 @@ public class RubiksCube extends Application {
 	            BLD, BD, BRD, BL, B, BR, BLU, BU, BRU);
 		
 	}
-	
-	
+
+	private void makeDmove(Group sceneRoot, Group meshGroup, boolean prime) {
+		int elem = 0;
+		for (int x = 0; x < downFacePoints.size(); x++) {
+			switch(x) {
+			case 0: elem = 0; break;
+			case 1: elem = 2; break;
+			case 2: elem = 4; break;
+			case 3: elem = 18; break;
+			case 4: elem = 20; break;
+			case 5: elem = 22; break;
+			case 6: elem = 36; break;
+			case 7: elem = 38; break;
+			case 8: elem = 40; break;
+			
+			}
+        	MeshView msh = (MeshView) sceneRoot.getChildren().get(elem);
+        	Point3D pt = downFacePoints.get(x);
+        	msh.getTransforms().clear();
+        	msh.getTransforms().add(new Translate(pt.getX(), pt.getY(), pt.getZ()));
+        	RotateTransition rt = new RotateTransition(Duration.millis(300), msh);
+        	rt.setAxis(Rotate.Y_AXIS);
+        	if (prime) {
+        		rt.setByAngle(90);
+        	} else { 
+        		rt.setByAngle(-90);
+        	}
+        	rt.setOnFinished(e -> buildMesh(sceneRoot, mat, meshGroup));
+        	rt.setCycleCount(1);
+        	rt.play();
+        	sceneRoot.getChildren().set(elem, msh);
+        }		
+		
+		if (prime) {
+			int[] temp1 = CLD; int[] temp2 = FLD;
+			CLD = FD; FLD = FRD; FD = CRD; FRD = BRD; CRD = BD; BRD = BLD; BD = temp1; BLD = temp2;  
+			Point3D ptemp1 = pCLD; Point3D ptemp2 = pFLD;
+			pCLD = pFD; pFLD = pFRD; pFD = pCRD; pFRD = pBRD; pCRD = pBD; pBRD = pFRD; pBD = ptemp1; pBLD = ptemp2; 
+			cycleColours(FLD, R_FACE, F_FACE, L_FACE);
+			cycleColours(CLD, R_FACE, F_FACE, L_FACE);
+			cycleColours(BLD, F_FACE, L_FACE, B_FACE); 
+			cycleColours(BD, F_FACE, L_FACE, B_FACE);
+			cycleColours(BRD, L_FACE, B_FACE, R_FACE);
+			cycleColours(CRD, L_FACE, B_FACE, R_FACE);
+			cycleColours(FRD, B_FACE, R_FACE, F_FACE);
+			cycleColours(FD, B_FACE, R_FACE, F_FACE);
+		} else {
+			
+			int[] temp1 = CLD; int[] temp2 = BLD;
+			CLD = BD; BLD = BRD; BD = CRD; BRD = FRD; CRD = FD; FRD = FLD; FD = temp1; FLD = temp2;
+			Point3D ptemp1 = pCLD; Point3D ptemp2 = pBLD;
+			pCLD = pBD; pBLD = pBRD; pBD = pCRD; pBRD = pFRD; pCRD = pFD; pFRD = pFLD; pFD = ptemp1; pFLD = ptemp2;
+			cycleColours(CLD, R_FACE, B_FACE, L_FACE);
+			cycleColours(BLD, R_FACE, B_FACE, L_FACE);
+			cycleColours(BD, F_FACE, R_FACE, B_FACE);
+			cycleColours(BRD, F_FACE, R_FACE, B_FACE);
+			cycleColours(CRD, L_FACE, F_FACE, R_FACE);
+			cycleColours(FRD, L_FACE, F_FACE, R_FACE);
+			cycleColours(FD, B_FACE, L_FACE, F_FACE);
+			cycleColours(FLD, B_FACE, L_FACE, F_FACE);
+			
+			//FLD FD FRD CLD CRD BLD BD BRD
+		}		
+		patternFaceF = Arrays.asList(    		
+	            FLD, FD, FRD, FL, F, FR, FLU, FU, FRU,
+	            CLD, CD, CRD, CL, C, CR, CLU, CU, CRU,
+	            BLD, BD, BRD, BL, B, BR, BLU, BU, BRU);
+		
+	}
 	
 	
 	private static void cycleColours(int[] list, int one, int two, int three) {
@@ -471,6 +542,15 @@ public class RubiksCube extends Application {
     
     private static List<Point3D> frontFacePoints = Arrays.asList(
     		pFLD, pFD, pFRD, pFL, pF, pFR, pFLU, pFU, pFRU);
+    
+    private static List<Point3D> downFacePoints = Arrays.asList(
+    		pFLD, pFD, pFRD, pCLD, pCD, pCRD, pBLD, pBD, pBRD);
+    
+    private static List<Point3D> leftFacePoints = Arrays.asList(
+    		pFLD, pFL, pFLU, pCLD, pCL, pCLU, pBLD, pBL, pBLU);
+    
+    private static List<Point3D> backFacePoints = Arrays.asList(
+    		pBLD, pBD, pBRD, pBL, pB, pBR, pBLU, pBU, pBRU);
     
     private static final List<Point3D> pointsFaceF = Arrays.asList(
             pFLD, pFD, pFRD, pFL, pF, pFR, pFLU, pFU, pFRU,
