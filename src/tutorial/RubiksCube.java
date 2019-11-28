@@ -78,14 +78,6 @@ public class RubiksCube extends Application {
     private static final int D_FACE = 5;
     
     
-    
-    private double mousePosX;
-    private double mousePosY;
-    private double mouseOldX;
-    private double mouseOldY;
-    
-    private int moveCounter = 0;
-    
     private PhongMaterial mat = new PhongMaterial();
     
     @Override
@@ -153,11 +145,11 @@ public class RubiksCube extends Application {
         Scene scene = new Scene(pane);
         scene.setFill(Color.BLACK);
         
-        scene.setOnMousePressed(me -> {
+        /*scene.setOnMousePressed(me -> {
             mouseOldX = me.getSceneX();
             mouseOldY = me.getSceneY();
         });
-        /*scene.setOnMouseDragged(me -> {
+        scene.setOnMouseDragged(me -> {
 
             mousePosX = me.getSceneX();
             mousePosY = me.getSceneY();
@@ -181,8 +173,16 @@ public class RubiksCube extends Application {
         		makeFmove(sceneRoot, meshGroup, true);
         	} else if (e.getCode() == KeyCode.D) { 
         		makeDmove(sceneRoot, meshGroup, false);
-        	} else if (e.getCode() == KeyCode.V) {
+        	} else if (e.getCode() == KeyCode.S) {
         		makeDmove(sceneRoot, meshGroup, true);
+        	} else if (e.getCode() == KeyCode.L) {
+        		makeLmove(sceneRoot, meshGroup, false);
+        	} else if (e.getCode() == KeyCode.K) {
+        		makeLmove(sceneRoot, meshGroup, true);
+        	} else if (e.getCode() == KeyCode.B) {
+        		makeBmove(sceneRoot, meshGroup, false);
+        	} else if (e.getCode() == KeyCode.V) {
+        		makeBmove(sceneRoot, meshGroup, true);
         	}
         });
         
@@ -311,6 +311,61 @@ public class RubiksCube extends Application {
 			cycleColours(FL, R_FACE, D_FACE, L_FACE);
 			cycleColours(FLU, D_FACE, L_FACE, U_FACE);
 			cycleColours(FU, D_FACE, L_FACE, U_FACE);
+		}		
+		patternFaceF = Arrays.asList(    		
+	            FLD, FD, FRD, FL, F, FR, FLU, FU, FRU,
+	            CLD, CD, CRD, CL, C, CR, CLU, CU, CRU,
+	            BLD, BD, BRD, BL, B, BR, BLU, BU, BRU);
+		
+	}
+	
+	private void makeBmove(Group sceneRoot, Group meshGroup, boolean prime) {
+		int elem = 0;
+		for (int x = 0; x < backFacePoints.size(); x++) {
+			elem = (x*2)+36;
+			MeshView msh = (MeshView) sceneRoot.getChildren().get(elem);
+        	Point3D pt = backFacePoints.get(x);
+        	msh.getTransforms().clear();
+        	msh.getTransforms().add(new Translate(pt.getX(), pt.getY(), pt.getZ()));
+        	RotateTransition rt = new RotateTransition(Duration.millis(300), msh);
+        	rt.setAxis(Rotate.Z_AXIS);
+        	if (prime) {
+        		rt.setByAngle(90);
+        	} else { 
+        		rt.setByAngle(-90);
+        	}
+        	rt.setOnFinished(e -> buildMesh(sceneRoot, mat, meshGroup));
+        	rt.setCycleCount(1);
+        	rt.play();
+        	sceneRoot.getChildren().set(elem, msh);
+        }
+		
+		if (prime) {
+			int[] temp1 = BLD; int[] temp2 = BD;
+			BLD = BRD; BD = BR; BRD = BRU; BR = BU; BRU = BLU; BU = BL; BLU = temp1; BL = temp2;
+			Point3D ptemp1 = pBLD; Point3D ptemp2 = pBD;
+			pBLD = pBRD; pBD = pBR; pBRD = pBRU; pBR = pBU; pBRU = pBLU; pBU = pBL; pBLU = ptemp1; pBL = ptemp2;
+			cycleColours(BLU, D_FACE, L_FACE, U_FACE);
+			cycleColours(BU, D_FACE, L_FACE, U_FACE);
+			cycleColours(BRU, L_FACE, U_FACE, R_FACE);
+			cycleColours(BR, L_FACE, U_FACE, R_FACE);
+			cycleColours(BRD, U_FACE, R_FACE, D_FACE);
+			cycleColours(BD, U_FACE, R_FACE, D_FACE);
+			cycleColours(BLD, R_FACE, D_FACE, L_FACE);
+			cycleColours(BL, R_FACE, D_FACE, L_FACE);
+		} else {
+			int[] temp1 = BLU; int[] temp2 = BU;
+			BLU = BRU; BU = BR; BRU = BRD; BR = BD; BRD = BLD; BD = BL; BLD = temp1; BL = temp2;
+			Point3D ptemp1 = pBLU; Point3D ptemp2 = pBU;
+			pBLU = pBRU; pBU = pBR; pBRU = pBRD; pBR = pBD; pBRD = pBLD; pBD = pBL; pBLD = ptemp1; pBL = ptemp2;
+			cycleColours(BLU, R_FACE, U_FACE, L_FACE);
+			cycleColours(BL, R_FACE, U_FACE, L_FACE);
+			cycleColours(BLD, U_FACE, L_FACE, D_FACE);
+			cycleColours(BD, U_FACE, L_FACE, D_FACE);
+			cycleColours(BRD, L_FACE, D_FACE, R_FACE);
+			cycleColours(BR, L_FACE, D_FACE, R_FACE);
+			cycleColours(BRU, D_FACE, R_FACE, U_FACE);
+			cycleColours(BU, D_FACE, R_FACE, U_FACE);
 		}		
 		patternFaceF = Arrays.asList(    		
 	            FLD, FD, FRD, FL, F, FR, FLU, FU, FRU,
@@ -454,6 +509,58 @@ public class RubiksCube extends Application {
 		
 	}
 	
+	private void makeLmove(Group sceneRoot, Group meshGroup, boolean prime) {
+		for (int x = 0; x < leftFacePoints.size(); x++) {
+        	MeshView msh = (MeshView) sceneRoot.getChildren().get(x*6);
+        	Point3D pt = leftFacePoints.get(x);
+        	msh.getTransforms().clear();
+        	msh.getTransforms().add(new Translate(pt.getX(), pt.getY(), pt.getZ()));
+        	RotateTransition rt = new RotateTransition(Duration.millis(300), msh);
+        	rt.setAxis(Rotate.X_AXIS);
+        	if (prime) {
+        		rt.setByAngle(-90);
+        	} else {
+        		rt.setByAngle(90);
+        	}
+        	rt.setCycleCount(1);
+    		rt.setOnFinished(e -> buildMesh(sceneRoot, mat, meshGroup));
+        	rt.play();
+        	sceneRoot.getChildren().set(x*6, msh);
+        }
+		
+		if (prime) {
+			int[] temp1 = CLD; int[] temp2 = BLD;
+			CLD = BL; BLD = BLU; BL = CLU; BLU = FLU; CLU = FL; FLU = FLD; FL = temp1; FLD = temp2;
+			Point3D ptemp1 = pCLD; Point3D ptemp2 = pBLD;
+			pCLD = pBL; pBLD = pBLU; pBL = pCLU; pBLU = pFLU; pCLU = pFL; pFLU = pFLD; pFL = ptemp1; pFLD = ptemp2;
+			cycleColours(FLD, B_FACE, D_FACE, F_FACE);
+			cycleColours(FL, B_FACE, D_FACE, F_FACE);
+			cycleColours(FLU, D_FACE, F_FACE, U_FACE);
+			cycleColours(CLU, D_FACE, F_FACE, U_FACE);
+			cycleColours(BLU, F_FACE, U_FACE, B_FACE);
+			cycleColours(BL, F_FACE, U_FACE, B_FACE);
+			cycleColours(BLD, U_FACE, B_FACE, D_FACE);
+			cycleColours(CLD, U_FACE, B_FACE, D_FACE);
+		} else {
+			int[] temp1 = FLD; int[] temp2 = FL;
+			FLD = FLU; FL = CLU; FLU = BLU; CLU = BL; BLU = BLD; BL = CLD; BLD = temp1; CLD = temp2;
+			Point3D ptemp1 = pFLD; Point3D ptemp2 = pCLD;
+			pFLD = pFLU; pFL = pCLU; pFLU = pBLU; pCLU = pBL; pBLU = pBLD; pBL = pCLD; pBLD = ptemp1; pCLD = ptemp2;
+			cycleColours(FLD, U_FACE, F_FACE, D_FACE);
+			cycleColours(FL, B_FACE, U_FACE, F_FACE);
+			cycleColours(FLU, B_FACE, U_FACE, F_FACE);
+			cycleColours(CLU, D_FACE, B_FACE, U_FACE);
+			cycleColours(BLU, D_FACE, B_FACE, U_FACE);
+			cycleColours(BL, F_FACE, D_FACE, B_FACE);
+			cycleColours(BLD, F_FACE, D_FACE, B_FACE);
+			cycleColours(CLD, U_FACE, F_FACE, D_FACE);
+		}
+
+		patternFaceF = Arrays.asList(    		
+	            FLD, FD, FRD, FL, F, FR, FLU, FU, FRU,
+	            CLD, CD, CRD, CL, C, CR, CLU, CU, CRU,
+	            BLD, BD, BRD, BL, B, BR, BLU, BU, BRU);
+	}
 	
 	private static void cycleColours(int[] list, int one, int two, int three) {
 		int temp = list[three];
