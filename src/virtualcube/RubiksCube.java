@@ -1,4 +1,4 @@
-package tutorial;
+package virtualcube;
 
 import java.awt.RenderingHints.Key;
 import java.util.ArrayList;
@@ -24,6 +24,7 @@ import javafx.scene.Scene;
 import javafx.scene.SceneAntialiasing;
 import javafx.scene.SubScene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToolBar;
 import javafx.scene.image.Image;
@@ -37,6 +38,7 @@ import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.Box;
 import javafx.scene.shape.MeshView;
 import javafx.scene.shape.TriangleMesh;
+import javafx.scene.text.Text;
 import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Transform;
 import javafx.scene.transform.Translate;
@@ -198,6 +200,10 @@ public class RubiksCube extends Application {
     private Group sceneRoot = new Group();
     private Group meshGroup = new Group();
     
+    int mins = 0, secs = 0, millis = 0;
+    
+    Timeline timer;
+    
     static String[][][] changes = {{{"Uw"},{"U","U"},{"D","D"},{"F","R"},{"R","B"},{"B","L"},{"L","F"}},
 			{{"Uw'"},{"U","U"},{"D","D"},{"F","L"},{"R","F"},{"B","R"},{"L","B"}},
 			{{"Uw2"},{"U","U"},{"D","D"},{"F","B"},{"R","L"},{"B","F"},{"L","R"}},
@@ -257,7 +263,16 @@ public class RubiksCube extends Application {
         Button button = new Button("Enter");        
         TextField scramble = new TextField("Enter a scramble here");
         scramble.setPrefWidth(400);
-        ToolBar toolBar = new ToolBar(button, scramble);
+        Text timerLab = new Text("0:00.00");
+        timer = new Timeline(new KeyFrame(Duration.millis(1), new EventHandler<ActionEvent>() {
+        	@Override
+        	public void handle(ActionEvent event) {
+        		update(timerLab);
+        	}
+        }));
+        timer.setCycleCount(Timeline.INDEFINITE);
+        timer.setAutoReverse(false);
+        ToolBar toolBar = new ToolBar(button, scramble, timerLab);
         toolBar.setOrientation(Orientation.HORIZONTAL);
         toolBar.setBackground(new Background(new BackgroundFill(Color.rgb(51,51,51), CornerRadii.EMPTY, Insets.EMPTY)));
         pane.setBottom(toolBar);
@@ -275,6 +290,7 @@ public class RubiksCube extends Application {
 
 			@Override
 			public void handle(ActionEvent arg0) {
+				timer.play();
 				String scram = scramble.getText();
 				
 				convertScramble(scram);
@@ -331,6 +347,20 @@ public class RubiksCube extends Application {
         primaryStage.setTitle("Simple Rubik's Cube - JavaFX");
         primaryStage.setScene(scene);
         primaryStage.show();
+    }
+    
+    private void update(Text lbl) {
+    	if(millis == 1000) {
+			secs++;
+			millis = 0;
+		}
+		if(secs == 60) {
+			mins++;
+			secs = 0;
+		}
+		lbl.setText((((mins/10) == 0) ? "" : "") + mins + ":"
+		 + (((secs/10) == 0) ? "0" : "") + secs + ":" 
+			+ (((millis/10) == 0) ? "00" : (((millis/100) == 0) ? "0" : "")) + millis++);
     }
 
 	private void buildMesh(Group sceneRoot, PhongMaterial mat, Group meshGroup) {
