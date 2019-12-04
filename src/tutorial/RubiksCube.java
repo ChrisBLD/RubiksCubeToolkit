@@ -193,8 +193,9 @@ public class RubiksCube extends Application {
 	        	case PERIOD: makeMmove(sceneRoot, meshGroup, true); break;
 	        	case SLASH: makeDwideMove(sceneRoot, meshGroup, true); break;
 	        	default: break;
+
         	}});
-        
+
         //test
         
         
