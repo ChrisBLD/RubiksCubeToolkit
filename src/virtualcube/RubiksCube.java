@@ -195,6 +195,8 @@ public class RubiksCube extends Application {
     private Group sceneRoot = new Group();
     private Group meshGroup = new Group();
     
+    boolean startTimer = false;
+    
     int mins = 0, secs = 0, millis = 0;
     
     Timeline timer;
@@ -285,10 +287,11 @@ public class RubiksCube extends Application {
 
 			@Override
 			public void handle(ActionEvent arg0) {
-				timer.play();
+				mins = 0; secs = 0; millis = 0;
+				update(timerLab);
 				String scram = scramble.getText();
-				
 				convertScramble(scram);
+				startTimer = true;
 			}
 			
         });
@@ -299,6 +302,10 @@ public class RubiksCube extends Application {
         
         scene.setOnKeyPressed(e -> {
         	
+        	if (startTimer) {
+        		timer.play();
+        		startTimer = false;
+        	}
         	switch(e.getCode()) {
 	        	case DIGIT5: makeMmove(false); break;
 	        	case DIGIT6: makeMmove(false); break;
@@ -1700,11 +1707,7 @@ public class RubiksCube extends Application {
     }
     
     public void isSolved() {
-    	/*
-    	 * 1) determine orientation based on top and front centres
-    	 * 2) compare each piece with the "correct" solved stated, maybe determined by centres?
-    	 * frubld
-    	 */
+
     	int frontCentre = F[0];
     	int rightCentre = CR[1];
     	int upCentre = CU[2];
@@ -1762,6 +1765,9 @@ public class RubiksCube extends Application {
  			}
  		}
  		
+ 		if (solved) {
+ 			timer.stop();
+ 		}
  		System.out.println(solved);
 
     }
