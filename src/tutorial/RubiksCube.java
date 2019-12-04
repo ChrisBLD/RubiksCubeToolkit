@@ -195,7 +195,7 @@ public class RubiksCube extends Application {
 	        	default: break;
         	}});
         
-        
+        //test
         
         
         primaryStage.setTitle("Simple Rubik's Cube - JavaFX");
