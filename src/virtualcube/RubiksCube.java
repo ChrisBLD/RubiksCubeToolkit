@@ -45,11 +45,6 @@ import javafx.scene.transform.Translate;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
-/**
- * Simple implementation of the Rubik's cube using JavaFX 3D
- * http://stackoverflow.com/questions/34001900/how-to-render-3d-graphics-properly
- * @author JosePereda
- */
 public class RubiksCube extends Application {
 	
     public static final int RED     = 0;
