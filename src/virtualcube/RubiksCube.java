@@ -33,6 +33,8 @@ import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.CornerRadii;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.Box;
@@ -222,25 +224,25 @@ public class RubiksCube extends Application {
         SubScene subScene = new SubScene(sceneRoot, 500, 500, true, SceneAntialiasing.BALANCED);
         subScene.setFill(Color.rgb(66,66,66));
         Translate pivot = new Translate();
-        Rotate yRotate = new Rotate(0, Rotate.Y_AXIS);
+        Rotate ytate = new Rotate(0, Rotate.Y_AXIS);
         PerspectiveCamera camera = new PerspectiveCamera(true);
         camera.setNearClip(0.1);
         camera.setFarClip(10000.0);
         //camera.setTranslateZ(-15);
         camera.getTransforms().addAll (
                 pivot,
-                yRotate,
+                ytate,
                 new Rotate(-20, Rotate.X_AXIS),
                 new Translate(0, 0, -15)
         );
         Timeline timeline = new Timeline();
         timeline.getKeyFrames().add(new KeyFrame(
                 Duration.seconds(0), 
-                new KeyValue(yRotate.angleProperty(), 0)
+                new KeyValue(ytate.angleProperty(), 0)
         ));
         timeline.getKeyFrames().add(new KeyFrame(
                 Duration.seconds(1), 
-                new KeyValue(yRotate.angleProperty(), -35)
+                new KeyValue(ytate.angleProperty(), -35)
         ));
         
         timeline.setCycleCount(1);
@@ -269,11 +271,34 @@ public class RubiksCube extends Application {
         }));
         timer.setCycleCount(Timeline.INDEFINITE);
         timer.setAutoReverse(false);
+        
+        Button rMove = new Button("R"); Button rPMove = new Button("R'"); Button rWMove = new Button("Rw"); Button rWPMove = new Button ("Rw'");
+        Button uMove = new Button("U"); Button uPMove = new Button("U'"); Button uWMove = new Button("Uw"); Button uWPMove = new Button ("Uw'");
+        Button fMove = new Button("F"); Button fPMove = new Button("F'");
+        Button bMove = new Button("B"); Button bPMove = new Button("B'");
+        Button lMove = new Button("L"); Button lPMove = new Button("L'"); Button lWMove = new Button("Lw"); Button lWPMove = new Button ("Lw'");
+        Button dMove = new Button("D"); Button dPMove = new Button("D'");
+        
+        Button xRotate = new Button("x"); Button yRotate = new Button("y"); Button zRotate = new Button("z");
+        Button xPRotate = new Button("x'"); Button yPRotate = new Button("y'"); Button zPRotate = new Button("z'");
+
         ToolBar toolBar = new ToolBar(button, scramble, timerLab);
         toolBar.setOrientation(Orientation.HORIZONTAL);
         toolBar.setBackground(new Background(new BackgroundFill(Color.rgb(51,51,51), CornerRadii.EMPTY, Insets.EMPTY)));
         pane.setBottom(toolBar);
-        ToolBar toolBarRight = new ToolBar();
+        
+        HBox h1 = new HBox(); h1.getChildren().add(rMove); h1.getChildren().add(rPMove); h1.getChildren().add(rWMove); h1.getChildren().add(rWPMove);
+        HBox h2 = new HBox(); h2.getChildren().add(uMove); h2.getChildren().add(uPMove); h2.getChildren().add(uWMove); h2.getChildren().add(uWPMove); 
+        HBox h3 = new HBox(); h3.getChildren().add(fMove); h3.getChildren().add(fPMove); 
+        HBox h4 = new HBox(); h4.getChildren().add(bMove); h4.getChildren().add(bPMove);
+        HBox h5 = new HBox(); h5.getChildren().add(lMove); h5.getChildren().add(lPMove); h5.getChildren().add(lWMove); h5.getChildren().add(lWPMove); 
+        HBox h6 = new HBox(); h6.getChildren().add(dMove); h6.getChildren().add(dPMove);
+        
+        HBox h7 = new HBox(); h7.getChildren().add(xRotate); h7.getChildren().add(yRotate); h7.getChildren().add(zRotate); 
+        HBox h8 = new HBox(); h8.getChildren().add(xPRotate); h8.getChildren().add(yPRotate); h8.getChildren().add(zPRotate); 
+        
+        
+        ToolBar toolBarRight = new ToolBar(h1, h2, h3, h4, h5, h6, h7, h8);
         toolBarRight.setOrientation(Orientation.VERTICAL);
         toolBarRight.setBackground(new Background(new BackgroundFill(Color.rgb(51,51,51), CornerRadii.EMPTY, Insets.EMPTY)));
         pane.setRight(toolBarRight);
@@ -289,6 +314,7 @@ public class RubiksCube extends Application {
 			public void handle(ActionEvent arg0) {
 				mins = 0; secs = 0; millis = 0;
 				update(timerLab);
+				timer.stop();
 				String scram = scramble.getText();
 				convertScramble(scram);
 				startTimer = true;
@@ -296,16 +322,44 @@ public class RubiksCube extends Application {
 			
         });
 
-     
+        rMove.setOnAction(actionEvent ->  {firstCheck(); makeRmove(false);});
+        rPMove.setOnAction(actionEvent ->  {firstCheck(); makeRmove(true);});
+        rWMove.setOnAction(actionEvent ->  {firstCheck(); makeRwideMove(false);});
+        rWPMove.setOnAction(actionEvent ->  {firstCheck(); makeRwideMove(true);});
+        
+        uMove.setOnAction(actionEvent ->  {firstCheck(); makeUmove(false);});
+        uPMove.setOnAction(actionEvent ->  {firstCheck(); makeUmove(true);});
+        uWMove.setOnAction(actionEvent ->  {firstCheck(); makeUwideMove(false);});
+        uWPMove.setOnAction(actionEvent ->  {firstCheck(); makeUwideMove(true);});
+        
+        fMove.setOnAction(actionEvent ->  {firstCheck(); makeFmove(false);});
+        fPMove.setOnAction(actionEvent ->  {firstCheck(); makeFmove(true);});
+
+        bMove.setOnAction(actionEvent ->  {firstCheck(); makeBmove(false);});
+        bPMove.setOnAction(actionEvent ->  {firstCheck(); makeBmove(true);});
+
+        lMove.setOnAction(actionEvent ->  {firstCheck(); makeLmove(false);});
+        lPMove.setOnAction(actionEvent ->  {firstCheck(); makeLmove(true);});
+        lWMove.setOnAction(actionEvent ->  {firstCheck(); makeLwideMove(false);});
+        lWPMove.setOnAction(actionEvent ->  {firstCheck(); makeLwideMove(true);});
+        
+        dMove.setOnAction(actionEvent ->  {firstCheck(); makeDmove(false);});
+        dPMove.setOnAction(actionEvent ->  {firstCheck(); makeDmove(true);});
+        
+        xRotate.setOnAction(actionEvent ->  {makeXrotation(false);});
+        xPRotate.setOnAction(actionEvent ->  {makeXrotation(true);});
+        yRotate.setOnAction(actionEvent ->  {makeYrotation(false);});
+        yPRotate.setOnAction(actionEvent ->  {makeYrotation(true);});
+        zRotate.setOnAction(actionEvent ->  {makeZrotation(false);});
+        zPRotate.setOnAction(actionEvent ->  {makeZrotation(true);});
+        
         Scene scene = new Scene(pane);
         scene.setFill(Color.BLACK);
         
         scene.setOnKeyPressed(e -> {
         	
-        	if (startTimer) {
-        		timer.play();
-        		startTimer = false;
-        	}
+        	firstCheck(e.getCode()); 
+        	
         	switch(e.getCode()) {
 	        	case DIGIT5: makeMmove(false); break;
 	        	case DIGIT6: makeMmove(false); break;
@@ -349,6 +403,23 @@ public class RubiksCube extends Application {
         primaryStage.setTitle("Simple Rubik's Cube - JavaFX");
         primaryStage.setScene(scene);
         primaryStage.show();
+    }
+    
+    private void firstCheck() {
+    	if (startTimer) {
+    		timer.play();
+    		startTimer = false;
+    	}
+    }
+    
+    private void firstCheck(KeyCode code) {
+    	if (code == KeyCode.B || code == KeyCode.N || code == KeyCode.A || //Rotation moves shouldn't start timer. Work-around for now whilst
+    		code == KeyCode.P || code == KeyCode.T || code == KeyCode.Y || //moves are hard-coded
+    		code == KeyCode.Q || code == KeyCode.SEMICOLON) {
+    		//doNothing
+    	} else {
+    		firstCheck();
+    	}
     }
     
     private void update(Text lbl) {
@@ -1768,7 +1839,7 @@ public class RubiksCube extends Application {
  		if (solved) {
  			timer.stop();
  		}
- 		System.out.println(solved);
+ 		//System.out.println(solved);
 
     }
     
