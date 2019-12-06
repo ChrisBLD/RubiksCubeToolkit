@@ -3,6 +3,7 @@ package virtualcube;
 import java.awt.RenderingHints.Key;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -154,6 +155,9 @@ public class RubiksCube extends Application {
     private static List<Point3D> standingSlicePoints = Arrays.asList(
     		pCLD, pCD, pCRD, pCL, pC, pCR, pCLU, pCU, pCRU);
     
+    private static List<Point3D> equatorSlicePoints = Arrays.asList(
+    		pFL, pF, pFR, pCL, pC, pCR, pBL, pB, pBR);
+    
     private static List<Point3D> rightFacePoints = Arrays.asList(
     		pFRD, pFR, pFRU, pCRD, pCR, pCRU, pBRD, pBR, pBRU);
     
@@ -282,14 +286,17 @@ public class RubiksCube extends Application {
         
         BorderPane pane = new BorderPane();
         pane.setCenter(subScene);
-        Button button = new Button("Enter");        
+        Button enter = new Button();
+        enter.setGraphic(new ImageView(new Image("/resources/enterButton.png")));
+        enter.setMaxSize(107,60); enter.setMinSize(107, 60);
         TextField scramble = new TextField();
         scramble.setPromptText("Enter a scramble here");
-        scramble.setPrefWidth(300);
+        scramble.setPrefWidth(250);
+        //scramble.setPrefHeight(50);
         Button helpMenu = new Button();
         helpMenu.setGraphic(new ImageView(new Image("/resources/helpButton.png")));
-        helpMenu.setMaxSize(107,60); helpMenu.setMinSize(107, 60);
-        Text timerLab = new Text("   0:00.000");
+        helpMenu.setMaxSize(100,55); helpMenu.setMinSize(100, 55);
+        Text timerLab = new Text("0:00.000");
         timerLab.setFont(new Font(45));
         timer = new Timeline(new KeyFrame(Duration.millis(1), new EventHandler<ActionEvent>() {
         	@Override
@@ -300,98 +307,68 @@ public class RubiksCube extends Application {
         timer.setCycleCount(Timeline.INDEFINITE);
         timer.setAutoReverse(false);
                 
-        Button rMove = new Button(); Button rPMove = new Button(); Button rWMove = new Button(); Button rWPMove = new Button();
-        Button uMove = new Button(); Button uPMove = new Button(); Button uWMove = new Button(); Button uWPMove = new Button();
-        Button fMove = new Button(); Button fPMove = new Button(); Button blankButton = new Button(); Button mMove = new Button();
-        Button bMove = new Button(); Button bPMove = new Button(); Button blankButton2 = new Button(); Button mPMove = new Button();
-        Button lMove = new Button(); Button lPMove = new Button(); Button lWMove = new Button(); Button lWPMove = new Button();
-        Button dMove = new Button(); Button dPMove = new Button(); Button dWMove = new Button(); Button dWPMove = new Button();
-        Button xRotate = new Button(); Button yRotate = new Button(); Button zRotate = new Button();
-        Button xPRotate = new Button(); Button yPRotate = new Button(); Button zPRotate = new Button();
-        Button zoomPlus = new Button(); Button zoomMinus = new Button();
+        Button rMove = new Button(); Button rPMove = new Button(); Button rWMove = new Button(); Button rWPMove = new Button(); Button mMove = new Button();
+        Button uMove = new Button(); Button uPMove = new Button(); Button uWMove = new Button(); Button uWPMove = new Button(); Button mPMove = new Button();
+        Button fMove = new Button(); Button fPMove = new Button(); Button fWMove = new Button(); Button fWPMove = new Button(); Button blankButton = new Button(); 
+        Button bMove = new Button(); Button bPMove = new Button(); Button bWMove = new Button(); Button bWPMove = new Button(); Button sMove = new Button(); 
+        Button lMove = new Button(); Button lPMove = new Button(); Button lWMove = new Button(); Button lWPMove = new Button(); Button sPMove = new Button();
+        Button dMove = new Button(); Button dPMove = new Button(); Button dWMove = new Button(); Button dWPMove = new Button(); Button blankButton2 = new Button();
+        Button zoomPlus = new Button(); Button xRotate = new Button(); Button yRotate = new Button(); Button zRotate = new Button(); Button eMove = new Button();
+        Button zoomMinus = new Button(); Button xPRotate = new Button(); Button yPRotate = new Button(); Button zPRotate = new Button(); Button ePMove = new Button();
+        
+        ArrayList<Button> moves = new ArrayList<Button>();
+        moves.add(rMove); moves.add(rPMove); moves.add(rWMove); moves.add(rWPMove); moves.add(mMove);
+        moves.add(uMove); moves.add(uPMove); moves.add(uWMove); moves.add(uWPMove); moves.add(mPMove);
+        moves.add(fMove); moves.add(fPMove); moves.add(fWMove); moves.add(fWPMove); moves.add(blankButton);
+        moves.add(bMove); moves.add(bPMove); moves.add(bWMove); moves.add(bWPMove); moves.add(sMove);
+        moves.add(lMove); moves.add(lPMove); moves.add(lWMove); moves.add(lWPMove); moves.add(sPMove);
+        moves.add(dMove); moves.add(dPMove); moves.add(dWMove); moves.add(dWPMove); moves.add(blankButton2);
+        moves.add(zoomPlus); moves.add(xRotate); moves.add(yRotate); moves.add(zRotate); moves.add(eMove);
+        moves.add(zoomMinus); moves.add(xPRotate); moves.add(yPRotate); moves.add(zPRotate); moves.add(ePMove);
+        
+        ArrayList<ImageView> graphics = new ArrayList<ImageView>();
+        graphics.add(new ImageView(new Image("/resources/rButton.png"))); graphics.add(new ImageView(new Image("/resources/rPrimeButton.png")));
+        graphics.add(new ImageView(new Image("/resources/rWideButton.png"))); graphics.add(new ImageView(new Image("/resources/rWidePrimeButton.png")));
+        graphics.add(new ImageView(new Image("/resources/mButton.png")));
+        graphics.add(new ImageView(new Image("/resources/uButton.png"))); graphics.add(new ImageView(new Image("/resources/uPrimeButton.png")));
+        graphics.add(new ImageView(new Image("/resources/uWideButton.png"))); graphics.add(new ImageView(new Image("/resources/uWidePrimeButton.png")));
+        graphics.add(new ImageView(new Image("/resources/mPrimeButton.png")));
+        graphics.add(new ImageView(new Image("/resources/fButton.png"))); graphics.add(new ImageView(new Image("/resources/fPrimeButton.png")));
+        graphics.add(new ImageView(new Image("/resources/fWideButton.png"))); graphics.add(new ImageView(new Image("/resources/fWidePrimeButton.png"))); 
+        graphics.add(new ImageView(new Image("/resources/blankButton.png")));
+        graphics.add(new ImageView(new Image("/resources/bButton.png"))); graphics.add(new ImageView(new Image("/resources/bPrimeButton.png")));
+        graphics.add(new ImageView(new Image("/resources/bWideButton.png"))); graphics.add(new ImageView(new Image("/resources/bWidePrimeButton.png")));
+        graphics.add(new ImageView(new Image("/resources/sButton.png")));
+        graphics.add(new ImageView(new Image("/resources/lButton.png"))); graphics.add(new ImageView(new Image("/resources/lPrimeButton.png")));
+        graphics.add(new ImageView(new Image("/resources/lWideButton.png"))); graphics.add(new ImageView(new Image("/resources/lWidePrimeButton.png")));
+        graphics.add(new ImageView(new Image("/resources/sPrimeButton.png")));
+        graphics.add(new ImageView(new Image("/resources/dButton.png"))); graphics.add(new ImageView(new Image("/resources/dPrimeButton.png")));
+        graphics.add(new ImageView(new Image("/resources/dWideButton.png"))); graphics.add(new ImageView(new Image("/resources/dWidePrimeButton.png")));
+        graphics.add(new ImageView(new Image("/resources/blankButton.png")));
+        graphics.add(new ImageView(new Image("/resources/plusButton.png"))); graphics.add(new ImageView(new Image("/resources/xButton.png")));
+        graphics.add(new ImageView(new Image("/resources/yButton.png"))); graphics.add(new ImageView(new Image("/resources/zButton.png")));  
+        graphics.add(new ImageView(new Image("/resources/eButton.png"))); 
+        graphics.add(new ImageView(new Image("/resources/minusButton.png"))); graphics.add(new ImageView(new Image("/resources/xPrimeButton.png")));
+        graphics.add(new ImageView(new Image("/resources/yPrimeButton.png"))); graphics.add(new ImageView(new Image("/resources/zPrimeButton.png")));
+        graphics.add(new ImageView(new Image("/resources/ePrimeButton.png")));
 
         
-        rMove.setMinSize(45,45); rMove.setMaxSize(45,45);
-        rPMove.setMinSize(45,45); rPMove.setMaxSize(45,45);
-        rWMove.setMinSize(45,45); rWMove.setMaxSize(45,45);
-        rWPMove.setMinSize(45,45); rWPMove.setMaxSize(45,45);
-        rMove.setGraphic(new ImageView(new Image("/resources/rButton.png")));
-        rPMove.setGraphic(new ImageView(new Image("/resources/rPrimeButton.png")));
-        rWMove.setGraphic(new ImageView(new Image("/resources/rWideButton.png")));
-        rWPMove.setGraphic(new ImageView(new Image("/resources/rWidePrimeButton.png")));
-        
-        uMove.setMinSize(45,45); uMove.setMaxSize(45,45);
-        uPMove.setMinSize(45,45); uPMove.setMaxSize(45,45);
-        uWMove.setMinSize(45,45); uWMove.setMaxSize(45,45);
-        uWPMove.setMinSize(45,45); uWPMove.setMaxSize(45,45);
-        uMove.setGraphic(new ImageView(new Image("/resources/uButton.png")));
-        uPMove.setGraphic(new ImageView(new Image("/resources/uPrimeButton.png")));
-        uWMove.setGraphic(new ImageView(new Image("/resources/uWideButton.png")));
-        uWPMove.setGraphic(new ImageView(new Image("/resources/uWidePrimeButton.png")));
-        
-        lMove.setMinSize(45,45); lMove.setMaxSize(45,45);
-        lPMove.setMinSize(45,45); lPMove.setMaxSize(45,45);
-        lWMove.setMinSize(45,45); lWMove.setMaxSize(45,45);
-        lWPMove.setMinSize(45,45); lWPMove.setMaxSize(45,45);
-        lMove.setGraphic(new ImageView(new Image("/resources/lButton.png")));
-        lPMove.setGraphic(new ImageView(new Image("/resources/lPrimeButton.png")));
-        lWMove.setGraphic(new ImageView(new Image("/resources/lWideButton.png")));
-        lWPMove.setGraphic(new ImageView(new Image("/resources/lWidePrimeButton.png")));
-        
-        dMove.setMinSize(45,45); dMove.setMaxSize(45,45);
-        dPMove.setMinSize(45,45); dPMove.setMaxSize(45,45);
-        dWMove.setMinSize(45,45); dWMove.setMaxSize(45,45);
-        dWPMove.setMinSize(45,45); dWPMove.setMaxSize(45,45);
-        dMove.setGraphic(new ImageView(new Image("/resources/dButton.png")));
-        dPMove.setGraphic(new ImageView(new Image("/resources/dPrimeButton.png")));
-        dWMove.setGraphic(new ImageView(new Image("/resources/dWideButton.png")));
-        dWPMove.setGraphic(new ImageView(new Image("/resources/dWidePrimeButton.png")));
-        
-        fMove.setMinSize(45,45); fMove.setMaxSize(45,45);
-        fPMove.setMinSize(45,45); fPMove.setMaxSize(45,45);
-        fMove.setGraphic(new ImageView(new Image("/resources/fButton.png")));
-        fPMove.setGraphic(new ImageView(new Image("/resources/fPrimeButton.png")));
-        
-        bMove.setMinSize(45,45); bMove.setMaxSize(45,45);
-        bPMove.setMinSize(45,45); bPMove.setMaxSize(45,45);
-        bMove.setGraphic(new ImageView(new Image("/resources/bButton.png")));
-        bPMove.setGraphic(new ImageView(new Image("/resources/bPrimeButton.png")));
-        
-        mMove.setMinSize(45,45); mMove.setMaxSize(45,45);
-        mPMove.setMinSize(45,45); mPMove.setMaxSize(45,45);
-        mMove.setGraphic(new ImageView(new Image("/resources/mButton.png")));
-        mPMove.setGraphic(new ImageView(new Image("/resources/mPrimeButton.png")));
-        
-        blankButton.setMinSize(45,45); blankButton.setMaxSize(45,45);
-        blankButton2.setMinSize(45,45); blankButton2.setMaxSize(45,45);
-        blankButton.setGraphic(new ImageView(new Image("/resources/blankButton.png")));
-        blankButton2.setGraphic(new ImageView(new Image("/resources/blankButton.png")));
-        
-        xRotate.setMinSize(45,45); xRotate.setMaxSize(45,45);
-        xPRotate.setMinSize(45,45); xPRotate.setMaxSize(45,45);
-        xRotate.setGraphic(new ImageView(new Image("/resources/xButton.png")));
-        xPRotate.setGraphic(new ImageView(new Image("/resources/xPrimeButton.png")));
-        
-        yRotate.setMinSize(45,45); yRotate.setMaxSize(45,45);
-        yPRotate.setMinSize(45,45); yPRotate.setMaxSize(45,45);
-        yRotate.setGraphic(new ImageView(new Image("/resources/yButton.png")));
-        yPRotate.setGraphic(new ImageView(new Image("/resources/yPrimeButton.png")));
-        
-        zRotate.setMinSize(45,45); zRotate.setMaxSize(45,45);
-        zPRotate.setMinSize(45,45); zPRotate.setMaxSize(45,45);
-        zRotate.setGraphic(new ImageView(new Image("/resources/zButton.png")));
-        zPRotate.setGraphic(new ImageView(new Image("/resources/zPrimeButton.png")));
-        
-        zoomPlus.setMinSize(45,45); zoomPlus.setMaxSize(45,45);
-        zoomMinus.setMinSize(45,45); zoomMinus.setMaxSize(45,45);
-        zoomPlus.setGraphic(new ImageView(new Image("/resources/plusButton.png")));
-        zoomMinus.setGraphic(new ImageView(new Image("/resources/minusButton.png")));
+        for (int i = 0; i < moves.size(); i++) {
+        	moves.get(i).setMinSize(45,45); moves.get(i).setMaxSize(45,45);
+        	moves.get(i).setGraphic(graphics.get(i));
+        }
+
 
         Separator sep = new Separator(); sep.setVisible(false);
         Separator sep2 = new Separator(); sep2.setVisible(false);
         Separator sep3 = new Separator(); sep3.setVisible(false);
         Separator sep4 = new Separator(); sep4.setVisible(false);
-        ToolBar toolBar = new ToolBar(button, scramble, sep, sep2, helpMenu, sep3, sep4, timerLab);
+       
+        sep2.setPrefWidth(10);
+        sep3.setPrefWidth(50);
+        sep4.setPrefWidth(35);
+        
+        ToolBar toolBar = new ToolBar(sep, scramble, sep2, enter, sep3, timerLab, sep4, helpMenu);
         toolBar.setOrientation(Orientation.HORIZONTAL);
         //toolBar.setBackground(new Background(new BackgroundFill(Color.rgb(51,51,51), CornerRadii.EMPTY, Insets.EMPTY)));
         toolBar.setBackground(new Background(new BackgroundImage(new Image("/resources/timerFrame.png"),
@@ -399,14 +376,14 @@ public class RubiksCube extends Application {
                 BackgroundSize.DEFAULT)));
         pane.setBottom(toolBar);
         
-        HBox h1 = new HBox(); h1.getChildren().addAll(rMove, rPMove, rWMove, rWPMove);
-        HBox h2 = new HBox(); h2.getChildren().addAll(uMove, uPMove, uWMove, uWPMove); 
-        HBox h3 = new HBox(); h3.getChildren().addAll(fMove, fPMove, blankButton, mMove);
-        HBox h4 = new HBox(); h4.getChildren().addAll(bMove, bPMove, blankButton2, mPMove);
-        HBox h5 = new HBox(); h5.getChildren().addAll(lMove, lPMove, lWMove, lWPMove); 
-        HBox h6 = new HBox(); h6.getChildren().addAll(dMove, dPMove, dWMove, dWPMove);
-        HBox h7 = new HBox(); h7.getChildren().addAll(zoomPlus, xRotate, yRotate, zRotate);
-        HBox h8 = new HBox(); h8.getChildren().addAll(zoomMinus, xPRotate, yPRotate, zPRotate);
+        HBox h1 = new HBox(); h1.getChildren().addAll(rMove, rPMove, rWMove, rWPMove, mMove);
+        HBox h2 = new HBox(); h2.getChildren().addAll(uMove, uPMove, uWMove, uWPMove, mPMove); 
+        HBox h3 = new HBox(); h3.getChildren().addAll(fMove, fPMove, fWMove, fWPMove, blankButton);
+        HBox h4 = new HBox(); h4.getChildren().addAll(bMove, bPMove, bWMove, bWPMove, sMove);
+        HBox h5 = new HBox(); h5.getChildren().addAll(lMove, lPMove, lWMove, lWPMove, sPMove); 
+        HBox h6 = new HBox(); h6.getChildren().addAll(dMove, dPMove, dWMove, dWPMove, blankButton2);
+        HBox h7 = new HBox(); h7.getChildren().addAll(zoomPlus, xRotate, yRotate, zRotate, eMove);
+        HBox h8 = new HBox(); h8.getChildren().addAll(zoomMinus, xPRotate, yPRotate, zPRotate, ePMove);
         
         h1.setSpacing(12); h1.setPadding(new Insets(10, 12, 0, 12));
         h2.setSpacing(12); h2.setPadding(new Insets(10, 12, 0, 12));
@@ -422,12 +399,12 @@ public class RubiksCube extends Application {
         toolBarRight.setBackground(new Background(new BackgroundFill(Color.rgb(51,51,51), CornerRadii.EMPTY, Insets.EMPTY)));
         pane.setRight(toolBarRight);
         pane.setPrefSize(300, 300);
-        //toolBar.setWidth(100);
+        toolBar.setMinWidth(810);
         toolBar.setPrefHeight(100);
-        //toolBarRight.setPrefWidth(250);
+       // toolBarRight.setMinWidth(320);
         toolBarRight.setPrefHeight(700);
         
-        button.setOnAction(new EventHandler<ActionEvent>() {
+        enter.setOnAction(new EventHandler<ActionEvent>() {
 
 			@Override
 			public void handle(ActionEvent arg0) {
@@ -453,12 +430,20 @@ public class RubiksCube extends Application {
         
         fMove.setOnAction(actionEvent ->  {firstCheck(); makeFmove(false);});
         fPMove.setOnAction(actionEvent ->  {firstCheck(); makeFmove(true);});
+        fWMove.setOnAction(actionEvent ->  {firstCheck(); makeFwideMove(false);});
+        fWPMove.setOnAction(actionEvent ->  {firstCheck(); makeFwideMove(true);});
 
         bMove.setOnAction(actionEvent ->  {firstCheck(); makeBmove(false);});
         bPMove.setOnAction(actionEvent ->  {firstCheck(); makeBmove(true);});
+        bWMove.setOnAction(actionEvent ->  {firstCheck(); makeBwideMove(false);});
+        bWPMove.setOnAction(actionEvent ->  {firstCheck(); makeBwideMove(true);});
         
         mMove.setOnAction(actionEvent ->  {firstCheck(); makeMmove(false);});
-        mPMove.setOnAction(actionEvent ->  {firstCheck(); makeMmove(true);}); 
+        mPMove.setOnAction(actionEvent ->  {firstCheck(); makeMmove(true);});
+        sMove.setOnAction(actionEvent ->  {firstCheck(); makeSmove(false);});
+        sPMove.setOnAction(actionEvent ->  {firstCheck(); makeSmove(true);});
+        eMove.setOnAction(actionEvent ->  {firstCheck(); makeEmove(false);});
+        ePMove.setOnAction(actionEvent ->  {firstCheck(); makeEmove(true);});
 
         lMove.setOnAction(actionEvent ->  {firstCheck(); makeLmove(false);});
         lPMove.setOnAction(actionEvent ->  {firstCheck(); makeLmove(true);});
@@ -520,6 +505,8 @@ public class RubiksCube extends Application {
 	        	case COMMA: makeUwideMove(false); break;
 	        	case PERIOD: makeMmove(true); break;
 	        	case SLASH: makeDwideMove(true); break;
+	        	case DIGIT9: makeBwideMove(false); break;
+	        	case DIGIT0: makeBwideMove(true); break;
 	        	default: break;
 
         	}});
@@ -534,7 +521,7 @@ public class RubiksCube extends Application {
     }
     
     private void zoom(boolean dir) {
-    	System.out.println("Current: "+current);
+    	//System.out.println("Current: "+current);
     	if (dir) {
     		if (current != MINIMUM) {
     			camera.getTransforms().add(new Translate (0, 0, 0.5));
@@ -573,7 +560,7 @@ public class RubiksCube extends Application {
 			mins++;
 			secs = 0;
 		}
-		lbl.setText("       "+(((mins/10) == 0) ? "" : "") + mins + ":"
+		lbl.setText((((mins/10) == 0) ? "" : "") + mins + ":"
 		 + (((secs/10) == 0) ? "0" : "") + secs + "." 
 			+ (((millis/10) == 0) ? "00" : (((millis/100) == 0) ? "0" : "")) + millis++);
     }
@@ -763,7 +750,6 @@ public class RubiksCube extends Application {
 		isSolved();
 		
 	}
-	
 	private void makeUmove(boolean prime) {
 		int elem = 0;
 		for (int x = 0; x < upFacePoints.size(); x++) {
@@ -1021,13 +1007,13 @@ public class RubiksCube extends Application {
 	}
 	
 	private void makeSmove(boolean prime) {
-		for (int x = 0; x < middleSlicePoints.size(); x++) {
-        	MeshView msh = (MeshView) sceneRoot.getChildren().get(x+18);
-        	Point3D pt = middleSlicePoints.get(x);
+		for (int x = 0; x < standingSlicePoints.size(); x++) {
+        	MeshView msh = (MeshView) sceneRoot.getChildren().get((x*2)+18);
+        	Point3D pt = standingSlicePoints.get(x);
         	msh.getTransforms().clear();
         	msh.getTransforms().add(new Translate(pt.getX(), pt.getY(), pt.getZ()));
         	RotateTransition rt = new RotateTransition(Duration.millis(300), msh);
-        	rt.setAxis(Rotate.X_AXIS);
+        	rt.setAxis(Rotate.Z_AXIS);
         	if (prime) {
         		rt.setByAngle(-90);
         	} else {
@@ -1036,16 +1022,105 @@ public class RubiksCube extends Application {
         	rt.setCycleCount(1);
     		rt.setOnFinished(e -> buildMesh(sceneRoot, mat, meshGroup));
         	rt.play();
-        	sceneRoot.getChildren().set(x+18, msh);
+        	sceneRoot.getChildren().set((x*2)+18, msh);
         }
 		
 		if (prime) {
+			int[] temp1 = CLU; int[] temp2 = CU;
+			CLU = CRU; CU = CR; CRU = CRD; CR = CD; CRD = CLD; CD = CL; CLD = temp1; CL = temp2;
+			Point3D ptemp1 = pCLU; Point3D ptemp2 = pCU;
+			pCLU = pCRU; pCU = pCR; pCRU = pCRD; pCR = pCD; pCRD = pCLD; pCD = pCL; pCLD = ptemp1; pCL = ptemp2;
+			cycleColours(CLU, R_FACE, U_FACE, L_FACE);
+			cycleColours(CU, R_FACE, U_FACE, L_FACE);
+			cycleColours(CRU, D_FACE, R_FACE, U_FACE);
+			cycleColours(CR, D_FACE, R_FACE, U_FACE);
+			cycleColours(CRD, L_FACE, D_FACE, R_FACE);
+			cycleColours(CD, L_FACE, D_FACE, R_FACE);
+			cycleColours(CLD, U_FACE, L_FACE, D_FACE);
+			cycleColours(CL, U_FACE, L_FACE, D_FACE);
 			
 		} else {
-			//pCLD, pCD, pCRD, pCL, pC, pCR, pCLU, pCU, pCRU
+			int[] temp1 = CLU; int[] temp2 = CL;
+			CLU = CLD; CL = CD; CLD = CRD; CD = CR; CRD = CRU; CR = CU; CRU = temp1; CU = temp2;
+			Point3D ptemp1 = pCLU; Point3D ptemp2 = pCL;
+			pCLU = pCLD; pCL = pCD; pCLD = pCRD; pCD = pCR; pCRD = pCRU; pCR = pCU; pCRU = ptemp1; pCU = ptemp2;
+			cycleColours(CLU, D_FACE, L_FACE, U_FACE);
+			cycleColours(CL, D_FACE, L_FACE, U_FACE);
+			cycleColours(CLD, R_FACE, D_FACE, L_FACE);
+			cycleColours(CD, R_FACE, D_FACE, L_FACE);
+			cycleColours(CRD, U_FACE, R_FACE, D_FACE);
+			cycleColours(CR, U_FACE, R_FACE, D_FACE);
+			cycleColours(CRU, L_FACE, U_FACE, R_FACE);
+			cycleColours(CU, L_FACE, U_FACE, R_FACE);			
 		}
+		patternFaceF = Arrays.asList(    		
+	            FLD, FD, FRD, FL, F, FR, FLU, FU, FRU,
+	            CLD, CD, CRD, CL, C, CR, CLU, CU, CRU,
+	            BLD, BD, BRD, BL, B, BR, BLU, BU, BRU);	
 		
+		isSolved();		
 	}
+	private void makeEmove(boolean prime) {
+		int elem = 0;
+		for (int x = 0; x < equatorSlicePoints.size(); x++) {
+			if (x < 3) { elem = (x*2)+6; }
+			else if (x < 6 ) { elem = (x*2)+18; }
+			else { elem = (x*2)+30;};
+        	MeshView msh = (MeshView) sceneRoot.getChildren().get(elem);
+        	Point3D pt = equatorSlicePoints.get(x);
+        	msh.getTransforms().clear();
+        	msh.getTransforms().add(new Translate(pt.getX(), pt.getY(), pt.getZ()));
+        	RotateTransition rt = new RotateTransition(Duration.millis(300), msh);
+        	rt.setAxis(Rotate.Y_AXIS);
+        	if (prime) {
+        		rt.setByAngle(90);
+        	} else {
+        		rt.setByAngle(-90);
+        	}
+        	rt.setCycleCount(1);
+    		rt.setOnFinished(e -> buildMesh(sceneRoot, mat, meshGroup));
+        	rt.play();
+        	sceneRoot.getChildren().set(elem, msh);
+        }
+		
+		if (prime) {
+			int[] temp1 = F; int[] temp2 = FR; Point3D ptemp1 = pF; Point3D ptemp2 = pFR;
+			F = CR; CR = B; B = CL; CL = temp1;
+			FR = BR; BR = BL; BL = FL; FL = temp2;
+			pF = pCR; pCR = pB; pB = pCL; pCL = ptemp1;
+			pFR = pBR; pBR = pBL; pBL = pFL; pFL = ptemp2;
+			cycleColours(FL, R_FACE, F_FACE, L_FACE);
+			cycleColours(F, R_FACE, F_FACE, L_FACE);
+			cycleColours(FR, B_FACE, R_FACE, F_FACE);
+			cycleColours(CR, B_FACE, R_FACE, F_FACE);
+			cycleColours(BR, L_FACE, B_FACE, R_FACE);
+			cycleColours(B, L_FACE, B_FACE, R_FACE);
+			cycleColours(BL, F_FACE, L_FACE, B_FACE);
+			cycleColours(CL, F_FACE, L_FACE, B_FACE);
+		} else {
+			int[] temp1 = F; int[] temp2 = FR;
+			F = CL; CL = B; B = CR; CR = temp1;
+			FR = FL; FL = BL; BL = BR; BR = temp2;
+			Point3D ptemp1 = pF; Point3D ptemp2 = pFR;
+			pF = pCL; pCL = pB; pB = pCR; pCR = ptemp1;
+			pFR = pFL; pFL = pBL; pBL = pBR; pBR = ptemp2;
+			cycleColours(F, B_FACE, L_FACE, F_FACE);
+			cycleColours(FR, L_FACE, F_FACE, R_FACE);
+			cycleColours(CR, L_FACE, F_FACE, R_FACE);
+			cycleColours(BR, F_FACE, R_FACE, B_FACE);
+			cycleColours(B, F_FACE, R_FACE, B_FACE);
+			cycleColours(BL, R_FACE, B_FACE, L_FACE);
+			cycleColours(CL, R_FACE, B_FACE, L_FACE);
+			cycleColours(FL, B_FACE, L_FACE, F_FACE);
+		}
+		patternFaceF = Arrays.asList(    		
+	            FLD, FD, FRD, FL, F, FR, FLU, FU, FRU,
+	            CLD, CD, CRD, CL, C, CR, CLU, CU, CRU,
+	            BLD, BD, BRD, BL, B, BR, BLU, BU, BRU);	
+		
+		isSolved();
+	}
+
 	private void makeXrotation(boolean prime) {
 		for (int x = 0; x < pointsFaceF.size(); x++) {
         	MeshView msh = (MeshView) sceneRoot.getChildren().get(x*2);
@@ -1732,38 +1807,91 @@ public class RubiksCube extends Application {
 	
 	private void makeFwideMove(boolean prime) {
 		for (int x = 0; x < frontWideFacePoints.size(); x++) {
-        	MeshView msh = (MeshView) sceneRoot.getChildren().get(x);
+        	MeshView msh = (MeshView) sceneRoot.getChildren().get(x*2);
         	Point3D pt = frontWideFacePoints.get(x);
         	msh.getTransforms().clear();
         	msh.getTransforms().add(new Translate(pt.getX(), pt.getY(), pt.getZ()));
         	RotateTransition rt = new RotateTransition(Duration.millis(300), msh);
-        	rt.setAxis(Rotate.Y_AXIS);
+        	rt.setAxis(Rotate.Z_AXIS);
         	if (prime) {
-        		rt.setByAngle(90);
-        	} else {
         		rt.setByAngle(-90);
+        	} else {
+        		rt.setByAngle(90);
         	}
         	rt.setCycleCount(1);
     		rt.setOnFinished(e -> buildMesh(sceneRoot, mat, meshGroup));
         	rt.play();
-        	sceneRoot.getChildren().set(x, msh);
+        	sceneRoot.getChildren().set(x*2, msh);
         }
 		
 		if (prime) {
-			
+			int[] temp1 = FLU; int[] temp2 = FU;
+			FLU = FRU; FU = FR; FRU = FRD; FR = FD; FRD = FLD; FD = FL; FLD = temp1; FL = temp2;
+			Point3D ptemp1 = pFLU; Point3D ptemp2 = pFU;
+			pFLU = pFRU; pFU = pFR; pFRU = pFRD; pFR = pFD; pFRD = pFLD; pFD = pFL; pFLD = ptemp1; pFL = ptemp2;
+			cycleColours(FRU, D_FACE, R_FACE, U_FACE);
+			cycleColours(FR, D_FACE, R_FACE, U_FACE);
+			cycleColours(FRD, L_FACE, D_FACE, R_FACE);
+			cycleColours(FD, L_FACE, D_FACE, R_FACE);
+			cycleColours(FLD, U_FACE, L_FACE, D_FACE);
+			cycleColours(FL, U_FACE, L_FACE, D_FACE);
+			cycleColours(FLU, R_FACE, U_FACE, L_FACE);
+			cycleColours(FU, R_FACE, U_FACE, L_FACE);
+			temp1 = CLU; temp2 = CU;
+			CLU = CRU; CU = CR; CRU = CRD; CR = CD; CRD = CLD; CD = CL; CLD = temp1; CL = temp2;
+			ptemp1 = pCLU; ptemp2 = pCU;
+			pCLU = pCRU; pCU = pCR; pCRU = pCRD; pCR = pCD; pCRD = pCLD; pCD = pCL; pCLD = ptemp1; pCL = ptemp2;
+			cycleColours(CLU, R_FACE, U_FACE, L_FACE);
+			cycleColours(CU, R_FACE, U_FACE, L_FACE);
+			cycleColours(CRU, D_FACE, R_FACE, U_FACE);
+			cycleColours(CR, D_FACE, R_FACE, U_FACE);
+			cycleColours(CRD, L_FACE, D_FACE, R_FACE);
+			cycleColours(CD, L_FACE, D_FACE, R_FACE);
+			cycleColours(CLD, U_FACE, L_FACE, D_FACE);
+			cycleColours(CL, U_FACE, L_FACE, D_FACE);
+		} else {
+			int[] temp1 = CLU; int[] temp2 = CL;
+			CLU = CLD; CL = CD; CLD = CRD; CD = CR; CRD = CRU; CR = CU; CRU = temp1; CU = temp2;
+			Point3D ptemp1 = pCLU; Point3D ptemp2 = pCL;
+			pCLU = pCLD; pCL = pCD; pCLD = pCRD; pCD = pCR; pCRD = pCRU; pCR = pCU; pCRU = ptemp1; pCU = ptemp2;
+			cycleColours(CLU, D_FACE, L_FACE, U_FACE);
+			cycleColours(CL, D_FACE, L_FACE, U_FACE);
+			cycleColours(CLD, R_FACE, D_FACE, L_FACE);
+			cycleColours(CD, R_FACE, D_FACE, L_FACE);
+			cycleColours(CRD, U_FACE, R_FACE, D_FACE);
+			cycleColours(CR, U_FACE, R_FACE, D_FACE);
+			cycleColours(CRU, L_FACE, U_FACE, R_FACE);
+			cycleColours(CU, L_FACE, U_FACE, R_FACE);
+			temp1 = FU; temp2 = FLU;
+			FU = FL; FLU = FLD; FL = FD; FLD = FRD; FD = FR; FRD = FRU; FR = temp1; FRU = temp2;
+			ptemp1 = pFU; ptemp2 = pFLU;
+			pFU = pFL; pFLU = pFLD; pFL = pFD; pFLD = pFRD; pFD = pFR; pFRD = pFRU; pFR = ptemp1; pFRU = ptemp2;
+			cycleColours(FRU, L_FACE, U_FACE, R_FACE);
+			cycleColours(FR, L_FACE, U_FACE, R_FACE);
+			cycleColours(FRD, U_FACE, R_FACE, D_FACE);
+			cycleColours(FD, U_FACE, R_FACE, D_FACE);
+			cycleColours(FLD, R_FACE, D_FACE, L_FACE);
+			cycleColours(FL, R_FACE, D_FACE, L_FACE);
+			cycleColours(FLU, D_FACE, L_FACE, U_FACE);
+			cycleColours(FU, D_FACE, L_FACE, U_FACE);
 		}
 		
+		patternFaceF = Arrays.asList(    		
+	            FLD, FD, FRD, FL, F, FR, FLU, FU, FRU,
+	            CLD, CD, CRD, CL, C, CR, CLU, CU, CRU,
+	            BLD, BD, BRD, BL, B, BR, BLU, BU, BRU);
 		
+		isSolved();
 	}
 	
 	private void makeBwideMove(boolean prime) {
 		for (int x = 0; x < backWideFacePoints.size(); x++) {
-        	MeshView msh = (MeshView) sceneRoot.getChildren().get(x+18);
+        	MeshView msh = (MeshView) sceneRoot.getChildren().get((x*2)+18);
         	Point3D pt = backWideFacePoints.get(x);
         	msh.getTransforms().clear();
         	msh.getTransforms().add(new Translate(pt.getX(), pt.getY(), pt.getZ()));
         	RotateTransition rt = new RotateTransition(Duration.millis(300), msh);
-        	rt.setAxis(Rotate.Y_AXIS);
+        	rt.setAxis(Rotate.Z_AXIS);
         	if (prime) {
         		rt.setByAngle(90);
         	} else {
@@ -1772,12 +1900,68 @@ public class RubiksCube extends Application {
         	rt.setCycleCount(1);
     		rt.setOnFinished(e -> buildMesh(sceneRoot, mat, meshGroup));
         	rt.play();
-        	sceneRoot.getChildren().set(x+18, msh);
+        	sceneRoot.getChildren().set((x*2)+18, msh);
         }
 		
 		if (prime) {
+			int[] temp1 = CLU; int[] temp2 = CL;
+			CLU = CLD; CL = CD; CLD = CRD; CD = CR; CRD = CRU; CR = CU; CRU = temp1; CU = temp2;
+			Point3D ptemp1 = pCLU; Point3D ptemp2 = pCL;
+			pCLU = pCLD; pCL = pCD; pCLD = pCRD; pCD = pCR; pCRD = pCRU; pCR = pCU; pCRU = ptemp1; pCU = ptemp2;
+			cycleColours(CLU, D_FACE, L_FACE, U_FACE);
+			cycleColours(CL, D_FACE, L_FACE, U_FACE);
+			cycleColours(CLD, R_FACE, D_FACE, L_FACE);
+			cycleColours(CD, R_FACE, D_FACE, L_FACE);
+			cycleColours(CRD, U_FACE, R_FACE, D_FACE);
+			cycleColours(CR, U_FACE, R_FACE, D_FACE);
+			cycleColours(CRU, L_FACE, U_FACE, R_FACE);
+			cycleColours(CU, L_FACE, U_FACE, R_FACE);	
+			temp1 = BLD; temp2 = BD;
+			BLD = BRD; BD = BR; BRD = BRU; BR = BU; BRU = BLU; BU = BL; BLU = temp1; BL = temp2;
+			ptemp1 = pBLD; ptemp2 = pBD;
+			pBLD = pBRD; pBD = pBR; pBRD = pBRU; pBR = pBU; pBRU = pBLU; pBU = pBL; pBLU = ptemp1; pBL = ptemp2;
+			cycleColours(BLU, D_FACE, L_FACE, U_FACE);
+			cycleColours(BU, D_FACE, L_FACE, U_FACE);
+			cycleColours(BRU, L_FACE, U_FACE, R_FACE);
+			cycleColours(BR, L_FACE, U_FACE, R_FACE);
+			cycleColours(BRD, U_FACE, R_FACE, D_FACE);
+			cycleColours(BD, U_FACE, R_FACE, D_FACE);
+			cycleColours(BLD, R_FACE, D_FACE, L_FACE);
+			cycleColours(BL, R_FACE, D_FACE, L_FACE);
+		} else {
+			int[] temp1 = CLU; int[] temp2 = CU;
+			CLU = CRU; CU = CR; CRU = CRD; CR = CD; CRD = CLD; CD = CL; CLD = temp1; CL = temp2;
+			Point3D ptemp1 = pCLU; Point3D ptemp2 = pCU;
+			pCLU = pCRU; pCU = pCR; pCRU = pCRD; pCR = pCD; pCRD = pCLD; pCD = pCL; pCLD = ptemp1; pCL = ptemp2;
+			cycleColours(CLU, R_FACE, U_FACE, L_FACE);
+			cycleColours(CU, R_FACE, U_FACE, L_FACE);
+			cycleColours(CRU, D_FACE, R_FACE, U_FACE);
+			cycleColours(CR, D_FACE, R_FACE, U_FACE);
+			cycleColours(CRD, L_FACE, D_FACE, R_FACE);
+			cycleColours(CD, L_FACE, D_FACE, R_FACE);
+			cycleColours(CLD, U_FACE, L_FACE, D_FACE);
+			cycleColours(CL, U_FACE, L_FACE, D_FACE);
+			temp1 = BLU; temp2 = BU;
+			BLU = BRU; BU = BR; BRU = BRD; BR = BD; BRD = BLD; BD = BL; BLD = temp1; BL = temp2;
+			ptemp1 = pBLU; ptemp2 = pBU;
+			pBLU = pBRU; pBU = pBR; pBRU = pBRD; pBR = pBD; pBRD = pBLD; pBD = pBL; pBLD = ptemp1; pBL = ptemp2;
+			cycleColours(BLU, R_FACE, U_FACE, L_FACE);
+			cycleColours(BL, R_FACE, U_FACE, L_FACE);
+			cycleColours(BLD, U_FACE, L_FACE, D_FACE);
+			cycleColours(BD, U_FACE, L_FACE, D_FACE);
+			cycleColours(BRD, L_FACE, D_FACE, R_FACE);
+			cycleColours(BR, L_FACE, D_FACE, R_FACE);
+			cycleColours(BRU, D_FACE, R_FACE, U_FACE);
+			cycleColours(BU, D_FACE, R_FACE, U_FACE);
 			
 		}
+		
+		patternFaceF = Arrays.asList(    		
+	            FLD, FD, FRD, FL, F, FR, FLU, FU, FRU,
+	            CLD, CD, CRD, CL, C, CR, CLU, CU, CRU,
+	            BLD, BD, BRD, BL, B, BR, BLU, BU, BRU);
+		
+		isSolved();
 		
 		
 	}
