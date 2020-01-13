@@ -1,4 +1,4 @@
-package virtualcube;
+package tutorial;
 
 import java.awt.RenderingHints.Key;
 import java.util.ArrayList;
@@ -55,7 +55,41 @@ import javafx.scene.transform.Translate;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
-public class RubiksCube extends Application {
+public class UserInterface extends Application {
+	
+	/*
+	 * User Interface would ideally look something like this:
+	 * Solved cube is shown to the user by default. User is first asked if they know the notation of a Rubik's Cube
+	 * If they do, then they can skip this section. Otherwise, a short animation can be shown displaying each move that can be made on the cube
+	 * Perhaps some buttons could appear to let them try the moves themselves?
+	 * Once they're happy, they can proceed.
+	 * 
+	 * I might need some form of colour scheme selection? At the moment, the colours for faces are hard coded but are irrelevant to the actual functionality
+	 * So implementing a way for a user to enter their own colour scheme isn't out of the question. Probably just going to assume they use standard for now though.
+	 * 
+	 * The user is asked if their physical cube is scrambled or solved. We're assuming most people will have a scrambled puzzle - if it's solved, they can
+	 * be instructed to scramble it and proceed entering its state. This will *probably* be easier than getting them to execute a scramble in notation.
+	 * I will most likely have to allow the user multiple attempts at this.
+	 * 
+	 * From here on we're assuming that the scramble input onto the cube on the screen matches the cube in their hands.
+	 * Here, we can actually compute the solution for the puzzle. It will likely follow these steps:
+	 * 
+	 * 1) Solve cross by means of placing edge above edge location and either inserting with a half turn or some sledge variant.
+	 * 2) Solve corners of the first layer by placing them above their location and using RDRD style trigger.
+	 * 3) Solve edges of the second layer by placing them above their location and using U R U R' U' F' U' F and mirror.
+	 * 4) I can either teach them rudimentary OLL+PLL or go for a full beginner solution by solving edges and corners separately. I haven't decided yet.
+	 * 
+	 * I would like to allow users to move back and forward between steps as much as they like. However, implementing Get-Out-Of-Jail-Free mechanisms to resolve their
+	 * probable fuck ups will be far too unpredictable to actually implement. As such, the user will probably have to just start again if they do something wrong.
+	 * So I have to make my tutorial simple enough to understand so that fuck ups are as infrequent as possible. Having to restart often will probably put a lot
+	 * of people off.
+	 * 
+	 * 
+	 * 
+	 * 
+	 */
+	
+	
 	
     public static final int RED     = 0;
     public static final int GREEN   = 1;
@@ -249,7 +283,7 @@ public class RubiksCube extends Application {
     public void start(Stage primaryStage) {
 
         SubScene subScene = new SubScene(sceneRoot, 500, 500, true, SceneAntialiasing.BALANCED);
-        subScene.setFill(Color.rgb(66,66,66));
+        subScene.setFill(Color.rgb(51,51,51));
         Translate pivot = new Translate();
         Rotate ytate = new Rotate(0, Rotate.Y_AXIS);
         camera = new PerspectiveCamera(true);
@@ -286,284 +320,32 @@ public class RubiksCube extends Application {
         
         BorderPane pane = new BorderPane();
         pane.setCenter(subScene);
-        Button enter = new Button();
-        enter.setGraphic(new ImageView(new Image("/resources/enterButton.png")));
-        enter.setMaxSize(107,60); enter.setMinSize(107, 60);
-        TextField scramble = new TextField();
-        scramble.setPromptText("Enter a scramble here");
-        scramble.setPrefWidth(250);
-        //scramble.setPrefHeight(50);
-        Button helpMenu = new Button();
-        helpMenu.setGraphic(new ImageView(new Image("/resources/helpButton.png")));
-        helpMenu.setMaxSize(100,55); helpMenu.setMinSize(100, 55);
-        Text timerLab = new Text("0:00.000");
-        timerLab.setFont(new Font(45));
-        timer = new Timeline(new KeyFrame(Duration.millis(1), new EventHandler<ActionEvent>() {
-        	@Override
-        	public void handle(ActionEvent event) {
-        		update(timerLab);
-        	}
-        }));
-        timer.setCycleCount(Timeline.INDEFINITE);
-        timer.setAutoReverse(false);
-                
-        Button rMove = new Button(); Button rPMove = new Button(); Button rWMove = new Button(); Button rWPMove = new Button(); Button mMove = new Button();
-        Button uMove = new Button(); Button uPMove = new Button(); Button uWMove = new Button(); Button uWPMove = new Button(); Button mPMove = new Button();
-        Button fMove = new Button(); Button fPMove = new Button(); Button fWMove = new Button(); Button fWPMove = new Button(); Button blankButton = new Button(); 
-        Button bMove = new Button(); Button bPMove = new Button(); Button bWMove = new Button(); Button bWPMove = new Button(); Button sMove = new Button(); 
-        Button lMove = new Button(); Button lPMove = new Button(); Button lWMove = new Button(); Button lWPMove = new Button(); Button sPMove = new Button();
-        Button dMove = new Button(); Button dPMove = new Button(); Button dWMove = new Button(); Button dWPMove = new Button(); Button blankButton2 = new Button();
-        Button zoomPlus = new Button(); Button xRotate = new Button(); Button yRotate = new Button(); Button zRotate = new Button(); Button eMove = new Button();
-        Button zoomMinus = new Button(); Button xPRotate = new Button(); Button yPRotate = new Button(); Button zPRotate = new Button(); Button ePMove = new Button();
-        
-        ArrayList<Button> moves = new ArrayList<Button>();
-        moves.add(rMove); moves.add(rPMove); moves.add(rWMove); moves.add(rWPMove); moves.add(mMove);
-        moves.add(uMove); moves.add(uPMove); moves.add(uWMove); moves.add(uWPMove); moves.add(mPMove);
-        moves.add(fMove); moves.add(fPMove); moves.add(fWMove); moves.add(fWPMove); moves.add(blankButton);
-        moves.add(bMove); moves.add(bPMove); moves.add(bWMove); moves.add(bWPMove); moves.add(sMove);
-        moves.add(lMove); moves.add(lPMove); moves.add(lWMove); moves.add(lWPMove); moves.add(sPMove);
-        moves.add(dMove); moves.add(dPMove); moves.add(dWMove); moves.add(dWPMove); moves.add(blankButton2);
-        moves.add(zoomPlus); moves.add(xRotate); moves.add(yRotate); moves.add(zRotate); moves.add(eMove);
-        moves.add(zoomMinus); moves.add(xPRotate); moves.add(yPRotate); moves.add(zPRotate); moves.add(ePMove);
-        
-        ArrayList<ImageView> graphics = new ArrayList<ImageView>();
-        graphics.add(new ImageView(new Image("/resources/rButton.png"))); graphics.add(new ImageView(new Image("/resources/rPrimeButton.png")));
-        graphics.add(new ImageView(new Image("/resources/rWideButton.png"))); graphics.add(new ImageView(new Image("/resources/rWidePrimeButton.png")));
-        graphics.add(new ImageView(new Image("/resources/mButton.png")));
-        graphics.add(new ImageView(new Image("/resources/uButton.png"))); graphics.add(new ImageView(new Image("/resources/uPrimeButton.png")));
-        graphics.add(new ImageView(new Image("/resources/uWideButton.png"))); graphics.add(new ImageView(new Image("/resources/uWidePrimeButton.png")));
-        graphics.add(new ImageView(new Image("/resources/mPrimeButton.png")));
-        graphics.add(new ImageView(new Image("/resources/fButton.png"))); graphics.add(new ImageView(new Image("/resources/fPrimeButton.png")));
-        graphics.add(new ImageView(new Image("/resources/fWideButton.png"))); graphics.add(new ImageView(new Image("/resources/fWidePrimeButton.png"))); 
-        graphics.add(new ImageView(new Image("/resources/blankButton.png")));
-        graphics.add(new ImageView(new Image("/resources/bButton.png"))); graphics.add(new ImageView(new Image("/resources/bPrimeButton.png")));
-        graphics.add(new ImageView(new Image("/resources/bWideButton.png"))); graphics.add(new ImageView(new Image("/resources/bWidePrimeButton.png")));
-        graphics.add(new ImageView(new Image("/resources/sButton.png")));
-        graphics.add(new ImageView(new Image("/resources/lButton.png"))); graphics.add(new ImageView(new Image("/resources/lPrimeButton.png")));
-        graphics.add(new ImageView(new Image("/resources/lWideButton.png"))); graphics.add(new ImageView(new Image("/resources/lWidePrimeButton.png")));
-        graphics.add(new ImageView(new Image("/resources/sPrimeButton.png")));
-        graphics.add(new ImageView(new Image("/resources/dButton.png"))); graphics.add(new ImageView(new Image("/resources/dPrimeButton.png")));
-        graphics.add(new ImageView(new Image("/resources/dWideButton.png"))); graphics.add(new ImageView(new Image("/resources/dWidePrimeButton.png")));
-        graphics.add(new ImageView(new Image("/resources/blankButton.png")));
-        graphics.add(new ImageView(new Image("/resources/plusButton.png"))); graphics.add(new ImageView(new Image("/resources/xButton.png")));
-        graphics.add(new ImageView(new Image("/resources/yButton.png"))); graphics.add(new ImageView(new Image("/resources/zButton.png")));  
-        graphics.add(new ImageView(new Image("/resources/eButton.png"))); 
-        graphics.add(new ImageView(new Image("/resources/minusButton.png"))); graphics.add(new ImageView(new Image("/resources/xPrimeButton.png")));
-        graphics.add(new ImageView(new Image("/resources/yPrimeButton.png"))); graphics.add(new ImageView(new Image("/resources/zPrimeButton.png")));
-        graphics.add(new ImageView(new Image("/resources/ePrimeButton.png")));
 
-        
-        for (int i = 0; i < moves.size(); i++) {
-        	moves.get(i).setMinSize(45,45); moves.get(i).setMaxSize(45,45);
-        	moves.get(i).setGraphic(graphics.get(i));
-        }
-
-
-        Separator sep = new Separator(); sep.setVisible(false);
-        Separator sep2 = new Separator(); sep2.setVisible(false);
-        Separator sep3 = new Separator(); sep3.setVisible(false);
-        Separator sep4 = new Separator(); sep4.setVisible(false);
-       
-        sep2.setPrefWidth(10);
-        sep3.setPrefWidth(50);
-        sep4.setPrefWidth(35);
-        
-        ToolBar toolBar = new ToolBar(sep, scramble, sep2, enter, sep3, timerLab, sep4, helpMenu);
+        ToolBar toolBar = new ToolBar();
         toolBar.setOrientation(Orientation.HORIZONTAL);
-        //toolBar.setBackground(new Background(new BackgroundFill(Color.rgb(51,51,51), CornerRadii.EMPTY, Insets.EMPTY)));
-        toolBar.setBackground(new Background(new BackgroundImage(new Image("/resources/timerFrame.png"),
-                BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT,
-                BackgroundSize.DEFAULT)));
+        toolBar.setBackground(new Background(new BackgroundFill(Color.rgb(51,51,51), CornerRadii.EMPTY, Insets.EMPTY)));
         pane.setBottom(toolBar);
-        
-        HBox h1 = new HBox(); h1.getChildren().addAll(rMove, rPMove, rWMove, rWPMove, mMove);
-        HBox h2 = new HBox(); h2.getChildren().addAll(uMove, uPMove, uWMove, uWPMove, mPMove); 
-        HBox h3 = new HBox(); h3.getChildren().addAll(fMove, fPMove, fWMove, fWPMove, blankButton);
-        HBox h4 = new HBox(); h4.getChildren().addAll(bMove, bPMove, bWMove, bWPMove, sMove);
-        HBox h5 = new HBox(); h5.getChildren().addAll(lMove, lPMove, lWMove, lWPMove, sPMove); 
-        HBox h6 = new HBox(); h6.getChildren().addAll(dMove, dPMove, dWMove, dWPMove, blankButton2);
-        HBox h7 = new HBox(); h7.getChildren().addAll(zoomPlus, xRotate, yRotate, zRotate, eMove);
-        HBox h8 = new HBox(); h8.getChildren().addAll(zoomMinus, xPRotate, yPRotate, zPRotate, ePMove);
-        
-        h1.setSpacing(12); h1.setPadding(new Insets(10, 12, 0, 12));
-        h2.setSpacing(12); h2.setPadding(new Insets(10, 12, 0, 12));
-        h3.setSpacing(12); h3.setPadding(new Insets(10, 12, 0, 12));
-        h4.setSpacing(12); h4.setPadding(new Insets(10, 12, 0, 12));
-        h5.setSpacing(12); h5.setPadding(new Insets(10, 12, 0, 12));
-        h6.setSpacing(12); h6.setPadding(new Insets(10, 12, 0, 12));
-        h7.setSpacing(12); h7.setPadding(new Insets(10, 12, 0, 12));
-        h8.setSpacing(12); h8.setPadding(new Insets(10, 12, 0, 12));
-        
-        ToolBar toolBarRight = new ToolBar(h1, h2, h3, h4, h5, h6, h7, h8);
+
+        ToolBar toolBarRight = new ToolBar();
         toolBarRight.setOrientation(Orientation.VERTICAL);
         toolBarRight.setBackground(new Background(new BackgroundFill(Color.rgb(51,51,51), CornerRadii.EMPTY, Insets.EMPTY)));
         pane.setRight(toolBarRight);
         pane.setPrefSize(300, 300);
-        toolBar.setMinWidth(810);
+        //toolBar.setMinWidth(810);
         toolBar.setPrefHeight(100);
        // toolBarRight.setMinWidth(320);
         toolBarRight.setPrefHeight(700);
         
-        enter.setOnAction(new EventHandler<ActionEvent>() {
-
-			@Override
-			public void handle(ActionEvent arg0) {
-				mins = 0; secs = 0; millis = 0;
-				update(timerLab);
-				timer.stop();
-				String scram = scramble.getText();
-				convertScramble(scram);
-				startTimer = true;
-			}
-			
-        });
-
-        rMove.setOnAction(actionEvent ->  {firstCheck(); makeRmove(false);});
-        rPMove.setOnAction(actionEvent ->  {firstCheck(); makeRmove(true);});
-        rWMove.setOnAction(actionEvent ->  {firstCheck(); makeRwideMove(false);});
-        rWPMove.setOnAction(actionEvent ->  {firstCheck(); makeRwideMove(true);});
-        
-        uMove.setOnAction(actionEvent ->  {firstCheck(); makeUmove(false);});
-        uPMove.setOnAction(actionEvent ->  {firstCheck(); makeUmove(true);});
-        uWMove.setOnAction(actionEvent ->  {firstCheck(); makeUwideMove(false);});
-        uWPMove.setOnAction(actionEvent ->  {firstCheck(); makeUwideMove(true);});
-        
-        fMove.setOnAction(actionEvent ->  {firstCheck(); makeFmove(false);});
-        fPMove.setOnAction(actionEvent ->  {firstCheck(); makeFmove(true);});
-        fWMove.setOnAction(actionEvent ->  {firstCheck(); makeFwideMove(false);});
-        fWPMove.setOnAction(actionEvent ->  {firstCheck(); makeFwideMove(true);});
-
-        bMove.setOnAction(actionEvent ->  {firstCheck(); makeBmove(false);});
-        bPMove.setOnAction(actionEvent ->  {firstCheck(); makeBmove(true);});
-        bWMove.setOnAction(actionEvent ->  {firstCheck(); makeBwideMove(false);});
-        bWPMove.setOnAction(actionEvent ->  {firstCheck(); makeBwideMove(true);});
-        
-        mMove.setOnAction(actionEvent ->  {firstCheck(); makeMmove(false);});
-        mPMove.setOnAction(actionEvent ->  {firstCheck(); makeMmove(true);});
-        sMove.setOnAction(actionEvent ->  {firstCheck(); makeSmove(false);});
-        sPMove.setOnAction(actionEvent ->  {firstCheck(); makeSmove(true);});
-        eMove.setOnAction(actionEvent ->  {firstCheck(); makeEmove(false);});
-        ePMove.setOnAction(actionEvent ->  {firstCheck(); makeEmove(true);});
-
-        lMove.setOnAction(actionEvent ->  {firstCheck(); makeLmove(false);});
-        lPMove.setOnAction(actionEvent ->  {firstCheck(); makeLmove(true);});
-        lWMove.setOnAction(actionEvent ->  {firstCheck(); makeLwideMove(false);});
-        lWPMove.setOnAction(actionEvent ->  {firstCheck(); makeLwideMove(true);});
-        
-        dMove.setOnAction(actionEvent ->  {firstCheck(); makeDmove(false);});
-        dPMove.setOnAction(actionEvent ->  {firstCheck(); makeDmove(true);});
-        dWMove.setOnAction(actionEvent ->  {firstCheck(); makeDwideMove(false);});
-        dWPMove.setOnAction(actionEvent ->  {firstCheck(); makeDwideMove(true);});
-        
-        xRotate.setOnAction(actionEvent ->  {makeXrotation(false);});
-        xPRotate.setOnAction(actionEvent ->  {makeXrotation(true);});
-        yRotate.setOnAction(actionEvent ->  {makeYrotation(false);});
-        yPRotate.setOnAction(actionEvent ->  {makeYrotation(true);});
-        zRotate.setOnAction(actionEvent ->  {makeZrotation(false);});
-        zPRotate.setOnAction(actionEvent ->  {makeZrotation(true);});
-        
-        zoomPlus.setOnAction(actionEvent -> {zoom(true);});
-        zoomMinus.setOnAction(actionEvent -> {zoom(false);});
-        
         Scene scene = new Scene(pane);
         scene.setFill(Color.BLACK);
-        
-        scene.setOnKeyPressed(e -> {
-        	
-        	firstCheck(e.getCode()); 
-        	
-        	switch(e.getCode()) {
-	        	case DIGIT5: makeMmove(false); break;
-	        	case DIGIT6: makeMmove(false); break;
-	        	case Q: makeZrotation(true); break;
-	        	case W: makeBmove(false); break;
-	        	case E: makeLmove(true); break;
-	        	case R: makeLwideMove(true); break;
-	        	case T: makeXrotation(false); break;
-	        	case Y: makeXrotation(false); break;
-	        	case U: makeRwideMove(false); break;
-	        	case I: makeRmove(false); break;
-	        	case O: makeBmove(true); break;
-	        	case P: makeZrotation(false); break;
-	        	case A: makeYrotation(true); break;
-	        	case S: makeDmove(false); break;
-	        	case D: makeLmove(false); break;
-	        	case F: makeUmove(true); break;
-	        	case G: makeFmove(true); break;
-	        	case H: makeFmove(false); break;
-	        	case J: makeUmove(false); break;
-	        	case K: makeRmove(true); break;
-	        	case L: makeDmove(true); break;
-	        	case SEMICOLON: makeYrotation(false); break;
-	        	case Z: makeDwideMove(false); break;
-	        	case X: makeMmove(true); break;
-	        	case C: makeUwideMove(true); break;
-	        	case V: makeLwideMove(false); break;
-	        	case B: makeXrotation(true); break;
-	        	case N: makeXrotation(true); break;
-	        	case M: makeRwideMove(true); break;
-	        	case COMMA: makeUwideMove(false); break;
-	        	case PERIOD: makeMmove(true); break;
-	        	case SLASH: makeDwideMove(true); break;
-	        	case DIGIT9: makeBwideMove(false); break;
-	        	case DIGIT0: makeBwideMove(true); break;
-	        	default: break;
 
-        	}});
-
-        //test
         
-        
-        primaryStage.setTitle("Virtual Rubik's Cube");
+        primaryStage.setTitle("Simple Rubik's Cube - JavaFX");
         primaryStage.setScene(scene);
         primaryStage.setResizable(false);
         primaryStage.show();
     }
-    
-    private void zoom(boolean dir) {
-    	//System.out.println("Current: "+current);
-    	if (dir) {
-    		if (current != MINIMUM) {
-    			camera.getTransforms().add(new Translate (0, 0, 0.5));
-    			current+= 0.5;
-    		}
-    	} else {
-	    	if (current != MAXIMUM) {
-	    		camera.getTransforms().add(new Translate(0, 0, -0.5));
-	    		current-= 0.5;
-	    	}
-    	}
-    }
-    private void firstCheck() {
-    	if (startTimer) {
-    		timer.play();
-    		startTimer = false;
-    	}
-    }
-    
-    private void firstCheck(KeyCode code) {
-    	if (code == KeyCode.B || code == KeyCode.N || code == KeyCode.A || //Rotation moves shouldn't start timer. Work-around
-    		code == KeyCode.P || code == KeyCode.T || code == KeyCode.Y || //for now whilst moves are hard-coded
-    		code == KeyCode.Q || code == KeyCode.SEMICOLON) {
-    		//doNothing
-    	} else {
-    		firstCheck();
-    	}
-    }
-    
-    private void update(Text lbl) {
-    	if(millis == 1000) {
-			secs++;
-			millis = 0;
-		}
-		if(secs == 60) {
-			mins++;
-			secs = 0;
-		}
-		lbl.setText((((mins/10) == 0) ? "" : "") + mins + ":"
-		 + (((secs/10) == 0) ? "0" : "") + secs + "." 
-			+ (((millis/10) == 0) ? "00" : (((millis/100) == 0) ? "0" : "")) + millis++);
-    }
+
 
 	private void buildMesh(Group sceneRoot, PhongMaterial mat, Group meshGroup) {
 		meshGroup = new Group();

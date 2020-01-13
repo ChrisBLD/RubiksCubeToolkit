@@ -288,10 +288,11 @@ public abstract class StatisticsBoard {
 		System.out.println("Your mean time on twelve alg scrambles was "+meanArray.get(6)+", with a best of "+bestTimeArray.get(6)+" on this scramble: "+bestScrambleArray.get(6));
 		System.out.println("Your mean time on thirteen alg scrambles was "+meanArray.get(7)+", with a best of "+bestTimeArray.get(7)+" on this scramble: "+bestScrambleArray.get(7));
 
-		System.out.println("");
-		System.out.println("");
-		System.out.println("");
-		System.out.println("Seven Alg scrambles: ");
+		double sum = (algCountByNum.get(0)*6)+(algCountByNum.get(1)*7)+(algCountByNum.get(2)*8)+(algCountByNum.get(3)*9)+(algCountByNum.get(4)*10)
+					+(algCountByNum.get(5)*11)+(algCountByNum.get(6)*12)+(algCountByNum.get(7)*13);
+		sum /= totalResults;
+		System.out.println("Average algorithm count per scramble (normal ~10.7): "+sum);
+		
 		for (int ai = 0; ai < algList.size(); ai++) {
 			if (algList.get(ai) == 7) {
 				System.out.println("Time: "+timeList.get(ai)+", Scramble: "+scrambleList.get(ai));
