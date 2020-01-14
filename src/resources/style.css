@@ -1,0 +1,11 @@
+@font-face {
+	font-family: InstantHarmony;
+	src: url("/resources/ihfont.otf")
+}
+
+.root { 
+	-fx-font-size: 20px;
+	-fx-fill: white;
+	-fx-font-family: InstantHarmony;
+	-fx-effect: dropshadow( gaussian , rgba(0,0,0,0.75) , 4,0,0,1 );
+}

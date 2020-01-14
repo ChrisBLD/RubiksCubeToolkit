@@ -7,9 +7,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import javafx.animation.FadeTransition;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.RotateTransition;
+import javafx.animation.SequentialTransition;
 import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
@@ -17,6 +19,7 @@ import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Point3D;
+import javafx.geometry.Pos;
 import javafx.scene.AmbientLight;
 import javafx.scene.Group;
 import javafx.scene.Node;
@@ -49,6 +52,7 @@ import javafx.scene.shape.MeshView;
 import javafx.scene.shape.TriangleMesh;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
 import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Transform;
 import javafx.scene.transform.Translate;
@@ -84,7 +88,21 @@ public class UserInterface extends Application {
 	 * So I have to make my tutorial simple enough to understand so that fuck ups are as infrequent as possible. Having to restart often will probably put a lot
 	 * of people off.
 	 * 
+	 * For the cross I'd like to demonstrate what the end result should look like. Perhaps I can use the derived cross solution to demonstrate what the final result
+	 * should be of a solved cross, and then go through it piece by piece by going back to the start in a manner the user can follow along. I'll probably also include
+	 * some form of progress tracker for the current step (applies to all stages of the solve)
 	 * 
+	 * For the corners of the first layer, I can basically do a similar thing - show the user the end result (a solved first layer), then allow them to see how to solve
+	 * each piece one at a time. 
+	 * 
+	 * Writing the above has made me realise that we might have edge cases where the user gets a scramble that doesn't actually show the user some states. For example,
+	 * for corners of the first layer, it could happen that each corner on the scramble is on the top layer when it needs to be. This might confuse the user as to how to
+	 * get corners out of the slots if they're inserted either in wrong slots or twisted in place.
+	 * 
+	 * For second layer edges, it would be a similar thing. I imagine the process for developing the first three steps is going to be very similar and present
+	 * similar problems, so by the time I come to implement this it should be pretty efficient.
+	 * 
+	 *  
 	 * 
 	 * 
 	 */
@@ -314,10 +332,6 @@ public class UserInterface extends Application {
 
         buildMesh(sceneRoot, mat, meshGroup);
 
-
-        
-       // sceneRoot.getChildren().addAll(meshGroup, new AmbientLight(Color.WHITE));
-        
         BorderPane pane = new BorderPane();
         pane.setCenter(subScene);
 
@@ -325,25 +339,54 @@ public class UserInterface extends Application {
         toolBar.setOrientation(Orientation.HORIZONTAL);
         toolBar.setBackground(new Background(new BackgroundFill(Color.rgb(51,51,51), CornerRadii.EMPTY, Insets.EMPTY)));
         pane.setBottom(toolBar);
+        
+        Label stepLabel = new Label("NAME OF STEP");
+        stepLabel.setTextFill(Color.WHITE);
+        stepLabel.setFont(Font.loadFont(getClass().getResourceAsStream("/resources/ihfont.otf"), 40));
+        
+        Label description = new Label("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam arcu lorem, tempus id dui eu, pharetra facilisis dolor. "
+        		+ "Integer id odio eu augue tincidunt pharetra. Donec augue leo, euismod ut rutrum a, tincidunt ac quam. Morbi odio odio, fermentum eu purus id, "
+        		+ "consequat semper sapien. Phasellus et urna metus.");
+        description.setTextFill(Color.WHITE);
+        description.setFont(Font.loadFont(getClass().getResourceAsStream("/resources/ihfont.otf"), 20));
+        description.setWrapText(true);
+        description.setMaxWidth(500);
+        
+        Button back = new Button();
+        Button forward = new Button();
+        
+        HBox h1 = new HBox(); h1.getChildren().add(stepLabel); h1.setAlignment(Pos.CENTER);
+        h1.setPadding(new Insets(10,0,10,0));
+        HBox h2 = new HBox(); h2.getChildren().add(description);
+        h2.setPadding(new Insets(10,10,10,10));
+        HBox h3 = new HBox(); h3.getChildren().addAll(back, forward);
+        h3.setPadding(new Insets(10, 0, 10, 0));
+        HBox h4 = new HBox();
+        
 
-        ToolBar toolBarRight = new ToolBar();
+        ToolBar toolBarRight = new ToolBar(h1, h2, h3, h4);
         toolBarRight.setOrientation(Orientation.VERTICAL);
         toolBarRight.setBackground(new Background(new BackgroundFill(Color.rgb(51,51,51), CornerRadii.EMPTY, Insets.EMPTY)));
         pane.setRight(toolBarRight);
         pane.setPrefSize(300, 300);
-        //toolBar.setMinWidth(810);
+        toolBarRight.setMinWidth(400);
         toolBar.setPrefHeight(100);
        // toolBarRight.setMinWidth(320);
         toolBarRight.setPrefHeight(700);
         
         Scene scene = new Scene(pane);
         scene.setFill(Color.BLACK);
+        
 
         
         primaryStage.setTitle("Simple Rubik's Cube - JavaFX");
         primaryStage.setScene(scene);
         primaryStage.setResizable(false);
         primaryStage.show();
+        
+        //stepLabel.setVisible(false);
+        
+        beginTutorial(stepLabel, description, back, forward, toolBarRight);
     }
 
 
@@ -1219,535 +1262,6 @@ public class UserInterface extends Application {
 	            BLD, BD, BRD, BL, B, BR, BLU, BU, BRU);
 	}
 
-	private void makeRwideMove(boolean prime) {
-		int elem = 0;
-		boolean oddeve = true;
-		for (int x = 0; x < rightWideFacePoints.size(); x++) {
-			elem = x*3;
-			if (oddeve) {
-				elem+= 2;
-				oddeve = false;
-			} else {
-				elem+= 1;
-				oddeve = true;
-			}
-        	MeshView msh = (MeshView) sceneRoot.getChildren().get(elem);
-        	Point3D pt = rightWideFacePoints.get(x);
-        	msh.getTransforms().clear();
-        	msh.getTransforms().add(new Translate(pt.getX(), pt.getY(), pt.getZ()));
-        	RotateTransition rt = new RotateTransition(Duration.millis(300), msh);
-        	rt.setAxis(Rotate.X_AXIS);
-        	if (prime) {
-        		rt.setByAngle(90);
-        	} else {
-        		rt.setByAngle(-90);
-        	}
-        	rt.setCycleCount(1);
-    		rt.setOnFinished(e -> buildMesh(sceneRoot, mat, meshGroup));
-        	rt.play();
-        	sceneRoot.getChildren().set(elem, msh);
-        }
-		
-		if (prime) {
-			int[] temp1 = CRU; int[] temp2 = BRU;
-			CRU = BR; BRU = BRD; BR = CRD; BRD = FRD; CRD = FR; FRD = FRU; FR = temp1; FRU = temp2;
-			Point3D ptemp1 = pCRU; Point3D ptemp2 = pBRU;
-			pCRU = pBR; pBRU = pBRD; pBR = pCRD; pBRD = pFRD; pCRD = pFR; pFRD = pFRU; pFR = ptemp1; pFRU = ptemp2;
-			cycleColours(FR, B_FACE, U_FACE, F_FACE);
-			cycleColours(FRU, B_FACE, U_FACE, F_FACE);
-			cycleColours(CRU, D_FACE, B_FACE, U_FACE);
-			cycleColours(BRU, D_FACE, B_FACE, U_FACE);
-			cycleColours(BR, F_FACE, D_FACE, B_FACE);
-			cycleColours(BRD, F_FACE, D_FACE, B_FACE);
-			cycleColours(CRD, U_FACE, F_FACE, D_FACE);
-			cycleColours(FRD, U_FACE, F_FACE, D_FACE);
-			temp1 = FU; temp2 = F;
-			FU = BU; BU = BD; BD = FD; FD = temp1;
-			F = CU; CU = B; B = CD; CD = temp2;
-			ptemp1 = pFU; ptemp2 = pF;
-			pFU = pBU; pBU = pBD; pBD = pFD; pFD = ptemp1;
-			pF = pCU; pCU = pB; pB = pCD; pCD = ptemp2;
-			cycleColours(FU, B_FACE, U_FACE, F_FACE);
-			cycleColours(F, B_FACE, U_FACE, F_FACE);
-			cycleColours(FD, U_FACE, F_FACE, D_FACE);
-			cycleColours(CD, U_FACE, F_FACE, D_FACE);
-			cycleColours(BD, F_FACE, D_FACE, B_FACE);
-			cycleColours(B, F_FACE, D_FACE, B_FACE);
-			cycleColours(BU, D_FACE, B_FACE, U_FACE);
-			cycleColours(CU, D_FACE, B_FACE, U_FACE);
-			
-		} else {
-			int[] temp1 = FRD; int[] temp2 = FR;		
-			FR = CRD; FRD = BRD; CRD = BR; BRD = BRU; BR = CRU; BRU = FRU; CRU = temp2; FRU = temp1;
-			Point3D ptemp1 = pFRD; Point3D ptemp2 = pFR;
-			pFR = pCRD; pFRD = pBRD; pCRD = pBR; pBRD = pBRU; pBR = pCRU; pBRU = pFRU; pCRU = ptemp2; pFRU = ptemp1;
-			cycleColours(FR, D_FACE, F_FACE, U_FACE);
-			cycleColours(FRU, D_FACE, F_FACE, U_FACE);
-			cycleColours(CRU, F_FACE, U_FACE, B_FACE);
-			cycleColours(BRU, F_FACE, U_FACE, B_FACE);
-			cycleColours(BR, U_FACE, B_FACE, D_FACE);
-			cycleColours(BRD, U_FACE, B_FACE, D_FACE);
-			cycleColours(CRD, F_FACE, B_FACE, D_FACE);
-			cycleColours(FRD, F_FACE, B_FACE, D_FACE);
-			temp1 = FU; temp2 = F; ptemp1 = pFU; ptemp2 = pF;
-			FU = FD; FD = BD; BD = BU; BU = temp1;
-			F = CD; CD = B; B = CU; CU = temp2;
-			pFU = pFD; pFD = pBD; pBD = pBU; pBU = ptemp1;
-			pF = pCD; pCD = pB; pB = pCU; pCU = ptemp2;
-			cycleColours(FU, D_FACE, F_FACE, U_FACE);
-			cycleColours(F, D_FACE, F_FACE, U_FACE);
-			cycleColours(FD, B_FACE, D_FACE, F_FACE);
-			cycleColours(CD, B_FACE, D_FACE, F_FACE);
-			cycleColours(BD, U_FACE, B_FACE, D_FACE);
-			cycleColours(B, U_FACE, B_FACE, D_FACE);
-			cycleColours(BU, F_FACE, U_FACE, B_FACE);
-			cycleColours(CU, F_FACE, U_FACE, B_FACE);
-		}
-		patternFaceF = Arrays.asList(    		
-	            FLD, FD, FRD, FL, F, FR, FLU, FU, FRU,
-	            CLD, CD, CRD, CL, C, CR, CLU, CU, CRU,
-	            BLD, BD, BRD, BL, B, BR, BLU, BU, BRU);
-		
-		isSolved();
-		
-	}
-	
-	private void makeLwideMove(boolean prime) {
-		int elem = 0;
-		boolean oddeve = true;
-		for (int x = 0; x < leftWideFacePoints.size(); x++) {
-			elem = x*3;
-			if (oddeve) {
-				oddeve = false;
-			} else {
-				elem -= 1;
-				oddeve = true;
-			}
-        	MeshView msh = (MeshView) sceneRoot.getChildren().get(elem);
-        	Point3D pt = leftWideFacePoints.get(x);
-        	msh.getTransforms().clear();
-        	msh.getTransforms().add(new Translate(pt.getX(), pt.getY(), pt.getZ()));
-        	RotateTransition rt = new RotateTransition(Duration.millis(300), msh);
-        	rt.setAxis(Rotate.X_AXIS);
-        	if (prime) {
-        		rt.setByAngle(-90);
-        	} else {
-        		rt.setByAngle(90);
-        	}
-        	rt.setCycleCount(1);
-    		rt.setOnFinished(e -> buildMesh(sceneRoot, mat, meshGroup));
-        	rt.play();
-        	sceneRoot.getChildren().set(elem, msh);
-        }
-			
-		
-		if (prime) {
-			int[] temp1 = CLD; int[] temp2 = BLD;
-			CLD = BL; BLD = BLU; BL = CLU; BLU = FLU; CLU = FL; FLU = FLD; FL = temp1; FLD = temp2;
-			Point3D ptemp1 = pCLD; Point3D ptemp2 = pBLD;
-			pCLD = pBL; pBLD = pBLU; pBL = pCLU; pBLU = pFLU; pCLU = pFL; pFLU = pFLD; pFL = ptemp1; pFLD = ptemp2;
-			cycleColours(FLD, B_FACE, D_FACE, F_FACE);
-			cycleColours(FL, B_FACE, D_FACE, F_FACE);
-			cycleColours(FLU, D_FACE, F_FACE, U_FACE);
-			cycleColours(CLU, D_FACE, F_FACE, U_FACE);
-			cycleColours(BLU, F_FACE, U_FACE, B_FACE);
-			cycleColours(BL, F_FACE, U_FACE, B_FACE);
-			cycleColours(BLD, U_FACE, B_FACE, D_FACE);
-			cycleColours(CLD, U_FACE, B_FACE, D_FACE);
-			temp1 = FU; temp2 = F;
-			FU = FD; FD = BD; BD = BU; BU = temp1;
-			F = CD; CD = B; B = CU; CU = temp2;
-			ptemp1 = pFU; ptemp2 = pF;
-			pFU = pFD; pFD = pBD; pBD = pBU; pBU = ptemp1;
-			pF = pCD; pCD = pB; pB = pCU; pCU = ptemp2;
-			cycleColours(FU, D_FACE, F_FACE, U_FACE);
-			cycleColours(F, D_FACE, F_FACE, U_FACE);
-			cycleColours(FD, B_FACE, D_FACE, F_FACE);
-			cycleColours(CD, B_FACE, D_FACE, F_FACE);
-			cycleColours(BD, U_FACE, B_FACE, D_FACE);
-			cycleColours(B, U_FACE, B_FACE, D_FACE);
-			cycleColours(BU, F_FACE, U_FACE, B_FACE);
-			cycleColours(CU, F_FACE, U_FACE, B_FACE);
-		} else {
-			int[] temp1 = FLD; int[] temp2 = FL;
-			FLD = FLU; FL = CLU; FLU = BLU; CLU = BL; BLU = BLD; BL = CLD; BLD = temp1; CLD = temp2;
-			Point3D ptemp1 = pFLD; Point3D ptemp2 = pFL;
-			pFLD = pFLU; pFL = pCLU; pFLU = pBLU; pCLU = pBL; pBLU = pBLD; pBL = pCLD; pBLD = ptemp1; pCLD = ptemp2;
-			cycleColours(FLD, U_FACE, F_FACE, D_FACE);
-			cycleColours(FL, B_FACE, U_FACE, F_FACE);
-			cycleColours(FLU, B_FACE, U_FACE, F_FACE);
-			cycleColours(CLU, D_FACE, B_FACE, U_FACE);
-			cycleColours(BLU, D_FACE, B_FACE, U_FACE);
-			cycleColours(BL, F_FACE, D_FACE, B_FACE);
-			cycleColours(BLD, F_FACE, D_FACE, B_FACE);
-			cycleColours(CLD, U_FACE, F_FACE, D_FACE);
-			temp1 = FU; temp2 = F;
-			FU = BU; BU = BD; BD = FD; FD = temp1;
-			F = CU; CU = B; B = CD; CD = temp2;
-			ptemp1 = pFU; ptemp2 = pF;
-			pFU = pBU; pBU = pBD; pBD = pFD; pFD = ptemp1;
-			pF = pCU; pCU = pB; pB = pCD; pCD = ptemp2;
-			cycleColours(FU, B_FACE, U_FACE, F_FACE);
-			cycleColours(F, B_FACE, U_FACE, F_FACE);
-			cycleColours(FD, U_FACE, F_FACE, D_FACE);
-			cycleColours(CD, U_FACE, F_FACE, D_FACE);
-			cycleColours(BD, F_FACE, D_FACE, B_FACE);
-			cycleColours(B, F_FACE, D_FACE, B_FACE);
-			cycleColours(BU, D_FACE, B_FACE, U_FACE);
-			cycleColours(CU, D_FACE, B_FACE, U_FACE);
-		}
-
-		patternFaceF = Arrays.asList(    		
-	            FLD, FD, FRD, FL, F, FR, FLU, FU, FRU,
-	            CLD, CD, CRD, CL, C, CR, CLU, CU, CRU,
-	            BLD, BD, BRD, BL, B, BR, BLU, BU, BRU);
-		
-		isSolved();
-	}
-
-	private void makeUwideMove(boolean prime) {
-		int elem = 0;
-		for (int x = 0; x < upWideFacePoints.size(); x++) {
-			if (x <= 5) {
-				elem = 6+(x*2);
-			} else if (x <= 11) {
-				elem = 12+(x*2);
-			} else {
-				elem = 18+(x*2);
-			}
-        	MeshView msh = (MeshView) sceneRoot.getChildren().get(elem);
-        	Point3D pt = upWideFacePoints.get(x);
-        	msh.getTransforms().clear();
-        	msh.getTransforms().add(new Translate(pt.getX(), pt.getY(), pt.getZ()));
-        	RotateTransition rt = new RotateTransition(Duration.millis(300), msh);
-        	rt.setAxis(Rotate.Y_AXIS);
-        	if (prime) {
-        		rt.setByAngle(-90);
-        	} else {
-        		rt.setByAngle(90);
-        	}
-        	rt.setCycleCount(1);
-    		rt.setOnFinished(e -> buildMesh(sceneRoot, mat, meshGroup));
-        	rt.play();
-        	sceneRoot.getChildren().set(elem, msh);
-        }
-		if (prime) {
-			int[] temp1 = FRU; int[] temp2 = FU;
-			FRU = FLU; FU = CLU; FLU = BLU; CLU = BU; BLU = BRU; BU = CRU; BRU = temp1; CRU = temp2;
-			Point3D ptemp1 = pFRU; Point3D ptemp2 = pFU;
-			pFRU = pFLU; pFU = pCLU; pFLU = pBLU; pCLU = pBU; pBLU = pBRU; pBU = pCRU; pBRU = ptemp1; pCRU = ptemp2; 
-			cycleColours(FU, L_FACE, F_FACE, R_FACE);
-			cycleColours(FRU, L_FACE, F_FACE, R_FACE);
-			cycleColours(CRU, F_FACE, R_FACE, B_FACE);
-			cycleColours(BRU, F_FACE, R_FACE, B_FACE);
-			cycleColours(BU, R_FACE,  B_FACE, L_FACE);
-			cycleColours(BLU, R_FACE, B_FACE, L_FACE);
-			cycleColours(CLU, B_FACE, L_FACE, F_FACE);
-			cycleColours(FLU, B_FACE, L_FACE, F_FACE);
-
-			temp1 = F; temp2 = FR;
-			F = CL; CL = B; B = CR; CR = temp1;
-			FR = FL; FL = BL; BL = BR; BR = temp2;
-			ptemp1 = pF; ptemp2 = pFR;
-			pF = pCL; pCL = pB; pB = pCR; pCR = ptemp1;
-			pFR = pFL; pFL = pBL; pBL = pBR; pBR = ptemp2;
-			cycleColours(F, B_FACE, L_FACE, F_FACE);
-			cycleColours(FR, L_FACE, F_FACE, R_FACE);
-			cycleColours(CR, L_FACE, F_FACE, R_FACE);
-			cycleColours(BR, F_FACE, R_FACE, B_FACE);
-			cycleColours(B, F_FACE, R_FACE, B_FACE);
-			cycleColours(BL, R_FACE, B_FACE, L_FACE);
-			cycleColours(CL, R_FACE, B_FACE, L_FACE);
-			cycleColours(FL, B_FACE, L_FACE, F_FACE);
-		} else {
-			int[] temp1 = FRU; int[] temp2 = CRU;		
-			FRU = BRU; CRU = BU; BRU = BLU; BU = CLU; BLU = FLU; CLU = FU; FLU = temp1; FU = temp2;
-			Point3D ptemp1 = pFRU; Point3D ptemp2 = pCRU;		
-			pFRU = pBRU; pCRU = pBU; pBRU = pBLU; pBU = pCLU; pBLU = pFLU; pCLU = pFU; pFLU = ptemp1; pFU = ptemp2;
-			cycleColours(FU, B_FACE, R_FACE, F_FACE);
-			cycleColours(FRU, B_FACE, R_FACE, F_FACE);
-			cycleColours(CRU, L_FACE, B_FACE, R_FACE);
-			cycleColours(BRU, L_FACE, B_FACE, R_FACE);
-			cycleColours(BU, F_FACE, L_FACE, B_FACE);
-			cycleColours(BLU, F_FACE, L_FACE, B_FACE);
-			cycleColours(CLU, R_FACE, F_FACE, L_FACE);
-			cycleColours(FLU, R_FACE, F_FACE, L_FACE);	
-
-			temp1 = F; temp2 = FR; ptemp1 = pF; ptemp2 = pFR;
-			F = CR; CR = B; B = CL; CL = temp1;
-			FR = BR; BR = BL; BL = FL; FL = temp2;
-			pF = pCR; pCR = pB; pB = pCL; pCL = ptemp1;
-			pFR = pBR; pBR = pBL; pBL = pFL; pFL = ptemp2;
-			cycleColours(FL, R_FACE, F_FACE, L_FACE);
-			cycleColours(F, R_FACE, F_FACE, L_FACE);
-			cycleColours(FR, B_FACE, R_FACE, F_FACE);
-			cycleColours(CR, B_FACE, R_FACE, F_FACE);
-			cycleColours(BR, L_FACE, B_FACE, R_FACE);
-			cycleColours(B, L_FACE, B_FACE, R_FACE);
-			cycleColours(BL, F_FACE, L_FACE, B_FACE);
-			cycleColours(CL, F_FACE, L_FACE, B_FACE);
-		}
-		
-		patternFaceF = Arrays.asList(    		
-	            FLD, FD, FRD, FL, F, FR, FLU, FU, FRU,
-	            CLD, CD, CRD, CL, C, CR, CLU, CU, CRU,
-	            BLD, BD, BRD, BL, B, BR, BLU, BU, BRU);
-		
-		isSolved();
-		
-	}
-	
-	private void makeDwideMove(boolean prime) {
-		int elem = 0;
-		for (int x = 0; x < downWideFacePoints.size(); x++) {
-			if (x <= 5) {
-				elem = (x*2);
-			} else if (x <= 11) {
-				elem = 6+(x*2);
-			} else {
-				elem = 12+(x*2);
-			}
-        	MeshView msh = (MeshView) sceneRoot.getChildren().get(elem);
-        	Point3D pt = downWideFacePoints.get(x);
-        	msh.getTransforms().clear();
-        	msh.getTransforms().add(new Translate(pt.getX(), pt.getY(), pt.getZ()));
-        	RotateTransition rt = new RotateTransition(Duration.millis(300), msh);
-        	rt.setAxis(Rotate.Y_AXIS);
-        	if (prime) {
-        		rt.setByAngle(90);
-        	} else {
-        		rt.setByAngle(-90);
-        	}
-        	rt.setCycleCount(1);
-    		rt.setOnFinished(e -> buildMesh(sceneRoot, mat, meshGroup));
-        	rt.play();
-        	sceneRoot.getChildren().set(elem, msh);
-        }
-		
-		if (prime) {
-			int[] temp1 = CLD; int[] temp2 = FLD;
-			CLD = FD; FLD = FRD; FD = CRD; FRD = BRD; CRD = BD; BRD = BLD; BD = temp1; BLD = temp2;
-			Point3D ptemp1 = pCLD; Point3D ptemp2 = pFLD;
-			pCLD = pFD; pFLD = pFRD; pFD = pCRD; pFRD = pBRD; pCRD = pBD; pBRD = pBLD; pBD = ptemp1; pBLD = ptemp2;  
-			cycleColours(FLD, R_FACE, F_FACE, L_FACE);
-			cycleColours(CLD, R_FACE, F_FACE, L_FACE);
-			cycleColours(BLD, F_FACE, L_FACE, B_FACE); 
-			cycleColours(BD, F_FACE, L_FACE, B_FACE);
-			cycleColours(BRD, L_FACE, B_FACE, R_FACE);
-			cycleColours(CRD, L_FACE, B_FACE, R_FACE);
-			cycleColours(FRD, B_FACE, R_FACE, F_FACE);
-			cycleColours(FD, B_FACE, R_FACE, F_FACE);
-			temp1 = F; temp2 = FR; ptemp1 = pF; ptemp2 = pFR;
-			F = CR; CR = B; B = CL; CL = temp1;
-			FR = BR; BR = BL; BL = FL; FL = temp2;
-			pF = pCR; pCR = pB; pB = pCL; pCL = ptemp1;
-			pFR = pBR; pBR = pBL; pBL = pFL; pFL = ptemp2;
-			cycleColours(FL, R_FACE, F_FACE, L_FACE);
-			cycleColours(F, R_FACE, F_FACE, L_FACE);
-			cycleColours(FR, B_FACE, R_FACE, F_FACE);
-			cycleColours(CR, B_FACE, R_FACE, F_FACE);
-			cycleColours(BR, L_FACE, B_FACE, R_FACE);
-			cycleColours(B, L_FACE, B_FACE, R_FACE);
-			cycleColours(BL, F_FACE, L_FACE, B_FACE);
-			cycleColours(CL, F_FACE, L_FACE, B_FACE);
-		} else {
-			int[] temp1 = CLD; int[] temp2 = BLD;
-			CLD = BD; BLD = BRD; BD = CRD; BRD = FRD; CRD = FD; FRD = FLD; FD = temp1; FLD = temp2;
-			Point3D ptemp1 = pCLD; Point3D ptemp2 = pBLD;
-			pCLD = pBD; pBLD = pBRD; pBD = pCRD; pBRD = pFRD; pCRD = pFD; pFRD = pFLD; pFD = ptemp1; pFLD = ptemp2;
-			cycleColours(CLD, R_FACE, B_FACE, L_FACE);
-			cycleColours(BLD, R_FACE, B_FACE, L_FACE);
-			cycleColours(BD, F_FACE, R_FACE, B_FACE);
-			cycleColours(BRD, F_FACE, R_FACE, B_FACE);
-			cycleColours(CRD, L_FACE, F_FACE, R_FACE);
-			cycleColours(FRD, L_FACE, F_FACE, R_FACE);
-			cycleColours(FD, B_FACE, L_FACE, F_FACE);
-			cycleColours(FLD, B_FACE, L_FACE, F_FACE);
-			temp1 = F; temp2 = FR;
-			F = CL; CL = B; B = CR; CR = temp1;
-			FR = FL; FL = BL; BL = BR; BR = temp2;
-			ptemp1 = pF; ptemp2 = pFR;
-			pF = pCL; pCL = pB; pB = pCR; pCR = ptemp1;
-			pFR = pFL; pFL = pBL; pBL = pBR; pBR = ptemp2;
-			cycleColours(F, B_FACE, L_FACE, F_FACE);
-			cycleColours(FR, L_FACE, F_FACE, R_FACE);
-			cycleColours(CR, L_FACE, F_FACE, R_FACE);
-			cycleColours(BR, F_FACE, R_FACE, B_FACE);
-			cycleColours(B, F_FACE, R_FACE, B_FACE);
-			cycleColours(BL, R_FACE, B_FACE, L_FACE);
-			cycleColours(CL, R_FACE, B_FACE, L_FACE);
-			cycleColours(FL, B_FACE, L_FACE, F_FACE);
-		}
-		
-		patternFaceF = Arrays.asList(    		
-	            FLD, FD, FRD, FL, F, FR, FLU, FU, FRU,
-	            CLD, CD, CRD, CL, C, CR, CLU, CU, CRU,
-	            BLD, BD, BRD, BL, B, BR, BLU, BU, BRU);
-		
-		isSolved();
-	}
-	
-	private void makeFwideMove(boolean prime) {
-		for (int x = 0; x < frontWideFacePoints.size(); x++) {
-        	MeshView msh = (MeshView) sceneRoot.getChildren().get(x*2);
-        	Point3D pt = frontWideFacePoints.get(x);
-        	msh.getTransforms().clear();
-        	msh.getTransforms().add(new Translate(pt.getX(), pt.getY(), pt.getZ()));
-        	RotateTransition rt = new RotateTransition(Duration.millis(300), msh);
-        	rt.setAxis(Rotate.Z_AXIS);
-        	if (prime) {
-        		rt.setByAngle(-90);
-        	} else {
-        		rt.setByAngle(90);
-        	}
-        	rt.setCycleCount(1);
-    		rt.setOnFinished(e -> buildMesh(sceneRoot, mat, meshGroup));
-        	rt.play();
-        	sceneRoot.getChildren().set(x*2, msh);
-        }
-		
-		if (prime) {
-			int[] temp1 = FLU; int[] temp2 = FU;
-			FLU = FRU; FU = FR; FRU = FRD; FR = FD; FRD = FLD; FD = FL; FLD = temp1; FL = temp2;
-			Point3D ptemp1 = pFLU; Point3D ptemp2 = pFU;
-			pFLU = pFRU; pFU = pFR; pFRU = pFRD; pFR = pFD; pFRD = pFLD; pFD = pFL; pFLD = ptemp1; pFL = ptemp2;
-			cycleColours(FRU, D_FACE, R_FACE, U_FACE);
-			cycleColours(FR, D_FACE, R_FACE, U_FACE);
-			cycleColours(FRD, L_FACE, D_FACE, R_FACE);
-			cycleColours(FD, L_FACE, D_FACE, R_FACE);
-			cycleColours(FLD, U_FACE, L_FACE, D_FACE);
-			cycleColours(FL, U_FACE, L_FACE, D_FACE);
-			cycleColours(FLU, R_FACE, U_FACE, L_FACE);
-			cycleColours(FU, R_FACE, U_FACE, L_FACE);
-			temp1 = CLU; temp2 = CU;
-			CLU = CRU; CU = CR; CRU = CRD; CR = CD; CRD = CLD; CD = CL; CLD = temp1; CL = temp2;
-			ptemp1 = pCLU; ptemp2 = pCU;
-			pCLU = pCRU; pCU = pCR; pCRU = pCRD; pCR = pCD; pCRD = pCLD; pCD = pCL; pCLD = ptemp1; pCL = ptemp2;
-			cycleColours(CLU, R_FACE, U_FACE, L_FACE);
-			cycleColours(CU, R_FACE, U_FACE, L_FACE);
-			cycleColours(CRU, D_FACE, R_FACE, U_FACE);
-			cycleColours(CR, D_FACE, R_FACE, U_FACE);
-			cycleColours(CRD, L_FACE, D_FACE, R_FACE);
-			cycleColours(CD, L_FACE, D_FACE, R_FACE);
-			cycleColours(CLD, U_FACE, L_FACE, D_FACE);
-			cycleColours(CL, U_FACE, L_FACE, D_FACE);
-		} else {
-			int[] temp1 = CLU; int[] temp2 = CL;
-			CLU = CLD; CL = CD; CLD = CRD; CD = CR; CRD = CRU; CR = CU; CRU = temp1; CU = temp2;
-			Point3D ptemp1 = pCLU; Point3D ptemp2 = pCL;
-			pCLU = pCLD; pCL = pCD; pCLD = pCRD; pCD = pCR; pCRD = pCRU; pCR = pCU; pCRU = ptemp1; pCU = ptemp2;
-			cycleColours(CLU, D_FACE, L_FACE, U_FACE);
-			cycleColours(CL, D_FACE, L_FACE, U_FACE);
-			cycleColours(CLD, R_FACE, D_FACE, L_FACE);
-			cycleColours(CD, R_FACE, D_FACE, L_FACE);
-			cycleColours(CRD, U_FACE, R_FACE, D_FACE);
-			cycleColours(CR, U_FACE, R_FACE, D_FACE);
-			cycleColours(CRU, L_FACE, U_FACE, R_FACE);
-			cycleColours(CU, L_FACE, U_FACE, R_FACE);
-			temp1 = FU; temp2 = FLU;
-			FU = FL; FLU = FLD; FL = FD; FLD = FRD; FD = FR; FRD = FRU; FR = temp1; FRU = temp2;
-			ptemp1 = pFU; ptemp2 = pFLU;
-			pFU = pFL; pFLU = pFLD; pFL = pFD; pFLD = pFRD; pFD = pFR; pFRD = pFRU; pFR = ptemp1; pFRU = ptemp2;
-			cycleColours(FRU, L_FACE, U_FACE, R_FACE);
-			cycleColours(FR, L_FACE, U_FACE, R_FACE);
-			cycleColours(FRD, U_FACE, R_FACE, D_FACE);
-			cycleColours(FD, U_FACE, R_FACE, D_FACE);
-			cycleColours(FLD, R_FACE, D_FACE, L_FACE);
-			cycleColours(FL, R_FACE, D_FACE, L_FACE);
-			cycleColours(FLU, D_FACE, L_FACE, U_FACE);
-			cycleColours(FU, D_FACE, L_FACE, U_FACE);
-		}
-		
-		patternFaceF = Arrays.asList(    		
-	            FLD, FD, FRD, FL, F, FR, FLU, FU, FRU,
-	            CLD, CD, CRD, CL, C, CR, CLU, CU, CRU,
-	            BLD, BD, BRD, BL, B, BR, BLU, BU, BRU);
-		
-		isSolved();
-	}
-	
-	private void makeBwideMove(boolean prime) {
-		for (int x = 0; x < backWideFacePoints.size(); x++) {
-        	MeshView msh = (MeshView) sceneRoot.getChildren().get((x*2)+18);
-        	Point3D pt = backWideFacePoints.get(x);
-        	msh.getTransforms().clear();
-        	msh.getTransforms().add(new Translate(pt.getX(), pt.getY(), pt.getZ()));
-        	RotateTransition rt = new RotateTransition(Duration.millis(300), msh);
-        	rt.setAxis(Rotate.Z_AXIS);
-        	if (prime) {
-        		rt.setByAngle(90);
-        	} else {
-        		rt.setByAngle(-90);
-        	}
-        	rt.setCycleCount(1);
-    		rt.setOnFinished(e -> buildMesh(sceneRoot, mat, meshGroup));
-        	rt.play();
-        	sceneRoot.getChildren().set((x*2)+18, msh);
-        }
-		
-		if (prime) {
-			int[] temp1 = CLU; int[] temp2 = CL;
-			CLU = CLD; CL = CD; CLD = CRD; CD = CR; CRD = CRU; CR = CU; CRU = temp1; CU = temp2;
-			Point3D ptemp1 = pCLU; Point3D ptemp2 = pCL;
-			pCLU = pCLD; pCL = pCD; pCLD = pCRD; pCD = pCR; pCRD = pCRU; pCR = pCU; pCRU = ptemp1; pCU = ptemp2;
-			cycleColours(CLU, D_FACE, L_FACE, U_FACE);
-			cycleColours(CL, D_FACE, L_FACE, U_FACE);
-			cycleColours(CLD, R_FACE, D_FACE, L_FACE);
-			cycleColours(CD, R_FACE, D_FACE, L_FACE);
-			cycleColours(CRD, U_FACE, R_FACE, D_FACE);
-			cycleColours(CR, U_FACE, R_FACE, D_FACE);
-			cycleColours(CRU, L_FACE, U_FACE, R_FACE);
-			cycleColours(CU, L_FACE, U_FACE, R_FACE);	
-			temp1 = BLD; temp2 = BD;
-			BLD = BRD; BD = BR; BRD = BRU; BR = BU; BRU = BLU; BU = BL; BLU = temp1; BL = temp2;
-			ptemp1 = pBLD; ptemp2 = pBD;
-			pBLD = pBRD; pBD = pBR; pBRD = pBRU; pBR = pBU; pBRU = pBLU; pBU = pBL; pBLU = ptemp1; pBL = ptemp2;
-			cycleColours(BLU, D_FACE, L_FACE, U_FACE);
-			cycleColours(BU, D_FACE, L_FACE, U_FACE);
-			cycleColours(BRU, L_FACE, U_FACE, R_FACE);
-			cycleColours(BR, L_FACE, U_FACE, R_FACE);
-			cycleColours(BRD, U_FACE, R_FACE, D_FACE);
-			cycleColours(BD, U_FACE, R_FACE, D_FACE);
-			cycleColours(BLD, R_FACE, D_FACE, L_FACE);
-			cycleColours(BL, R_FACE, D_FACE, L_FACE);
-		} else {
-			int[] temp1 = CLU; int[] temp2 = CU;
-			CLU = CRU; CU = CR; CRU = CRD; CR = CD; CRD = CLD; CD = CL; CLD = temp1; CL = temp2;
-			Point3D ptemp1 = pCLU; Point3D ptemp2 = pCU;
-			pCLU = pCRU; pCU = pCR; pCRU = pCRD; pCR = pCD; pCRD = pCLD; pCD = pCL; pCLD = ptemp1; pCL = ptemp2;
-			cycleColours(CLU, R_FACE, U_FACE, L_FACE);
-			cycleColours(CU, R_FACE, U_FACE, L_FACE);
-			cycleColours(CRU, D_FACE, R_FACE, U_FACE);
-			cycleColours(CR, D_FACE, R_FACE, U_FACE);
-			cycleColours(CRD, L_FACE, D_FACE, R_FACE);
-			cycleColours(CD, L_FACE, D_FACE, R_FACE);
-			cycleColours(CLD, U_FACE, L_FACE, D_FACE);
-			cycleColours(CL, U_FACE, L_FACE, D_FACE);
-			temp1 = BLU; temp2 = BU;
-			BLU = BRU; BU = BR; BRU = BRD; BR = BD; BRD = BLD; BD = BL; BLD = temp1; BL = temp2;
-			ptemp1 = pBLU; ptemp2 = pBU;
-			pBLU = pBRU; pBU = pBR; pBRU = pBRD; pBR = pBD; pBRD = pBLD; pBD = pBL; pBLD = ptemp1; pBL = ptemp2;
-			cycleColours(BLU, R_FACE, U_FACE, L_FACE);
-			cycleColours(BL, R_FACE, U_FACE, L_FACE);
-			cycleColours(BLD, U_FACE, L_FACE, D_FACE);
-			cycleColours(BD, U_FACE, L_FACE, D_FACE);
-			cycleColours(BRD, L_FACE, D_FACE, R_FACE);
-			cycleColours(BR, L_FACE, D_FACE, R_FACE);
-			cycleColours(BRU, D_FACE, R_FACE, U_FACE);
-			cycleColours(BU, D_FACE, R_FACE, U_FACE);
-			
-		}
-		
-		patternFaceF = Arrays.asList(    		
-	            FLD, FD, FRD, FL, F, FR, FLU, FU, FRU,
-	            CLD, CD, CRD, CL, C, CR, CLU, CU, CRU,
-	            BLD, BD, BRD, BL, B, BR, BLU, BU, BRU);
-		
-		isSolved();
-		
-		
-	}
-
 	private static void cycleColours(int[] list, int one, int two, int three) {
 		int temp = list[three];
 		list[three] = list[two];
@@ -1804,165 +1318,7 @@ public class UserInterface extends Application {
         );
         return m;
     }
-    
-    public ArrayList<String> convertScramble(String scramble) {
-    	String wideMove = "";
-    	
-    	ArrayList<String> moves = new ArrayList<String>();
-    	char[] scramChars = scramble.toCharArray();
-    	for (int i = 0; i < scramChars.length; i++) {
-    		char c = scramChars[i];
-    		if (c == 'U' || c == 'F' || c == 'R' || c == 'B' || c == 'L' || c == 'D') {
-    			try {
-    				if (scramChars[i+1] == '\'') {
-    					moves.add(c+"p");
-    				} else if (scramChars[i+1] == '2') {
-    					moves.add(Character.toString(c));
-    					moves.add(Character.toString(c));
-    				} else if (scramChars[i+1] == 'w') {
-    					if (wideMove == "") {
-    						wideMove+= c;
-    						wideMove+= "w";
-    						//System.out.println("Character: "+c);
-    						try {
-    							if (scramChars[i+2] == '\'') {
-    								wideMove+= "'";
-    								//System.out.println("Character: "+c);
-    								
-    								switch (c) {
-    								case 'U': moves.add('D'+"p"); break;
-    								case 'F': moves.add('B'+"p"); break;
-    								case 'R': moves.add('L'+"p"); break;
-    								case 'B': moves.add('F'+"p"); break;
-    								case 'L': moves.add('R'+"p"); break;
-    								case 'D': moves.add('U'+"p"); break;
-    								}
-    							} else if (scramChars[i+2] == '2') {
-    								wideMove+= "2";
-    								switch (c) {
-    								case 'U': moves.add(Character.toString('D')); moves.add(Character.toString('D')); break;
-    								case 'F': moves.add(Character.toString('B')); moves.add(Character.toString('B'));  break;
-    								case 'R': moves.add(Character.toString('L')); moves.add(Character.toString('L'));  break;
-    								case 'B': moves.add(Character.toString('F')); moves.add(Character.toString('F'));  break;
-    								case 'L': moves.add(Character.toString('R')); moves.add(Character.toString('R'));  break;
-    								case 'D': moves.add(Character.toString('U')); moves.add(Character.toString('U'));  break;
-    								}
-    							} else {
-    								switch (c) {
-    								case 'U': moves.add(Character.toString('D')); break;
-    								case 'F': moves.add(Character.toString('B')); break;
-    								case 'R': moves.add(Character.toString('L')); break;
-    								case 'B': moves.add(Character.toString('F')); break;
-    								case 'L': moves.add(Character.toString('R')); break;
-    								case 'D': moves.add(Character.toString('U')); break;
-    								}
-    							}
-    						} catch (Exception e) {
-    							switch (c) {
-    							case 'U': moves.add(Character.toString('D')); break;
-    							case 'F': moves.add(Character.toString('B')); break;
-    							case 'R': moves.add(Character.toString('L')); break;
-    							case 'B': moves.add(Character.toString('F')); break;
-    							case 'L': moves.add(Character.toString('R')); break;
-    							case 'D': moves.add(Character.toString('U')); break;
-    							}
-    						}
-    					} else { //Second Wide Move	
-    						String secondMove = c+"w";
-    						try {
-    							if (scramChars[i+2] == '\'') {
-    								secondMove += "'";
-    							} else if (scramChars[i+2] == '2') {
-    								secondMove += "2";
-    							}
-    						} catch (Exception e) {};
-
-    						String convertedMove = "";
-    						for (String[][] listOChanges : changes) {
-    							if (wideMove.equals(listOChanges[0][0])) {
-    								for (int x = 1; x < listOChanges.length; x++) {
-    									if (listOChanges[x][0].equals(Character.toString(c))) {
-    										convertedMove = listOChanges[x][1];
-    									}
-    								}
-    							}
-    						}
-    						convertedMove += "w";
-    						for (char a : secondMove.toCharArray()) {
-    							if (a == '\'') {
-    								convertedMove += "'";
-    							} else if (a == '2') {
-    								convertedMove += "2";
-    							}
-    						}
-
-    						//System.out.println("First Wide Move: "+wideMove+", Second Wide Move: "+secondMove+", Converted Second Wide Move: "+convertedMove);
-    						
-    						if (convertedMove.length() == 2) {
-    							switch (convertedMove.toCharArray()[0]) {
-    							case 'U': moves.add(Character.toString('D')); break;
-    							case 'F': moves.add(Character.toString('B')); break;
-    							case 'R': moves.add(Character.toString('L')); break;
-    							case 'B': moves.add(Character.toString('F')); break;
-    							case 'L': moves.add(Character.toString('R')); break;
-    							case 'D': moves.add(Character.toString('U')); break;
-    							}
-    						} else if (convertedMove.toCharArray()[2] == '2') {
-    							switch (convertedMove.toCharArray()[0]) {
-    							case 'U': moves.add(Character.toString('D')); moves.add(Character.toString('D')); break;
-    							case 'F': moves.add(Character.toString('B')); moves.add(Character.toString('B'));  break;
-    							case 'R': moves.add(Character.toString('L')); moves.add(Character.toString('L'));  break;
-    							case 'B': moves.add(Character.toString('F')); moves.add(Character.toString('F'));  break;
-    							case 'L': moves.add(Character.toString('R')); moves.add(Character.toString('R'));  break;
-    							case 'D': moves.add(Character.toString('U')); moves.add(Character.toString('U'));  break;
-    							}
-    						} else {
-    							switch (convertedMove.toCharArray()[0]) {
-    							case 'U': moves.add('D'+"p"); break;
-    							case 'F': moves.add('B'+"p"); break;
-    							case 'R': moves.add('L'+"p"); break;
-    							case 'B': moves.add('F'+"p"); break;
-    							case 'L': moves.add('R'+"p"); break;
-    							case 'D': moves.add('U'+"p"); break;
-    							}
-    						}
-    	
-    					}
-    					//moves.add(Character.toString(c));
-    					
-    				} else {
-    					moves.add(Character.toString(c));
-    				}
-    			} catch (Exception e) {
-    				//System.out.println("FUCK");
-    				moves.add(Character.toString(c));
-    			}
-    		}
-    	}	
-    	
-	    applyMoves(moves);
-	    return moves;
-    }
-    
-    public void applyMoves(ArrayList<String> moves) {
-    	for (String move : moves) {
-    		switch(move) {
-    		case "U": makeUmove(false); break;
-    		case "F": makeFmove(false); break;
-    		case "R": makeRmove(false); break;
-    		case "D": makeDmove(false); break;
-    		case "B": makeBmove(false); break;
-    		case "L": makeLmove(false); break;
-    		case "Up": makeUmove(true); break;
-    		case "Fp": makeFmove(true); break;
-    		case "Rp": makeRmove(true); break;
-    		case "Dp": makeDmove(true); break;
-    		case "Bp": makeBmove(true); break;
-    		case "Lp": makeLmove(true); break;
-    		}
-    	}
-    }
-    
+       
     public void isSolved() {
 
     	int frontCentre = F[0];
@@ -2027,6 +1383,40 @@ public class UserInterface extends Application {
  		}
  		//System.out.println(solved);
 
+    }
+    
+
+    public static void beginTutorial(Label step, Label description, Button back, Button forward, ToolBar toolBarRight) {
+    	step.setVisible(false);
+    	description.setVisible(false);
+    	
+    	step.setText("Welcome!");
+    	description.setText("This is an interactive Rubik's Cube tutorial. Using this tool, you can learn how to solve "
+    					    +"the Rubik's Cube using the Layer by Layer method. To begin, would you like to learn the notation for the Rubik's Cube?");
+
+    	FadeTransition stepFadeIn = getFadeIn(step);
+    	FadeTransition descFadeIn = getFadeIn(description);
+        	
+    	SequentialTransition seq = new SequentialTransition(stepFadeIn, descFadeIn);
+    	step.setVisible(true);
+    	description.setVisible(true);
+    	seq.playFromStart();
+    	
+    	
+    	
+    	
+
+        
+    }
+    
+    public static FadeTransition getFadeIn(Label l) {
+    	FadeTransition fadeIn = new FadeTransition(Duration.millis(1000));
+    	fadeIn.setNode(l);
+        fadeIn.setFromValue(0.0);
+        fadeIn.setToValue(1.0);
+        fadeIn.setCycleCount(1);
+        fadeIn.setAutoReverse(false);
+        return fadeIn;
     }
     
 
