@@ -261,12 +261,20 @@ public class UserInterface extends Application {
             pCLD, pCD, pCRD, pCL, pC, pCR, pCLU, pCU, pCRU,
             pBLD, pBD, pBRD, pBL, pB, pBR, pBLU, pBU, pBRU);
     
-	int[] solvedFLD, solvedFD, solvedFRD, solvedFL, solvedF, solvedFR, solvedFLU, solvedFU, solvedFRU;
-	int[] solvedCLD, solvedCD, solvedCRD, solvedCL, solvedC, solvedCR, solvedCLU, solvedCU, solvedCRU;
-	int[] solvedBLD, solvedBD, solvedBRD, solvedBL, solvedB, solvedBR, solvedBLU, solvedBU, solvedBRU;
+	static int[] solvedFLD;
+	static int[] solvedFD;
+	static int[] solvedFRD;
+	static int[] solvedFL;
+	static int[] solvedF;
+	static int[] solvedFR;
+	static int[] solvedFLU;
+	static int[] solvedFU;
+	static int[] solvedFRU;
+	static int[] solvedCLD, solvedCD, solvedCRD, solvedCL, solvedC, solvedCR, solvedCLU, solvedCU, solvedCRU;
+	static int[] solvedBLD, solvedBD, solvedBRD, solvedBL, solvedB, solvedBR, solvedBLU, solvedBU, solvedBRU;
 		
-    private Group sceneRoot = new Group();
-    private Group meshGroup = new Group();
+    private static Group sceneRoot = new Group();
+    private static Group meshGroup = new Group();
     
     private PerspectiveCamera camera;
     
@@ -296,7 +304,7 @@ public class UserInterface extends Application {
 			{{"Rw2"},{"U","D"},{"D","U"},{"F","B"},{"R","R"},{"B","F"},{"L","L"}}};
     
     
-    private PhongMaterial mat = new PhongMaterial();
+    private static PhongMaterial mat = new PhongMaterial();
     
     @Override
     public void start(Stage primaryStage) {
@@ -404,7 +412,7 @@ public class UserInterface extends Application {
     }
 
 
-	private void buildMesh(Group sceneRoot, PhongMaterial mat, Group meshGroup) {
+	private static void buildMesh(Group sceneRoot, PhongMaterial mat, Group meshGroup) {
 		meshGroup = new Group();
 		sceneRoot.getChildren().clear();
 		AtomicInteger cont = new AtomicInteger();
@@ -419,7 +427,23 @@ public class UserInterface extends Application {
         }
 	}
 
-	private void makeRmove(boolean prime) {
+	private static void makeR2move() {
+		for (int x = 0; x < rightFacePoints.size(); x++) {
+        	MeshView msh = (MeshView) sceneRoot.getChildren().get(((x+1)*6)-2);
+        	Point3D pt = rightFacePoints.get(x);
+        	msh.getTransforms().clear();
+        	msh.getTransforms().add(new Translate(pt.getX(), pt.getY(), pt.getZ()));
+        	RotateTransition rt = new RotateTransition(Duration.millis(450), msh);
+        	rt.setAxis(Rotate.X_AXIS);
+        	rt.setByAngle(180);
+        	rt.setCycleCount(1);
+    		rt.setOnFinished(e -> buildMesh(sceneRoot, mat, meshGroup));
+        	rt.play();
+        	sceneRoot.getChildren().set(((x+1)*6)-2, msh);
+        }
+	}
+	
+	private static void makeRmove(boolean prime) {
 		for (int x = 0; x < rightFacePoints.size(); x++) {
         	MeshView msh = (MeshView) sceneRoot.getChildren().get(((x+1)*6)-2);
         	Point3D pt = rightFacePoints.get(x);
@@ -1108,7 +1132,7 @@ public class UserInterface extends Application {
 	}
    
     
-    private TriangleMesh createCube(int[] face) {
+    private static TriangleMesh createCube(int[] face) {
         TriangleMesh m = new TriangleMesh();
 
         // POINTS
@@ -1157,7 +1181,7 @@ public class UserInterface extends Application {
         return m;
     }
        
-    public void isSolved() {
+    public static void isSolved() {
 
     	int frontCentre = F[0];
     	int rightCentre = CR[1];
@@ -1216,14 +1240,11 @@ public class UserInterface extends Application {
  			}
  		}
  		
- 		if (solved) {
- 			timer.stop();
- 		}
  		//System.out.println(solved);
 
     }
     
-
+    
     public static void beginTutorial(Label step, Label description, Label moves, Button back, Button forward, ToolBar toolBarRight, ToolBar toolBar) {
     	
     	ArrayList<FadeTransition> fadesIn = new ArrayList<FadeTransition>();
@@ -1234,6 +1255,7 @@ public class UserInterface extends Application {
     	step.setText("Welcome!");
     	description.setText("This is an interactive Rubik's Cube tutorial. Using this tool, you can learn how to solve "
     					    +"the Rubik's Cube using the Layer by Layer method. To begin, would you like to learn the notation for the Rubik's Cube?");
+    	moves.setText("");
     	SequentialTransition seqIn = initSeqTrans(elements, true);
     	SequentialTransition seqOut = initSeqTrans(elements, false);
     	
@@ -1270,7 +1292,9 @@ public class UserInterface extends Application {
 		    	+ "\n F' - Turn the Front Face 90 degrees Counter-Clockwise \n ...and so on",
 		    	"A letter followed by the number 2 denotes a double turn. That is, a 180 degree turn of a face in either direction."
 		    	+ "\n\n R2 - Turn the Right Face 180 degrees \n U2 - Turn the Upper Face 180 degrees "
-		    	+ "\n F2 - Turn the Front Face 180 degrees \n ...and so on"};
+		    	+ "\n F2 - Turn the Front Face 180 degrees \n ...and so on",
+		    	"Let's see what these moves look like on an actual cube.			",
+		    	"R", "R'", "R2"};
 						
     	bodyCount = 0;
     	forwardOrBack = true;
@@ -1289,27 +1313,57 @@ public class UserInterface extends Application {
     		allButTitle.add(elements.get(i));
     	}
     	
+    	ArrayList<Label> moveOnly = new ArrayList<Label>();
+    	for (int i = 2; i < elements.size(); i++) {
+    		moveOnly.add(elements.get(i));
+    	}
+    	
     	SequentialTransition seqInText = initSeqTrans(allButTitle, true);
     	SequentialTransition seqOutText = initSeqTrans(allButTitle, false);
+    	
+    	SequentialTransition seqInMove = initSeqTrans(moveOnly, true);
+    	SequentialTransition seqOutMove = initSeqTrans(moveOnly, true);
     	
     	seqOutText.setOnFinished(new EventHandler<ActionEvent>() {
     		@Override
     		public void handle(ActionEvent event) {
     			if (forwardOrBack) {
-    				bodyCountInc();
-    				elements.get(1).setText(bodyText[bodyCount]);
-    			} else {
-    				bodyCountDec();
-    				elements.get(1).setText(bodyText[bodyCount]);
-    				
-    			}		
-    			seqInText.playFromStart();
+        			bodyCountInc();
+        			elements.get(1).setText(bodyText[bodyCount]);
+        			elements.get(2).setText("");
+        		} else {
+        			bodyCountDec();
+        			elements.get(1).setText(bodyText[bodyCount]);
+        			elements.get(2).setText("");
+        		}		
+        		seqInText.playFromStart();    			
     		}
     	});
-
-    	forward.setOnAction(event -> {changeDir(true); checkValid(seqOutText, bodyText);});
     	
-    	back.setOnAction(event -> {changeDir(false); checkValid(seqOutText, bodyText);});
+    	seqOutMove.setOnFinished(new EventHandler<ActionEvent>() {
+    		@Override
+    		public void handle(ActionEvent event) {
+    			bodyCountInc();
+    			elements.get(2).setText(bodyText[bodyCount]);
+    			seqInMove.playFromStart();  
+    		}
+    		
+    	});
+    	
+    	seqInMove.setOnFinished(new EventHandler<ActionEvent>() {
+    		@Override
+    		public void handle(ActionEvent event) {
+    			switch (bodyCount) {
+    			case 5: makeRmove(false); break;
+    			case 6: makeRmove(true); break;
+    			case 7: makeR2move();  break;
+    			}
+    		}
+    	});
+    	
+    	forward.setOnAction(event -> {changeDir(true); checkValid(seqOutText, seqOutMove, bodyText);});
+    	
+    	back.setOnAction(event -> {changeDir(false); checkValid(seqOutText, seqOutMove, bodyText);});
     	
     	
     }
@@ -1351,14 +1405,22 @@ public class UserInterface extends Application {
         return fade;
     }
 
-    public static void checkValid(SequentialTransition seqOutText, String[] bodyText) {
+    public static void checkValid(SequentialTransition seqOutText, SequentialTransition seqOutMove, String[] bodyText) {
     	if (forwardOrBack == false) {
-    		if (bodyCount != 0) {
-    			seqOutText.playFromStart();
+    		if (bodyCount < 0) {
+    			if (bodyCount >= 4) {
+    				seqOutMove.playFromStart();
+    			} else {
+    				seqOutText.playFromStart();
+    			}
     		}
     	} else {
-    		if (bodyCount != bodyText.length-1) {
-    			seqOutText.playFromStart();
+    		if (bodyCount < bodyText.length-1) {
+    			if (bodyCount >= 4) {
+    				seqOutMove.playFromStart();
+    			} else {
+    				seqOutText.playFromStart();
+    			}
     		}
     	}
     }
