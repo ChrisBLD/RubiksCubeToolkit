@@ -277,7 +277,8 @@ public class UserInterface extends Application {
     private static final double DEFAULT = -15;
     private static double current = DEFAULT;
     
-    int mins = 0, secs = 0, millis = 0;
+    static int bodyCount = 0;
+    static boolean forwardOrBack = true;
     
     Timeline timer;
     
@@ -334,11 +335,22 @@ public class UserInterface extends Application {
 
         BorderPane pane = new BorderPane();
         pane.setCenter(subScene);
+        
+        Button back = new Button();
+        back.setGraphic(new ImageView(new Image("/resources/minusButton.png")));
+        back.setMinSize(45,45); back.setMaxSize(45,45);
+        Button forward = new Button();
+        forward.setGraphic(new ImageView(new Image("/resources/plusButton.png")));
+        forward.setMinSize(45,45); forward.setMaxSize(45,45);
+        
+        HBox h = new HBox(10);
+        h.getChildren().addAll(back, forward);
 
-        ToolBar toolBar = new ToolBar();
+        ToolBar toolBar = new ToolBar(h);
         toolBar.setOrientation(Orientation.HORIZONTAL);
         toolBar.setBackground(new Background(new BackgroundFill(Color.rgb(51,51,51), CornerRadii.EMPTY, Insets.EMPTY)));
         pane.setBottom(toolBar);
+        
         
         Label stepLabel = new Label("NAME OF STEP");
         stepLabel.setTextFill(Color.WHITE);
@@ -348,23 +360,25 @@ public class UserInterface extends Application {
         		+ "Integer id odio eu augue tincidunt pharetra. Donec augue leo, euismod ut rutrum a, tincidunt ac quam. Morbi odio odio, fermentum eu purus id, "
         		+ "consequat semper sapien. Phasellus et urna metus.");
         description.setTextFill(Color.WHITE);
-        description.setFont(Font.loadFont(getClass().getResourceAsStream("/resources/ihfont.otf"), 20));
+        description.setFont(Font.loadFont(getClass().getResourceAsStream("/resources/ihfont.otf"), 23));
         description.setWrapText(true);
         description.setMaxWidth(500);
         
-        Button back = new Button();
-        Button forward = new Button();
+        Label moves = new Label("R U R' U'");
+        moves.setTextFill(Color.WHITE);
+        moves.setFont(Font.loadFont(getClass().getResourceAsStream("/resources/ihfont.otf"), 80));
+        moves.setWrapText(true);
+        moves.setMaxWidth(500);
         
         HBox h1 = new HBox(); h1.getChildren().add(stepLabel); h1.setAlignment(Pos.CENTER);
         h1.setPadding(new Insets(10,0,10,0));
         HBox h2 = new HBox(); h2.getChildren().add(description);
         h2.setPadding(new Insets(10,10,10,10));
-        HBox h3 = new HBox(); h3.getChildren().addAll(back, forward);
-        h3.setPadding(new Insets(10, 0, 10, 0));
-        HBox h4 = new HBox();
+        HBox h3 = new HBox(); h3.getChildren().add(moves); h3.setAlignment(Pos.CENTER);
+        h3.setPadding(new Insets(10,10,10,10));
         
 
-        ToolBar toolBarRight = new ToolBar(h1, h2, h3, h4);
+        ToolBar toolBarRight = new ToolBar(h1, h2, h3);
         toolBarRight.setOrientation(Orientation.VERTICAL);
         toolBarRight.setBackground(new Background(new BackgroundFill(Color.rgb(51,51,51), CornerRadii.EMPTY, Insets.EMPTY)));
         pane.setRight(toolBarRight);
@@ -386,7 +400,7 @@ public class UserInterface extends Application {
         
         //stepLabel.setVisible(false);
         
-        beginTutorial(stepLabel, description, back, forward, toolBarRight);
+        beginTutorial(stepLabel, description, moves, back, forward, toolBarRight, toolBar);
     }
 
 
@@ -575,6 +589,7 @@ public class UserInterface extends Application {
 		isSolved();
 		
 	}
+	
 	private void makeUmove(boolean prime) {
 		int elem = 0;
 		for (int x = 0; x < upFacePoints.size(); x++) {
@@ -765,183 +780,6 @@ public class UserInterface extends Application {
 	            FLD, FD, FRD, FL, F, FR, FLU, FU, FRU,
 	            CLD, CD, CRD, CL, C, CR, CLU, CU, CRU,
 	            BLD, BD, BRD, BL, B, BR, BLU, BU, BRU);
-		
-		isSolved();
-	}
-	
-	private void makeMmove(boolean prime) {
-		for (int x = 0; x < middleSlicePoints.size(); x++) {
-
-        	MeshView msh = (MeshView) sceneRoot.getChildren().get((x*6)+2);
-        	Point3D pt = middleSlicePoints.get(x);
-        	msh.getTransforms().clear();
-        	msh.getTransforms().add(new Translate(pt.getX(), pt.getY(), pt.getZ()));
-        	RotateTransition rt = new RotateTransition(Duration.millis(300), msh);
-        	rt.setAxis(Rotate.X_AXIS);
-        	if (prime) {
-        		rt.setByAngle(-90);
-        	} else {
-        		rt.setByAngle(90);
-        	}
-        	rt.setCycleCount(1);
-    		rt.setOnFinished(e -> buildMesh(sceneRoot, mat, meshGroup));
-        	rt.play();
-        	sceneRoot.getChildren().set((x*6)+2, msh);
-        }
-		
-		if (prime) {
-			int[] temp1 = FU; int[] temp2 = F;
-			FU = FD; FD = BD; BD = BU; BU = temp1;
-			F = CD; CD = B; B = CU; CU = temp2;
-			Point3D ptemp1 = pFU; Point3D ptemp2 = pF;
-			pFU = pFD; pFD = pBD; pBD = pBU; pBU = ptemp1;
-			pF = pCD; pCD = pB; pB = pCU; pCU = ptemp2;
-			cycleColours(FU, D_FACE, F_FACE, U_FACE);
-			cycleColours(F, D_FACE, F_FACE, U_FACE);
-			cycleColours(FD, B_FACE, D_FACE, F_FACE);
-			cycleColours(CD, B_FACE, D_FACE, F_FACE);
-			cycleColours(BD, U_FACE, B_FACE, D_FACE);
-			cycleColours(B, U_FACE, B_FACE, D_FACE);
-			cycleColours(BU, F_FACE, U_FACE, B_FACE);
-			cycleColours(CU, F_FACE, U_FACE, B_FACE);
-		} else {
-			int[] temp1 = FU; int[] temp2 = F;
-			FU = BU; BU = BD; BD = FD; FD = temp1;
-			F = CU; CU = B; B = CD; CD = temp2;
-			Point3D ptemp1 = pFU; Point3D ptemp2 = pF;
-			pFU = pBU; pBU = pBD; pBD = pFD; pFD = ptemp1;
-			pF = pCU; pCU = pB; pB = pCD; pCD = ptemp2;
-			cycleColours(FU, B_FACE, U_FACE, F_FACE);
-			cycleColours(F, B_FACE, U_FACE, F_FACE);
-			cycleColours(FD, U_FACE, F_FACE, D_FACE);
-			cycleColours(CD, U_FACE, F_FACE, D_FACE);
-			cycleColours(BD, F_FACE, D_FACE, B_FACE);
-			cycleColours(B, F_FACE, D_FACE, B_FACE);
-			cycleColours(BU, D_FACE, B_FACE, U_FACE);
-			cycleColours(CU, D_FACE, B_FACE, U_FACE);
-			
-		}
-
-		patternFaceF = Arrays.asList(    		
-	            FLD, FD, FRD, FL, F, FR, FLU, FU, FRU,
-	            CLD, CD, CRD, CL, C, CR, CLU, CU, CRU,
-	            BLD, BD, BRD, BL, B, BR, BLU, BU, BRU);	
-		
-		isSolved();
-		
-	}
-	
-	private void makeSmove(boolean prime) {
-		for (int x = 0; x < standingSlicePoints.size(); x++) {
-        	MeshView msh = (MeshView) sceneRoot.getChildren().get((x*2)+18);
-        	Point3D pt = standingSlicePoints.get(x);
-        	msh.getTransforms().clear();
-        	msh.getTransforms().add(new Translate(pt.getX(), pt.getY(), pt.getZ()));
-        	RotateTransition rt = new RotateTransition(Duration.millis(300), msh);
-        	rt.setAxis(Rotate.Z_AXIS);
-        	if (prime) {
-        		rt.setByAngle(-90);
-        	} else {
-        		rt.setByAngle(90);
-        	}
-        	rt.setCycleCount(1);
-    		rt.setOnFinished(e -> buildMesh(sceneRoot, mat, meshGroup));
-        	rt.play();
-        	sceneRoot.getChildren().set((x*2)+18, msh);
-        }
-		
-		if (prime) {
-			int[] temp1 = CLU; int[] temp2 = CU;
-			CLU = CRU; CU = CR; CRU = CRD; CR = CD; CRD = CLD; CD = CL; CLD = temp1; CL = temp2;
-			Point3D ptemp1 = pCLU; Point3D ptemp2 = pCU;
-			pCLU = pCRU; pCU = pCR; pCRU = pCRD; pCR = pCD; pCRD = pCLD; pCD = pCL; pCLD = ptemp1; pCL = ptemp2;
-			cycleColours(CLU, R_FACE, U_FACE, L_FACE);
-			cycleColours(CU, R_FACE, U_FACE, L_FACE);
-			cycleColours(CRU, D_FACE, R_FACE, U_FACE);
-			cycleColours(CR, D_FACE, R_FACE, U_FACE);
-			cycleColours(CRD, L_FACE, D_FACE, R_FACE);
-			cycleColours(CD, L_FACE, D_FACE, R_FACE);
-			cycleColours(CLD, U_FACE, L_FACE, D_FACE);
-			cycleColours(CL, U_FACE, L_FACE, D_FACE);
-			
-		} else {
-			int[] temp1 = CLU; int[] temp2 = CL;
-			CLU = CLD; CL = CD; CLD = CRD; CD = CR; CRD = CRU; CR = CU; CRU = temp1; CU = temp2;
-			Point3D ptemp1 = pCLU; Point3D ptemp2 = pCL;
-			pCLU = pCLD; pCL = pCD; pCLD = pCRD; pCD = pCR; pCRD = pCRU; pCR = pCU; pCRU = ptemp1; pCU = ptemp2;
-			cycleColours(CLU, D_FACE, L_FACE, U_FACE);
-			cycleColours(CL, D_FACE, L_FACE, U_FACE);
-			cycleColours(CLD, R_FACE, D_FACE, L_FACE);
-			cycleColours(CD, R_FACE, D_FACE, L_FACE);
-			cycleColours(CRD, U_FACE, R_FACE, D_FACE);
-			cycleColours(CR, U_FACE, R_FACE, D_FACE);
-			cycleColours(CRU, L_FACE, U_FACE, R_FACE);
-			cycleColours(CU, L_FACE, U_FACE, R_FACE);			
-		}
-		patternFaceF = Arrays.asList(    		
-	            FLD, FD, FRD, FL, F, FR, FLU, FU, FRU,
-	            CLD, CD, CRD, CL, C, CR, CLU, CU, CRU,
-	            BLD, BD, BRD, BL, B, BR, BLU, BU, BRU);	
-		
-		isSolved();		
-	}
-	private void makeEmove(boolean prime) {
-		int elem = 0;
-		for (int x = 0; x < equatorSlicePoints.size(); x++) {
-			if (x < 3) { elem = (x*2)+6; }
-			else if (x < 6 ) { elem = (x*2)+18; }
-			else { elem = (x*2)+30;};
-        	MeshView msh = (MeshView) sceneRoot.getChildren().get(elem);
-        	Point3D pt = equatorSlicePoints.get(x);
-        	msh.getTransforms().clear();
-        	msh.getTransforms().add(new Translate(pt.getX(), pt.getY(), pt.getZ()));
-        	RotateTransition rt = new RotateTransition(Duration.millis(300), msh);
-        	rt.setAxis(Rotate.Y_AXIS);
-        	if (prime) {
-        		rt.setByAngle(90);
-        	} else {
-        		rt.setByAngle(-90);
-        	}
-        	rt.setCycleCount(1);
-    		rt.setOnFinished(e -> buildMesh(sceneRoot, mat, meshGroup));
-        	rt.play();
-        	sceneRoot.getChildren().set(elem, msh);
-        }
-		
-		if (prime) {
-			int[] temp1 = F; int[] temp2 = FR; Point3D ptemp1 = pF; Point3D ptemp2 = pFR;
-			F = CR; CR = B; B = CL; CL = temp1;
-			FR = BR; BR = BL; BL = FL; FL = temp2;
-			pF = pCR; pCR = pB; pB = pCL; pCL = ptemp1;
-			pFR = pBR; pBR = pBL; pBL = pFL; pFL = ptemp2;
-			cycleColours(FL, R_FACE, F_FACE, L_FACE);
-			cycleColours(F, R_FACE, F_FACE, L_FACE);
-			cycleColours(FR, B_FACE, R_FACE, F_FACE);
-			cycleColours(CR, B_FACE, R_FACE, F_FACE);
-			cycleColours(BR, L_FACE, B_FACE, R_FACE);
-			cycleColours(B, L_FACE, B_FACE, R_FACE);
-			cycleColours(BL, F_FACE, L_FACE, B_FACE);
-			cycleColours(CL, F_FACE, L_FACE, B_FACE);
-		} else {
-			int[] temp1 = F; int[] temp2 = FR;
-			F = CL; CL = B; B = CR; CR = temp1;
-			FR = FL; FL = BL; BL = BR; BR = temp2;
-			Point3D ptemp1 = pF; Point3D ptemp2 = pFR;
-			pF = pCL; pCL = pB; pB = pCR; pCR = ptemp1;
-			pFR = pFL; pFL = pBL; pBL = pBR; pBR = ptemp2;
-			cycleColours(F, B_FACE, L_FACE, F_FACE);
-			cycleColours(FR, L_FACE, F_FACE, R_FACE);
-			cycleColours(CR, L_FACE, F_FACE, R_FACE);
-			cycleColours(BR, F_FACE, R_FACE, B_FACE);
-			cycleColours(B, F_FACE, R_FACE, B_FACE);
-			cycleColours(BL, R_FACE, B_FACE, L_FACE);
-			cycleColours(CL, R_FACE, B_FACE, L_FACE);
-			cycleColours(FL, B_FACE, L_FACE, F_FACE);
-		}
-		patternFaceF = Arrays.asList(    		
-	            FLD, FD, FRD, FL, F, FR, FLU, FU, FRU,
-	            CLD, CD, CRD, CL, C, CR, CLU, CU, CRU,
-	            BLD, BD, BRD, BL, B, BR, BLU, BU, BRU);	
 		
 		isSolved();
 	}
@@ -1386,40 +1224,157 @@ public class UserInterface extends Application {
     }
     
 
-    public static void beginTutorial(Label step, Label description, Button back, Button forward, ToolBar toolBarRight) {
-    	step.setVisible(false);
-    	description.setVisible(false);
+    public static void beginTutorial(Label step, Label description, Label moves, Button back, Button forward, ToolBar toolBarRight, ToolBar toolBar) {
+    	
+    	ArrayList<FadeTransition> fadesIn = new ArrayList<FadeTransition>();
+    	ArrayList<Label> elements = new ArrayList<Label>();
+    	
+    	elements.add(step); elements.add(description); elements.add(moves);
     	
     	step.setText("Welcome!");
     	description.setText("This is an interactive Rubik's Cube tutorial. Using this tool, you can learn how to solve "
     					    +"the Rubik's Cube using the Layer by Layer method. To begin, would you like to learn the notation for the Rubik's Cube?");
-
-    	FadeTransition stepFadeIn = getFadeIn(step);
-    	FadeTransition descFadeIn = getFadeIn(description);
-        	
-    	SequentialTransition seq = new SequentialTransition(stepFadeIn, descFadeIn);
-    	step.setVisible(true);
-    	description.setVisible(true);
-    	seq.playFromStart();
+    	SequentialTransition seqIn = initSeqTrans(elements, true);
+    	SequentialTransition seqOut = initSeqTrans(elements, false);
     	
     	
+    	forward.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent arg0) {
+				notationTutorial(elements, forward, back, seqIn, seqOut);
+			}
+    	});
     	
     	
-
         
-    }
-    
-    public static FadeTransition getFadeIn(Label l) {
-    	FadeTransition fadeIn = new FadeTransition(Duration.millis(1000));
-    	fadeIn.setNode(l);
-        fadeIn.setFromValue(0.0);
-        fadeIn.setToValue(1.0);
-        fadeIn.setCycleCount(1);
-        fadeIn.setAutoReverse(false);
-        return fadeIn;
-    }
-    
+    	
+    	for (Node element : elements) {
+    		element.setVisible(true);
+    	}
+    	seqIn.playFromStart();
 
+
+    }
+    
+    public static void notationTutorial(ArrayList<Label> elements, Button forward, Button back, SequentialTransition seqIn, SequentialTransition seqOut) {
+    	
+    	
+    	
+    	String[] bodyText = {"Rubik's Cube Notation uses six letters to refer to each face of the puzzle:"
+				+ "\n\n R - Right Face Turn \n U - Upper Face Turn \n F - Front Face Turn \n L - Left Face Turn \n B - Back Face Turn \n D - Down Face Turn",
+				"A single letter by itself refers to a clockwise face rotation of 90 degrees (known as a quarter turn)"
+				+ "\n\n R - Turn the Right Face 90 degrees Clockwise \n U - Turn the Upper Face 90 degrees Clockwise"
+				+ "\n F - Turn the Front Face 90 degrees Clockwise \n ...and so on",
+				"A letter followed by an apostrophe refers to a counter-clockwise face rotation of 90 degrees (also known as a quarter turn, but in the opposite direction)"
+		    	+ "\n\n R' - Turn the Right Face 90 degrees Counter-Clockwise \n U' - Turn the Upper Face 90 degrees Counter-Clockwise"
+		    	+ "\n F' - Turn the Front Face 90 degrees Counter-Clockwise \n ...and so on",
+		    	"A letter followed by the number 2 denotes a double turn. That is, a 180 degree turn of a face in either direction."
+		    	+ "\n\n R2 - Turn the Right Face 180 degrees \n U2 - Turn the Upper Face 180 degrees "
+		    	+ "\n F2 - Turn the Front Face 180 degrees \n ...and so on"};
+						
+    	bodyCount = 0;
+    	forwardOrBack = true;
+    	seqOut.playFromStart();
+    	seqOut.setOnFinished(new EventHandler<ActionEvent>() {
+    		@Override
+    		public void handle(ActionEvent event) {
+    	    	elements.get(0).setText("Notation");
+    	    	elements.get(1).setText(bodyText[bodyCount]);  
+    			seqIn.playFromStart();
+    		}
+    	});
+    	
+    	ArrayList<Label> allButTitle = new ArrayList<Label>();
+    	for (int i = 1; i < elements.size(); i++) {
+    		allButTitle.add(elements.get(i));
+    	}
+    	
+    	SequentialTransition seqInText = initSeqTrans(allButTitle, true);
+    	SequentialTransition seqOutText = initSeqTrans(allButTitle, false);
+    	
+    	seqOutText.setOnFinished(new EventHandler<ActionEvent>() {
+    		@Override
+    		public void handle(ActionEvent event) {
+    			if (forwardOrBack) {
+    				bodyCountInc();
+    				elements.get(1).setText(bodyText[bodyCount]);
+    			} else {
+    				bodyCountDec();
+    				elements.get(1).setText(bodyText[bodyCount]);
+    				
+    			}		
+    			seqInText.playFromStart();
+    		}
+    	});
+
+    	forward.setOnAction(event -> {changeDir(true); checkValid(seqOutText, bodyText);});
+    	
+    	back.setOnAction(event -> {changeDir(false); checkValid(seqOutText, bodyText);});
+    	
+    	
+    }
+   
+
+    public static SequentialTransition initSeqTrans(ArrayList<Label> elements, boolean dir) {
+    	SequentialTransition seq = new SequentialTransition();
+    	for (int i = 0; i < elements.size(); i++) {
+    		FadeTransition fade = new FadeTransition(Duration.millis(400));
+    		fade.setNode(elements.get(i));
+    		if (dir) {
+    			fade.setFromValue(0.0);
+                fade.setToValue(1.0);
+    		} else {
+    			fade.setFromValue(1.0);
+                fade.setToValue(0.0);
+    		}
+            fade.setCycleCount(1);
+            fade.setAutoReverse(false);
+            seq.getChildren().add(fade);
+    	}
+    	return seq;
+    }
+    
+    public static FadeTransition getFade(Node l, boolean dir) {
+    	FadeTransition fade = new FadeTransition(Duration.millis(1000));
+    	fade.setNode(l);
+    	if (dir) {
+    		fade.setFromValue(0.0);
+            fade.setToValue(1.0);
+    	} else {
+    		fade.setFromValue(1.0);
+            fade.setToValue(0.0);
+    	}
+        fade.setFromValue(0.0);
+        fade.setToValue(1.0);
+        fade.setCycleCount(1);
+        fade.setAutoReverse(false);
+        return fade;
+    }
+
+    public static void checkValid(SequentialTransition seqOutText, String[] bodyText) {
+    	if (forwardOrBack == false) {
+    		if (bodyCount != 0) {
+    			seqOutText.playFromStart();
+    		}
+    	} else {
+    		if (bodyCount != bodyText.length-1) {
+    			seqOutText.playFromStart();
+    		}
+    	}
+    }
+    
+    public static void changeDir(boolean dir) {
+    	forwardOrBack = dir;
+    }
+    
+    public static void bodyCountInc() {
+    	bodyCount++;
+    }
+    
+    public static void bodyCountDec() {
+    	bodyCount--;
+    }
+    
     public static void main(String[] args) {
         launch(args);
     }
