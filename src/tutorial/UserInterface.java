@@ -435,12 +435,49 @@ public class UserInterface extends Application {
         	msh.getTransforms().add(new Translate(pt.getX(), pt.getY(), pt.getZ()));
         	RotateTransition rt = new RotateTransition(Duration.millis(450), msh);
         	rt.setAxis(Rotate.X_AXIS);
-        	rt.setByAngle(180);
+        	rt.setByAngle(-180);
         	rt.setCycleCount(1);
     		rt.setOnFinished(e -> buildMesh(sceneRoot, mat, meshGroup));
         	rt.play();
         	sceneRoot.getChildren().set(((x+1)*6)-2, msh);
         }
+		
+		int[] temp1 = FRD; int[] temp2 = FR;		
+		FR = CRD; FRD = BRD; CRD = BR; BRD = BRU; BR = CRU; BRU = FRU; CRU = temp2; FRU = temp1;
+		Point3D ptemp1 = pFRD; Point3D ptemp2 = pFR;
+		pFR = pCRD; pFRD = pBRD; pCRD = pBR; pBRD = pBRU; pBR = pCRU; pBRU = pFRU; pCRU = ptemp2; pFRU = ptemp1;
+		cycleColours(FR, D_FACE, F_FACE, U_FACE);
+		cycleColours(FRU, D_FACE, F_FACE, U_FACE);
+		cycleColours(CRU, F_FACE, U_FACE, B_FACE);
+		cycleColours(BRU, F_FACE, U_FACE, B_FACE);
+		cycleColours(BR, U_FACE, B_FACE, D_FACE);
+		cycleColours(BRD, U_FACE, B_FACE, D_FACE);
+		cycleColours(CRD, F_FACE, B_FACE, D_FACE);
+		cycleColours(FRD, F_FACE, B_FACE, D_FACE);
+		
+		patternFaceF = Arrays.asList(    		
+	            FLD, FD, FRD, FL, F, FR, FLU, FU, FRU,
+	            CLD, CD, CRD, CL, C, CR, CLU, CU, CRU,
+	            BLD, BD, BRD, BL, B, BR, BLU, BU, BRU);
+				
+		temp1 = FRD; temp2 = FR;		
+		FR = CRD; FRD = BRD; CRD = BR; BRD = BRU; BR = CRU; BRU = FRU; CRU = temp2; FRU = temp1;
+		ptemp1 = pFRD; ptemp2 = pFR;
+		pFR = pCRD; pFRD = pBRD; pCRD = pBR; pBRD = pBRU; pBR = pCRU; pBRU = pFRU; pCRU = ptemp2; pFRU = ptemp1;
+		cycleColours(FR, D_FACE, F_FACE, U_FACE);
+		cycleColours(FRU, D_FACE, F_FACE, U_FACE);
+		cycleColours(CRU, F_FACE, U_FACE, B_FACE);
+		cycleColours(BRU, F_FACE, U_FACE, B_FACE);
+		cycleColours(BR, U_FACE, B_FACE, D_FACE);
+		cycleColours(BRD, U_FACE, B_FACE, D_FACE);
+		cycleColours(CRD, F_FACE, B_FACE, D_FACE);
+		cycleColours(FRD, F_FACE, B_FACE, D_FACE);
+		
+		patternFaceF = Arrays.asList(    		
+	            FLD, FD, FRD, FL, F, FR, FLU, FU, FRU,
+	            CLD, CD, CRD, CL, C, CR, CLU, CU, CRU,
+	            BLD, BD, BRD, BL, B, BR, BLU, BU, BRU);
+		
 	}
 	
 	private static void makeRmove(boolean prime) {
@@ -1279,9 +1316,7 @@ public class UserInterface extends Application {
     }
     
     public static void notationTutorial(ArrayList<Label> elements, Button forward, Button back, SequentialTransition seqIn, SequentialTransition seqOut) {
-    	
-    	
-    	
+    	   	
     	String[] bodyText = {"Rubik's Cube Notation uses six letters to refer to each face of the puzzle:"
 				+ "\n\n R - Right Face Turn \n U - Upper Face Turn \n F - Front Face Turn \n L - Left Face Turn \n B - Back Face Turn \n D - Down Face Turn",
 				"A single letter by itself refers to a clockwise face rotation of 90 degrees (known as a quarter turn)"
@@ -1322,7 +1357,7 @@ public class UserInterface extends Application {
     	SequentialTransition seqOutText = initSeqTrans(allButTitle, false);
     	
     	SequentialTransition seqInMove = initSeqTrans(moveOnly, true);
-    	SequentialTransition seqOutMove = initSeqTrans(moveOnly, true);
+    	SequentialTransition seqOutMove = initSeqTrans(moveOnly, false);
     	
     	seqOutText.setOnFinished(new EventHandler<ActionEvent>() {
     		@Override
