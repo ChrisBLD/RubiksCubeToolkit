@@ -16,7 +16,13 @@ public class Setup {
 	public static void main(ArrayList<Label> elements, Button forward, Button back, SequentialTransition seqIn, SequentialTransition seqOut) {
 		
 		String[] bodyText = {"To continue with this tutorial, it is strongly advised that you have your own Rubik's Cube so you can try the moves yourself"
-				+ " and follow what happens on screen. Do you have your own puzzle?"};
+				+ " and follow what happens on screen. Do you have your own puzzle?",
+				"Great! If your puzzle is currently solved, then scramble it as well as you can before proceeding to the next step. If your puzzle is already scrambled,"
+				+ " then you're ready to get going!",
+				"Please open the cube net below and replicate your scrambled puzzle on the net shown. It's important you get it right so that you can follow along with"
+				+ " your own puzzle throughout the tutorial."};
+		String badText = "You can still complete this tutorial without your own cube, but you will be limited to using a default scramble and following the tutorial using only the"
+				+ " virtual cube on the left of the screen. This scramble will teach you everything you need to know - but the best way to learn is to try it yourself!";
 		
     	seqOut.playFromStart();
     	seqOut.setOnFinished(new EventHandler<ActionEvent>() {
@@ -28,6 +34,56 @@ public class Setup {
     	    	elements.get(3).setText("");
     			seqIn.playFromStart();
     		}
-    	});		 
+    	});
+    	
+    	ArrayList<Label> hasCube = new ArrayList<Label>();
+    	hasCube.add(elements.get(1));
+    	hasCube.add(elements.get(2));
+    	SequentialTransition seqInText = SharedToolbox.initSeqTrans(hasCube, true);
+    	SequentialTransition seqOutText = SharedToolbox.initSeqTrans(hasCube, false);
+    	
+    	seqOutText.setOnFinished(new EventHandler<ActionEvent>() {
+    		@Override
+    		public void handle(ActionEvent event) {
+    			if (bodyCount < 3) {
+	    			elements.get(1).setText(bodyText[bodyCount]);
+	    			elements.get(2).setText("");
+	    			if (bodyCount == 2) {
+	    				generateInputButton();
+	    			}
+    			} else {
+    				elements.get(1).setText(badText);
+	    			elements.get(2).setText("");
+	    			seqInText.playFromStart();
+    			}
+    			back.setDisable(true);
+    			seqInText.playFromStart();
+    		}
+    	});
+    	
+    	forward.setOnAction(new EventHandler<ActionEvent>() {
+    		@Override
+    		public void handle(ActionEvent event) {
+    			System.out.println("bodycount: "+bodyCount);
+    			bodyCount = SharedToolbox.bodyCountInc(bodyCount);
+    			System.out.println("bodycount: "+bodyCount);
+    			seqOutText.playFromStart();
+    		}
+    	});
+    	
+    	back.setOnAction(new EventHandler<ActionEvent>() {
+    		@Override
+    		public void handle(ActionEvent event) {
+    			bodyCount = SharedToolbox.bodyCountInc(bodyCount);
+    			bodyCount = SharedToolbox.bodyCountInc(bodyCount);
+    			bodyCount = SharedToolbox.bodyCountInc(bodyCount);
+    			seqOutText.playFromStart();
+    		}
+    	});
+	}
+	
+	private static void generateInputButton() {
+		//To-do: Generate a button which will be used to open a sub-window where the user will enter their cube state currently.
+		//https://docs.oracle.com/javafx/2/ui_controls/color-picker.htm
 	}
 }

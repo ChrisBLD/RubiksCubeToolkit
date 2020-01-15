@@ -74,24 +74,24 @@ public abstract class NotationSection {
 	    moveOnly.add(elements.get(2));
 	    moveOnly.add(elements.get(3));
 	    
-	    SequentialTransition seqInText = initSeqTrans(allButTitle, true);
-	    SequentialTransition seqOutText = initSeqTrans(allButTitle, false);
+	    SequentialTransition seqInText = SharedToolbox.initSeqTrans(allButTitle, true);
+	    SequentialTransition seqOutText = SharedToolbox.initSeqTrans(allButTitle, false);
 	    
-	    SequentialTransition seqInMove = initSeqTrans(moveOnly, true);
-	    SequentialTransition seqOutMove = initSeqTrans(moveOnly, false);
+	    SequentialTransition seqInMove = SharedToolbox.initSeqTrans(moveOnly, true);
+	    SequentialTransition seqOutMove = SharedToolbox.initSeqTrans(moveOnly, false);
 	    
 	    seqOutText.setOnFinished(new EventHandler<ActionEvent>() {
 	    	@Override
 	    	public void handle(ActionEvent event) {
 	    		if (forwardOrBack) {
-	       			bodyCountInc();
+	    			bodyCount = SharedToolbox.bodyCountInc(bodyCount);
 	       			elements.get(1).setText(bodyText[bodyCount]);
 	       			elements.get(2).setText("");
 	       			elements.get(3).setText("");
 	       		} else {
-	       			bodyCountDec();
+	       			bodyCount = SharedToolbox.bodyCountDec(bodyCount);
 	       			if (bodyCount == 4) {
-	       				bodyCountDec();
+	       				bodyCount = SharedToolbox.bodyCountDec(bodyCount);
 	       			} else if (bodyCount == 7) {
 	    				elements.get(1).setText(bodyText[4]);
 	    				elements.get(2).setText(bodyText[bodyCount]);
@@ -127,11 +127,11 @@ public abstract class NotationSection {
 	    	@Override
 	    	public void handle(ActionEvent event) {
 	    		if (forwardOrBack) {
-		   			bodyCountInc();
+	    			bodyCount = SharedToolbox.bodyCountInc(bodyCount);
 		   			if (bodyCount >= 8) {
 		   				if (bodyCount == 8) {
 		   					elements.get(1).setText(bodyText[bodyCount]);
-		    				bodyCountInc();
+		    				bodyCount = SharedToolbox.bodyCountInc(bodyCount);
 		   				}
 		    			elements.get(2).setText(bodyText[bodyCount]);
 		    			elements.get(3).setText(moveText[bodyCount-6]);
@@ -140,7 +140,7 @@ public abstract class NotationSection {
 		    			elements.get(3).setText(moveText[bodyCount-5]);
 		   			}
 	    		} else {
-	    			bodyCountDec();
+	    			bodyCount = SharedToolbox.bodyCountDec(bodyCount);
 	    			System.out.println("Decreased to: "+bodyCount);
 		   			elements.get(2).setText(bodyText[bodyCount]);
 		   			elements.get(3).setText(moveText[bodyCount-5]);
@@ -172,26 +172,7 @@ public abstract class NotationSection {
 	    	
 	    	
 	 }
-	   
-
-	    public static SequentialTransition initSeqTrans(ArrayList<Label> elements, boolean dir) {
-	    	SequentialTransition seq = new SequentialTransition();
-	    	for (int i = 0; i < elements.size(); i++) {
-	    		FadeTransition fade = new FadeTransition(Duration.millis(400));
-	    		fade.setNode(elements.get(i));
-	    		if (dir) {
-	    			fade.setFromValue(0.0);
-	                fade.setToValue(1.0);
-	    		} else {
-	    			fade.setFromValue(1.0);
-	                fade.setToValue(0.0);
-	    		}
-	            fade.setCycleCount(1);
-	            fade.setAutoReverse(false);
-	            seq.getChildren().add(fade);
-	    	}
-	    	return seq;
-	    }
+	  
 	    
 	    public static FadeTransition getFade(Node l, boolean dir) {
 	    	FadeTransition fade = new FadeTransition(Duration.millis(1000));
@@ -254,14 +235,7 @@ public abstract class NotationSection {
 	    public static void changeDir(boolean dir) {
 	    	forwardOrBack = dir;
 	    }
-	    
-	    public static void bodyCountInc() {
-	    	bodyCount++;
-	    }
-	    
-	    public static void bodyCountDec() {
-	    	bodyCount--;
-	    }
+
 	    
 	    public static void checkIfDone() {
 	    	if (bodyCount == 14) {

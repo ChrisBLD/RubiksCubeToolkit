@@ -373,6 +373,30 @@ public class UserInterface extends Application {
         moves.setWrapText(true);
         moves.setMaxWidth(500);
         
+        Label moves2 = new Label("R U R' U'");
+        moves.setTextFill(Color.WHITE);
+        moves.setFont(Font.loadFont(getClass().getResourceAsStream("/resources/ihfont.otf"), 80));
+        moves.setWrapText(true);
+        moves.setMaxWidth(500);
+        
+        Label moves3 = new Label("R U R' U'");
+        moves.setTextFill(Color.WHITE);
+        moves.setFont(Font.loadFont(getClass().getResourceAsStream("/resources/ihfont.otf"), 80));
+        moves.setWrapText(true);
+        moves.setMaxWidth(500);
+        
+        Label moves4 = new Label("R U R' U'");
+        moves.setTextFill(Color.WHITE);
+        moves.setFont(Font.loadFont(getClass().getResourceAsStream("/resources/ihfont.otf"), 80));
+        moves.setWrapText(true);
+        moves.setMaxWidth(500);
+        
+        Label moves5 = new Label("R U R' U'");
+        moves.setTextFill(Color.WHITE);
+        moves.setFont(Font.loadFont(getClass().getResourceAsStream("/resources/ihfont.otf"), 80));
+        moves.setWrapText(true);
+        moves.setMaxWidth(500);
+        
         Label bottom = new Label("");
         bottom.setTextFill(Color.WHITE);
         bottom.setFont(Font.loadFont(getClass().getResourceAsStream("/resources/ihfont.otf"), 23));
@@ -383,7 +407,7 @@ public class UserInterface extends Application {
         h1.setPadding(new Insets(10,0,10,0));
         HBox h2 = new HBox(); h2.getChildren().add(description);
         h2.setPadding(new Insets(10,10,10,10));
-        HBox h3 = new HBox(); h3.getChildren().add(moves); h3.setAlignment(Pos.CENTER);
+        HBox h3 = new HBox(); h3.getChildren().addAll(moves, moves2, moves3, moves4, moves5); h3.setAlignment(Pos.CENTER);
         h3.setPadding(new Insets(10,10,10,10));
         HBox h4 = new HBox(); h4.getChildren().add(bottom); h4.setAlignment(Pos.CENTER);
         
@@ -408,9 +432,14 @@ public class UserInterface extends Application {
         primaryStage.setResizable(false);
         primaryStage.show();
         
+        ArrayList<Label> elements = new ArrayList<Label>();
+        elements.add(stepLabel);
+        elements.add(description);
+        elements.add(moves);
+        elements.add(bottom);
+
         
-        
-        TutorialHomepage.main(stepLabel, description, moves, bottom, back, forward, toolBarRight, toolBar);
+        TutorialHomepage.main(elements, back, forward, toolBarRight, toolBar);
         
         //beginTutorial(stepLabel, description, moves, bottom, back, forward, toolBarRight, toolBar);
     }

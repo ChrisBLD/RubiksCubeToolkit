@@ -15,21 +15,19 @@ import javafx.util.Duration;
 public class TutorialHomepage {
 
 
-	public static void main(Label step, Label description, Label moves, Label bottom, Button back, Button forward, ToolBar toolBarRight, ToolBar toolBar) {
+	public static void main(ArrayList<Label> elements, Button back, Button forward, ToolBar toolBarRight, ToolBar toolBar) {
     	
 			//System.out.println("we here");
-	    	ArrayList<Label> elements = new ArrayList<Label>();
-	    	
-	    	elements.add(step); elements.add(description); elements.add(moves); elements.add(bottom);
-	    	
-	    	step.setText("Welcome!");
-	    	description.setText("This is an interactive Rubik's Cube tutorial. Using this tool, you can learn how to solve "
+
+	    	elements.get(0).setText("Welcome!");
+	    	elements.get(1).setText("This is an interactive Rubik's Cube tutorial. Using this tool, you can learn how to solve "
 	    					    +"the Rubik's Cube using the Layer by Layer method. To begin, would you like to learn the notation for the Rubik's Cube?"
 	    					    + " (recommended for complete beginners!)");
-	    	moves.setText("");
-	    	bottom.setText("");
-	    	SequentialTransition seqIn = initSeqTrans(elements, true);
-	    	SequentialTransition seqOut = initSeqTrans(elements, false);
+	    	elements.get(2).setText("");
+	    	elements.get(3).setText("");
+
+	    	SequentialTransition seqIn = SharedToolbox.initSeqTrans(elements, true);
+	    	SequentialTransition seqOut = SharedToolbox.initSeqTrans(elements, false);
 	    	
 	    	
 	    	forward.setOnAction(new EventHandler<ActionEvent>() {
@@ -56,22 +54,5 @@ public class TutorialHomepage {
     	
     }
    
-    public static SequentialTransition initSeqTrans(ArrayList<Label> elements, boolean dir) {
-    	SequentialTransition seq = new SequentialTransition();
-    	for (int i = 0; i < elements.size(); i++) {
-    		FadeTransition fade = new FadeTransition(Duration.millis(400));
-    		fade.setNode(elements.get(i));
-    		if (dir) {
-    			fade.setFromValue(0.0);
-                fade.setToValue(1.0);
-    		} else {
-    			fade.setFromValue(1.0);
-                fade.setToValue(0.0);
-    		}
-            fade.setCycleCount(1);
-            fade.setAutoReverse(false);
-            seq.getChildren().add(fade);
-    	}
-    	return seq;
-    }
+
 }
