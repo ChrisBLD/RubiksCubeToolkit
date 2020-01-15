@@ -276,10 +276,6 @@ public class UserInterface extends Application {
     private static Group sceneRoot = new Group();
     private static Group meshGroup = new Group();
     
-    private PerspectiveCamera camera;
-    
-    boolean startTimer = false;
-    
     private static final double MINIMUM = -10;
     private static final double MAXIMUM = -20;
     private static final double DEFAULT = -15;
@@ -288,9 +284,8 @@ public class UserInterface extends Application {
     static int bodyCount = 0;
     static boolean forwardOrBack = true;
     
-    Timeline timer;
-    
-    static String[][][] changes = 
+    NotationTutorial data = new NotationTutorial(false);
+	static String[][][] changes = 
     		{{{"Uw"},{"U","U"},{"D","D"},{"F","R"},{"R","B"},{"B","L"},{"L","F"}},
 			{{"Uw'"},{"U","U"},{"D","D"},{"F","L"},{"R","F"},{"B","R"},{"L","B"}},
 			{{"Uw2"},{"U","U"},{"D","D"},{"F","B"},{"R","L"},{"B","F"},{"L","R"}},
@@ -313,11 +308,11 @@ public class UserInterface extends Application {
         subScene.setFill(Color.rgb(51,51,51));
         Translate pivot = new Translate();
         Rotate ytate = new Rotate(0, Rotate.Y_AXIS);
-        camera = new PerspectiveCamera(true);
-        camera.setNearClip(0.1);
-        camera.setFarClip(10000.0);
+        data.camera = new PerspectiveCamera(true);
+        data.camera.setNearClip(0.1);
+        data.camera.setFarClip(10000.0);
         //camera.setTranslateZ(-15);
-        camera.getTransforms().addAll (
+        data.camera.getTransforms().addAll (
                 pivot,
                 ytate,
                 new Rotate(-20, Rotate.X_AXIS),
@@ -335,7 +330,7 @@ public class UserInterface extends Application {
         
         timeline.setCycleCount(1);
         timeline.play();
-        subScene.setCamera(camera);
+        subScene.setCamera(data.camera);
 
         mat.setDiffuseMap(new Image(getClass().getResourceAsStream("/resources/tutcolours.png")));
 
@@ -378,15 +373,22 @@ public class UserInterface extends Application {
         moves.setWrapText(true);
         moves.setMaxWidth(500);
         
+        Label bottom = new Label("");
+        bottom.setTextFill(Color.WHITE);
+        bottom.setFont(Font.loadFont(getClass().getResourceAsStream("/resources/ihfont.otf"), 23));
+        bottom.setWrapText(true);
+        bottom.setMaxWidth(500);
+        
         HBox h1 = new HBox(); h1.getChildren().add(stepLabel); h1.setAlignment(Pos.CENTER);
         h1.setPadding(new Insets(10,0,10,0));
         HBox h2 = new HBox(); h2.getChildren().add(description);
         h2.setPadding(new Insets(10,10,10,10));
         HBox h3 = new HBox(); h3.getChildren().add(moves); h3.setAlignment(Pos.CENTER);
         h3.setPadding(new Insets(10,10,10,10));
+        HBox h4 = new HBox(); h4.getChildren().add(bottom); h4.setAlignment(Pos.CENTER);
         
 
-        ToolBar toolBarRight = new ToolBar(h1, h2, h3);
+        ToolBar toolBarRight = new ToolBar(h1, h2, h3, h4);
         toolBarRight.setOrientation(Orientation.VERTICAL);
         toolBarRight.setBackground(new Background(new BackgroundFill(Color.rgb(51,51,51), CornerRadii.EMPTY, Insets.EMPTY)));
         pane.setRight(toolBarRight);
@@ -406,9 +408,11 @@ public class UserInterface extends Application {
         primaryStage.setResizable(false);
         primaryStage.show();
         
-        //stepLabel.setVisible(false);
         
-        beginTutorial(stepLabel, description, moves, back, forward, toolBarRight, toolBar);
+        
+        TutorialHomepage.main(stepLabel, description, moves, bottom, back, forward, toolBarRight, toolBar);
+        
+        //beginTutorial(stepLabel, description, moves, bottom, back, forward, toolBarRight, toolBar);
     }
 
 
@@ -427,7 +431,7 @@ public class UserInterface extends Application {
         }
 	}
 
-	private static void makeR2move() {
+	static void makeR2move() {
 		for (int x = 0; x < rightFacePoints.size(); x++) {
         	MeshView msh = (MeshView) sceneRoot.getChildren().get(((x+1)*6)-2);
         	Point3D pt = rightFacePoints.get(x);
@@ -480,7 +484,7 @@ public class UserInterface extends Application {
 		
 	}
 	
-	private static void makeRmove(boolean prime) {
+	static void makeRmove(boolean prime) {
 		for (int x = 0; x < rightFacePoints.size(); x++) {
         	MeshView msh = (MeshView) sceneRoot.getChildren().get(((x+1)*6)-2);
         	Point3D pt = rightFacePoints.get(x);
@@ -651,7 +655,7 @@ public class UserInterface extends Application {
 		
 	}
 	
-	private void makeUmove(boolean prime) {
+	static void makeUmove(boolean prime) {
 		int elem = 0;
 		for (int x = 0; x < upFacePoints.size(); x++) {
 			switch(x) {
@@ -1279,197 +1283,6 @@ public class UserInterface extends Application {
  		
  		//System.out.println(solved);
 
-    }
-    
-    
-    public static void beginTutorial(Label step, Label description, Label moves, Button back, Button forward, ToolBar toolBarRight, ToolBar toolBar) {
-    	
-    	ArrayList<FadeTransition> fadesIn = new ArrayList<FadeTransition>();
-    	ArrayList<Label> elements = new ArrayList<Label>();
-    	
-    	elements.add(step); elements.add(description); elements.add(moves);
-    	
-    	step.setText("Welcome!");
-    	description.setText("This is an interactive Rubik's Cube tutorial. Using this tool, you can learn how to solve "
-    					    +"the Rubik's Cube using the Layer by Layer method. To begin, would you like to learn the notation for the Rubik's Cube?");
-    	moves.setText("");
-    	SequentialTransition seqIn = initSeqTrans(elements, true);
-    	SequentialTransition seqOut = initSeqTrans(elements, false);
-    	
-    	
-    	forward.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent arg0) {
-				notationTutorial(elements, forward, back, seqIn, seqOut);
-			}
-    	});
-    	
-    	
-        
-    	
-    	for (Node element : elements) {
-    		element.setVisible(true);
-    	}
-    	seqIn.playFromStart();
-
-
-    }
-    
-    public static void notationTutorial(ArrayList<Label> elements, Button forward, Button back, SequentialTransition seqIn, SequentialTransition seqOut) {
-    	   	
-    	String[] bodyText = {"Rubik's Cube Notation uses six letters to refer to each face of the puzzle:"
-				+ "\n\n R - Right Face Turn \n U - Upper Face Turn \n F - Front Face Turn \n L - Left Face Turn \n B - Back Face Turn \n D - Down Face Turn",
-				"A single letter by itself refers to a clockwise face rotation of 90 degrees (known as a quarter turn)"
-				+ "\n\n R - Turn the Right Face 90 degrees Clockwise \n U - Turn the Upper Face 90 degrees Clockwise"
-				+ "\n F - Turn the Front Face 90 degrees Clockwise \n ...and so on",
-				"A letter followed by an apostrophe refers to a counter-clockwise face rotation of 90 degrees (also known as a quarter turn, but in the opposite direction)"
-		    	+ "\n\n R' - Turn the Right Face 90 degrees Counter-Clockwise \n U' - Turn the Upper Face 90 degrees Counter-Clockwise"
-		    	+ "\n F' - Turn the Front Face 90 degrees Counter-Clockwise \n ...and so on",
-		    	"A letter followed by the number 2 denotes a double turn. That is, a 180 degree turn of a face in either direction."
-		    	+ "\n\n R2 - Turn the Right Face 180 degrees \n U2 - Turn the Upper Face 180 degrees "
-		    	+ "\n F2 - Turn the Front Face 180 degrees \n ...and so on",
-		    	"Let's see what these moves look like on an actual cube.			",
-		    	"R", "R'", "R2"};
-						
-    	bodyCount = 0;
-    	forwardOrBack = true;
-    	seqOut.playFromStart();
-    	seqOut.setOnFinished(new EventHandler<ActionEvent>() {
-    		@Override
-    		public void handle(ActionEvent event) {
-    	    	elements.get(0).setText("Notation");
-    	    	elements.get(1).setText(bodyText[bodyCount]);  
-    			seqIn.playFromStart();
-    		}
-    	});
-    	
-    	ArrayList<Label> allButTitle = new ArrayList<Label>();
-    	for (int i = 1; i < elements.size(); i++) {
-    		allButTitle.add(elements.get(i));
-    	}
-    	
-    	ArrayList<Label> moveOnly = new ArrayList<Label>();
-    	for (int i = 2; i < elements.size(); i++) {
-    		moveOnly.add(elements.get(i));
-    	}
-    	
-    	SequentialTransition seqInText = initSeqTrans(allButTitle, true);
-    	SequentialTransition seqOutText = initSeqTrans(allButTitle, false);
-    	
-    	SequentialTransition seqInMove = initSeqTrans(moveOnly, true);
-    	SequentialTransition seqOutMove = initSeqTrans(moveOnly, false);
-    	
-    	seqOutText.setOnFinished(new EventHandler<ActionEvent>() {
-    		@Override
-    		public void handle(ActionEvent event) {
-    			if (forwardOrBack) {
-        			bodyCountInc();
-        			elements.get(1).setText(bodyText[bodyCount]);
-        			elements.get(2).setText("");
-        		} else {
-        			bodyCountDec();
-        			elements.get(1).setText(bodyText[bodyCount]);
-        			elements.get(2).setText("");
-        		}		
-        		seqInText.playFromStart();    			
-    		}
-    	});
-    	
-    	seqOutMove.setOnFinished(new EventHandler<ActionEvent>() {
-    		@Override
-    		public void handle(ActionEvent event) {
-    			bodyCountInc();
-    			elements.get(2).setText(bodyText[bodyCount]);
-    			seqInMove.playFromStart();  
-    		}
-    		
-    	});
-    	
-    	seqInMove.setOnFinished(new EventHandler<ActionEvent>() {
-    		@Override
-    		public void handle(ActionEvent event) {
-    			switch (bodyCount) {
-    			case 5: makeRmove(false); break;
-    			case 6: makeRmove(true); break;
-    			case 7: makeR2move();  break;
-    			}
-    		}
-    	});
-    	
-    	forward.setOnAction(event -> {changeDir(true); checkValid(seqOutText, seqOutMove, bodyText);});
-    	
-    	back.setOnAction(event -> {changeDir(false); checkValid(seqOutText, seqOutMove, bodyText);});
-    	
-    	
-    }
-   
-
-    public static SequentialTransition initSeqTrans(ArrayList<Label> elements, boolean dir) {
-    	SequentialTransition seq = new SequentialTransition();
-    	for (int i = 0; i < elements.size(); i++) {
-    		FadeTransition fade = new FadeTransition(Duration.millis(400));
-    		fade.setNode(elements.get(i));
-    		if (dir) {
-    			fade.setFromValue(0.0);
-                fade.setToValue(1.0);
-    		} else {
-    			fade.setFromValue(1.0);
-                fade.setToValue(0.0);
-    		}
-            fade.setCycleCount(1);
-            fade.setAutoReverse(false);
-            seq.getChildren().add(fade);
-    	}
-    	return seq;
-    }
-    
-    public static FadeTransition getFade(Node l, boolean dir) {
-    	FadeTransition fade = new FadeTransition(Duration.millis(1000));
-    	fade.setNode(l);
-    	if (dir) {
-    		fade.setFromValue(0.0);
-            fade.setToValue(1.0);
-    	} else {
-    		fade.setFromValue(1.0);
-            fade.setToValue(0.0);
-    	}
-        fade.setFromValue(0.0);
-        fade.setToValue(1.0);
-        fade.setCycleCount(1);
-        fade.setAutoReverse(false);
-        return fade;
-    }
-
-    public static void checkValid(SequentialTransition seqOutText, SequentialTransition seqOutMove, String[] bodyText) {
-    	if (forwardOrBack == false) {
-    		if (bodyCount < 0) {
-    			if (bodyCount >= 4) {
-    				seqOutMove.playFromStart();
-    			} else {
-    				seqOutText.playFromStart();
-    			}
-    		}
-    	} else {
-    		if (bodyCount < bodyText.length-1) {
-    			if (bodyCount >= 4) {
-    				seqOutMove.playFromStart();
-    			} else {
-    				seqOutText.playFromStart();
-    			}
-    		}
-    	}
-    }
-    
-    public static void changeDir(boolean dir) {
-    	forwardOrBack = dir;
-    }
-    
-    public static void bodyCountInc() {
-    	bodyCount++;
-    }
-    
-    public static void bodyCountDec() {
-    	bodyCount--;
     }
     
     public static void main(String[] args) {

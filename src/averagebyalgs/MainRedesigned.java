@@ -209,6 +209,7 @@ public class MainRedesigned extends Application {
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
+        		System.out.println("test");
         		
         		GraphDisplay.process();
         		ArrayList<Label> barArray = GraphDisplay.getBarArray();
