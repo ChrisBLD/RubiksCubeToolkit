@@ -437,6 +437,7 @@ public class UserInterface extends Application {
         elements.add(description);
         elements.add(moves);
         elements.add(bottom);
+        
 
         
         TutorialHomepage.main(elements, back, forward, toolBarRight, toolBar);

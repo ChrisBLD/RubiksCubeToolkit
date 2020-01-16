@@ -5,8 +5,10 @@ import java.util.ArrayList;
 import javafx.animation.SequentialTransition;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.layout.HBox;
 
 public class Setup {
 	
@@ -33,6 +35,14 @@ public class Setup {
     	    	elements.get(2).setText("");
     	    	elements.get(3).setText("");
     			seqIn.playFromStart();
+    		}
+    	});
+    	
+    	seqIn.setOnFinished(new EventHandler<ActionEvent>() {
+    		@Override
+    		public void handle(ActionEvent event) {
+    			forward.setDisable(false);
+    			back.setDisable(false);
     		}
     	});
     	
@@ -83,7 +93,17 @@ public class Setup {
 	}
 	
 	private static void generateInputButton() {
-		//To-do: Generate a button which will be used to open a sub-window where the user will enter their cube state currently.
-		//https://docs.oracle.com/javafx/2/ui_controls/color-picker.htm
+		Button getColours = new Button();
+		
+		getColours.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				CubeInput ci = new CubeInput();
+				ci.show();
+			}
+		});
+		HBox test = new HBox(); test.setAlignment(Pos.CENTER);
+		test.getChildren().add(getColours);
+		TutorialHomepage.toolBarRight.getItems().add(test);
 	}
 }

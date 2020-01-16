@@ -14,9 +14,12 @@ import javafx.util.Duration;
 
 public class TutorialHomepage {
 
-
+	static ToolBar toolBarRight, toolBar;
+	
 	public static void main(ArrayList<Label> elements, Button back, Button forward, ToolBar toolBarRight, ToolBar toolBar) {
     	
+			TutorialHomepage.toolBarRight = toolBarRight;
+			TutorialHomepage.toolBar = toolBar;
 			//System.out.println("we here");
 
 	    	elements.get(0).setText("Welcome!");
@@ -40,6 +43,8 @@ public class TutorialHomepage {
 	    	back.setOnAction(new EventHandler<ActionEvent>() {
 	    		@Override
 	    		public void handle(ActionEvent arg0) {
+	    			back.setDisable(true);
+	    			forward.setDisable(true);
 	    			Setup.main(elements, forward, back, seqIn, seqOut);
 	    		}
 	    	});
