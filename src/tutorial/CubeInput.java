@@ -34,6 +34,10 @@ public class CubeInput {
 	String[][] redCorners = {{"G","W"},{"W","B"},{"B","Y"},{"Y","G"}};
 	String[][] orangeCorners = {{"W","G"},{"G","Y"},{"Y","B"},{"B","W"}};
 	
+	int[][] UnDLayerEdges = {{1,46},{3,28},{5,37},{7,10},{19,16},{21,34},{23,43},{25,52}};
+	int[][] eLayerEdges = {{12,32},{14,39},{48,41},{50,30}};
+	
+	
 	public CubeInput() {
 		Pane p = new Pane();
 		inputScene = new Scene(p, 600, 400);
@@ -307,6 +311,52 @@ public class CubeInput {
 			
 			
 		}
+		
+		int cornerOrientTotal = 0;
+		
+		for (int[] corner : cantMatchCorners) {
+			if (buttonArray.get(corner[0]).getText() == "W" || buttonArray.get(corner[0]).getText() == "Y") {			
+				System.out.println("Corner: "+corner[0]+", "+corner[1]+", "+corner[2]+" value 0");
+			} else if (buttonArray.get(corner[1]).getText() == "W" || buttonArray.get(corner[1]).getText() == "Y") {	
+				System.out.println("Corner: "+corner[0]+", "+corner[1]+", "+corner[2]+" value 1");
+				cornerOrientTotal++;
+			} else {
+				System.out.println("Corner: "+corner[0]+", "+corner[1]+", "+corner[2]+" value 2");
+				cornerOrientTotal+=2;
+			}
+		}
+		
+		if (cornerOrientTotal % 3 != 0) {
+			System.out.println("Invalid corners (corner twist, cube unsolvable)");
+			return false;
+		}
+		
+		int edgeOrientTotal = 0;
+		
+		/* for each edge on the u layer: if the colour facing up is yellow or white, it's fine
+		 * else if the colour facing up is green or blue, check the other sticker
+		 * if the other sticker is yellow or white, it's not oriented.
+		 * if the other sticker is orange or red, it's fine
+		 * repeat for each edge on the d layer
+		 * 
+		 * for each edge on the e slice: check the f and b stickers. if theyre white or yellow, it's fine.
+		 * if they're green or blue, it's also fine.
+		 */
+		
+		for (int[] edge : UnDLayerEdges) {
+			if (buttonArray.get(edge[0]).getText() == "W" || buttonArray.get(edge[0]).getText() == "Y") {
+				System.out.println("Edge: "+edge[0]+", "+edge[1]+" oriented correctly.");
+			} else if (buttonArray.get(edge[0]).getText() == "G" || buttonArray.get(edge[0]).getText() == "B") {
+				if (buttonArray.get(edge[1]).getText() == "W" || buttonArray.get(edge[1]).getText() == "Y") { 
+					System.out.println("Edge: "+edge[0]+", "+edge[1]+" NOT oriented correctly.");
+				} else {
+					System.out.println("Edge: "+edge[0]+", "+edge[1]+" oriented correctly.");
+				}
+			}
+		}
+		
+		
+		
 		return true;
 		
 		/*
