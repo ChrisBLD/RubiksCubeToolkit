@@ -1,5 +1,5 @@
 package tutorial;
 
-public class Controller {
+public class CubeSolver {
 	
 }

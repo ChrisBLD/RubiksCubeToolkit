@@ -15,6 +15,14 @@ public class Setup {
 	static int bodyCount = 0;
 	static boolean forwardOrBack = true;
 	static ArrayList<Button> buttonArray = new ArrayList<Button>();
+	
+	public static final int RED     = 0;
+    public static final int GREEN   = 1;
+    public static final int BLUE    = 2;
+    public static final int YELLOW  = 3;
+    public static final int ORANGE  = 4;
+    public static final int WHITE   = 5;
+    public static final int GRAY    = 6;
 
 	public static void main(ArrayList<Label> elements, Button forward, Button back, SequentialTransition seqIn, SequentialTransition seqOut) {
 		
@@ -100,11 +108,58 @@ public class Setup {
 			@Override
 			public void handle(ActionEvent event) {
 				CubeInput ci = new CubeInput();
-				ci.show();
+				ci.inputWindow.showAndWait();
+				setupVirtualCube();
+				UserInterface.makeRmove(true); UserInterface.makeRmove(false);
+				//CubeSolver.deriveSolution(buttonArray);
 			}
 		});
 		HBox test = new HBox(); test.setAlignment(Pos.CENTER);
 		test.getChildren().add(getColours);
 		TutorialHomepage.toolBarRight.getItems().add(test);
+	}
+	
+	private static void setupVirtualCube() {
+		ArrayList<Integer> cubeColours = new ArrayList<Integer>();
+		int count = 0;
+		for (Button b : buttonArray) {
+			System.out.println("count: "+count+", col: "+b.getText());
+			switch (b.getText()) {
+			case "W": cubeColours.add(WHITE); break;
+			case "Y": cubeColours.add(YELLOW); break;
+			case "B": cubeColours.add(BLUE); break;
+			case "G": cubeColours.add(GREEN); break;
+			case "R": cubeColours.add(RED); break; 
+			case "O": cubeColours.add(ORANGE); break;
+			}
+			count++;
+		}
+		
+		UserInterface.FLD[0] = cubeColours.get(15); UserInterface.FLD[4] = cubeColours.get(35); UserInterface.FLD[5] = cubeColours.get(18);
+		UserInterface.FD[0] = cubeColours.get(15); UserInterface.FD[5] = cubeColours.get(19);
+		UserInterface.FRD[0] = cubeColours.get(17); UserInterface.FRD[1] = cubeColours.get(42); UserInterface.FRD[5] = cubeColours.get(20);
+		UserInterface.FL[0] = cubeColours.get(12); UserInterface.FL[4] = cubeColours.get(32);
+		UserInterface.FR[0] = cubeColours.get(14); UserInterface.FR[1] = cubeColours.get(39);
+		UserInterface.FLU[0] = cubeColours.get(9); UserInterface.FLU[2] = cubeColours.get(6); UserInterface.FLU[4] = cubeColours.get(29); 
+		UserInterface.FU[0] = cubeColours.get(10); UserInterface.FU[2] = cubeColours.get(7);
+		UserInterface.FRU[0] = cubeColours.get(11); UserInterface.FRU[1] = cubeColours.get(36); UserInterface.FRU[2] = cubeColours.get(8);
+		
+		
+		UserInterface.CLD[4] = cubeColours.get(34); UserInterface.CLD[5] = cubeColours.get(21); 
+		UserInterface.CRD[1] = cubeColours.get(43); UserInterface.CRD[5] = cubeColours.get(23); 
+		UserInterface.CLU[2] = cubeColours.get(3); UserInterface.CLU[4] = cubeColours.get(28); 
+		UserInterface.CRU[1] = cubeColours.get(37); UserInterface.CRU[2] = cubeColours.get(5); 
+		
+		UserInterface.BLD[3] = cubeColours.get(53); UserInterface.BLD[4] = cubeColours.get(33); UserInterface.BLD[5] = cubeColours.get(24);
+		UserInterface.BD[3] = cubeColours.get(52); UserInterface.BD[5] = cubeColours.get(25);
+		UserInterface.BRD[1] = cubeColours.get(44); UserInterface.BRD[3] = cubeColours.get(51); UserInterface.BRD[5] = cubeColours.get(26);
+		UserInterface.BL[3] = cubeColours.get(50); UserInterface.BL[4] = cubeColours.get(30);
+		UserInterface.BR[1] = cubeColours.get(41); UserInterface.BR[3] = cubeColours.get(48);
+		UserInterface.BLU[2] = cubeColours.get(0); UserInterface.BLU[3] = cubeColours.get(47); UserInterface.BLU[4] = cubeColours.get(27); 
+		UserInterface.BU[2] = cubeColours.get(1); UserInterface.BU[3] = cubeColours.get(46);
+		UserInterface.BRU[1] = cubeColours.get(38); UserInterface.BRU[2] = cubeColours.get(2); UserInterface.BRU[3] = cubeColours.get(45);
+		
+		
+		
 	}
 }

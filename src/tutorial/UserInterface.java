@@ -136,15 +136,15 @@ public class UserInterface extends Application {
     //I'm going to have to add a listener of some sort to each of these points so I can track the colour currently at that location.
 
                                               // F   R   U   B   L   D
-    private static int[] FLD  = new int[]{GREEN, GRAY, GRAY, GRAY, ORANGE, YELLOW};
-    private static int[] FD   = new int[]{GREEN, GRAY, GRAY, GRAY, GRAY, YELLOW};
-    private static int[] FRD  = new int[]{GREEN, RED, GRAY, GRAY, GRAY, YELLOW};
-    private static int[] FL   = new int[]{GREEN, GRAY, GRAY, GRAY, ORANGE, GRAY};
-    private static int[] F    = new int[]{GREEN, GRAY, GRAY, GRAY, GRAY, GRAY}; //F face centre piece.
-    private static int[] FR   = new int[]{GREEN, RED, GRAY, GRAY, GRAY, GRAY};
-    private static int[] FLU  = new int[]{GREEN, GRAY, WHITE, GRAY, ORANGE, GRAY};
-    private static int[] FU   = new int[]{GREEN, GRAY, WHITE, GRAY, GRAY, GRAY};
-    private static int[] FRU  = new int[]{GREEN, RED, WHITE, GRAY, GRAY, GRAY};
+    static int[] FLD  = new int[]{GREEN, GRAY, GRAY, GRAY, ORANGE, YELLOW}; 
+    static int[] FD   = new int[]{GREEN, GRAY, GRAY, GRAY, GRAY, YELLOW};
+    static int[] FRD  = new int[]{GREEN, RED, GRAY, GRAY, GRAY, YELLOW};
+    static int[] FL   = new int[]{GREEN, GRAY, GRAY, GRAY, ORANGE, GRAY};
+    static int[] F    = new int[]{GREEN, GRAY, GRAY, GRAY, GRAY, GRAY}; //F face centre piece.
+    static int[] FR   = new int[]{GREEN, RED, GRAY, GRAY, GRAY, GRAY};
+    static int[] FLU  = new int[]{GREEN, GRAY, WHITE, GRAY, ORANGE, GRAY};
+    static int[] FU   = new int[]{GREEN, GRAY, WHITE, GRAY, GRAY, GRAY};
+    static int[] FRU  = new int[]{GREEN, RED, WHITE, GRAY, GRAY, GRAY};
     
     private static Point3D pFLD   = new Point3D(-1.04,  1.04, -1.04);
     private static Point3D pFD    = new Point3D(   0,  1.04, -1.04);
@@ -156,16 +156,17 @@ public class UserInterface extends Application {
     private static Point3D pFU    = new Point3D(   0, -1.04, -1.04);
     private static Point3D pFRU   = new Point3D( 1.04, -1.04, -1.04);
     
-    private static int[] CLD  = new int[]{GRAY, GRAY, GRAY, GRAY, ORANGE, YELLOW};
-    private static int[] CD   = new int[]{GRAY, GRAY, GRAY, GRAY, GRAY, YELLOW}; //D face centre piece
-    private static int[] CRD  = new int[]{GRAY, RED, GRAY, GRAY, GRAY, YELLOW};
-    private static int[] CL   = new int[]{GRAY, GRAY, GRAY, GRAY, ORANGE, GRAY}; //L face centre piece
-    private static int[] C    = new int[]{GRAY, GRAY, GRAY, GRAY, GRAY, GRAY}; //Invisible core
-    private static int[] CR   = new int[]{GRAY, RED, GRAY, GRAY, GRAY, GRAY}; //R face centre piece
-    private static int[] CLU  = new int[]{GRAY, GRAY, WHITE, GRAY, ORANGE, GRAY};
-    private static int[] CU   = new int[]{GRAY, GRAY, WHITE, GRAY, GRAY, GRAY}; //U face centre piece
-    private static int[] CRU  = new int[]{GRAY, RED, WHITE, GRAY, GRAY, GRAY};
+    static int[] CLD  = new int[]{GRAY, GRAY, GRAY, GRAY, ORANGE, YELLOW};
+    static int[] CD   = new int[]{GRAY, GRAY, GRAY, GRAY, GRAY, YELLOW}; //D face centre piece
+    static int[] CRD  = new int[]{GRAY, RED, GRAY, GRAY, GRAY, YELLOW};
+    static int[] CL   = new int[]{GRAY, GRAY, GRAY, GRAY, ORANGE, GRAY}; //L face centre piece
+    static int[] C    = new int[]{GRAY, GRAY, GRAY, GRAY, GRAY, GRAY}; //Invisible core
+    static int[] CR   = new int[]{GRAY, RED, GRAY, GRAY, GRAY, GRAY}; //R face centre piece
+    static int[] CLU  = new int[]{GRAY, GRAY, WHITE, GRAY, ORANGE, GRAY};
+    static int[] CU   = new int[]{GRAY, GRAY, WHITE, GRAY, GRAY, GRAY}; //U face centre piece
+    static int[] CRU  = new int[]{GRAY, RED, WHITE, GRAY, GRAY, GRAY};
     
+
     private static Point3D pCLD   = new Point3D(-1.04,  1.04, 0);
     private static Point3D pCD    = new Point3D(   0,  1.04, 0);
     private static Point3D pCRD   = new Point3D( 1.04,  1.04, 0);
@@ -176,15 +177,16 @@ public class UserInterface extends Application {
     private static Point3D pCU    = new Point3D(   0, -1.04, 0);
     private static Point3D pCRU   = new Point3D( 1.04, -1.04, 0);
     
-    private static int[] BLD  = new int[]{GRAY, GRAY, GRAY, BLUE, ORANGE, YELLOW};
-    private static int[] BD   = new int[]{GRAY, GRAY, GRAY, BLUE, GRAY, YELLOW};
-    private static int[] BRD  = new int[]{GRAY, RED, GRAY, BLUE, GRAY, YELLOW};
-    private static int[] BL   = new int[]{GRAY, GRAY, GRAY, BLUE, ORANGE, GRAY};
-    private static int[] B    = new int[]{GRAY, GRAY, GRAY, BLUE, GRAY, GRAY}; //B face centre piece
-    private static int[] BR   = new int[]{GRAY, RED, GRAY, BLUE, GRAY, GRAY};
-    private static int[] BLU  = new int[]{GRAY, GRAY, WHITE, BLUE, ORANGE, GRAY};
-    private static int[] BU   = new int[]{GRAY, GRAY, WHITE, BLUE, GRAY, GRAY};
-    private static int[] BRU  = new int[]{GRAY, RED, WHITE, BLUE, GRAY, GRAY};
+    static int[] BLD  = new int[]{GRAY, GRAY, GRAY, BLUE, ORANGE, YELLOW};
+    static int[] BD   = new int[]{GRAY, GRAY, GRAY, BLUE, GRAY, YELLOW};
+    static int[] BRD  = new int[]{GRAY, RED, GRAY, BLUE, GRAY, YELLOW};
+    static int[] BL   = new int[]{GRAY, GRAY, GRAY, BLUE, ORANGE, GRAY};
+    static int[] B    = new int[]{GRAY, GRAY, GRAY, BLUE, GRAY, GRAY}; //B face centre piece
+    static int[] BR   = new int[]{GRAY, RED, GRAY, BLUE, GRAY, GRAY};
+    static int[] BLU  = new int[]{GRAY, GRAY, WHITE, BLUE, ORANGE, GRAY};
+    static int[] BU   = new int[]{GRAY, GRAY, WHITE, BLUE, GRAY, GRAY};
+    static int[] BRU  = new int[]{GRAY, RED, WHITE, BLUE, GRAY, GRAY};
+    
     
     private static Point3D pBLD   = new Point3D(-1.04,  1.04, 1.04);
     private static Point3D pBD    = new Point3D(   0,  1.04, 1.04);
@@ -438,6 +440,14 @@ public class UserInterface extends Application {
         elements.add(moves);
         elements.add(bottom);
         
+        scene.setOnKeyPressed(e -> {
+        	switch(e.getCode()) {
+	        	case R: makeRmove(false); break;
+	        	case E: makeRmove(true); break;
+	        	default: break;
+
+        	}
+        });
 
         
         TutorialHomepage.main(elements, back, forward, toolBarRight, toolBar);
