@@ -34,8 +34,7 @@ public class CubeInput {
 	String[][] redCorners = {{"G","W"},{"W","B"},{"B","Y"},{"Y","G"}};
 	String[][] orangeCorners = {{"W","G"},{"G","Y"},{"Y","B"},{"B","W"}};
 	
-	int[][] UnDLayerEdges = {{1,46},{3,28},{5,37},{7,10},{19,16},{21,34},{23,43},{25,52}};
-	int[][] eLayerEdges = {{12,32},{14,39},{48,41},{50,30}};
+	int[][] allEdges = {{1,46},{3,28},{5,37},{7,10},{19,16},{21,34},{23,43},{25,52},{12,32},{14,39},{48,41},{50,30}};
 	
 	
 	public CubeInput() {
@@ -75,7 +74,11 @@ public class CubeInput {
         
         Button submit = new Button("Submit");
         submit.setOnAction(event -> {
-        	System.out.println(verifyInput(buttonArray));
+        	boolean result = verifyInput(buttonArray);
+        	if (result) {
+        		Setup.buttonArray = buttonArray;
+        		inputWindow.close();
+        	}
         });
         submit.setLayoutX(400);
         submit.setLayoutY(300);
@@ -84,9 +87,8 @@ public class CubeInput {
         
         placeButtons(buttonArray, p);
         
-        
-
 	}
+
 	
 	Button colourButtonInit(int face, boolean centre) {
 		Button b = new Button();
@@ -332,41 +334,34 @@ public class CubeInput {
 		}
 		
 		int edgeOrientTotal = 0;
-		
-		/* for each edge on the u layer: if the colour facing up is yellow or white, it's fine
-		 * else if the colour facing up is green or blue, check the other sticker
-		 * if the other sticker is yellow or white, it's not oriented.
-		 * if the other sticker is orange or red, it's fine
-		 * repeat for each edge on the d layer
-		 * 
-		 * for each edge on the e slice: check the f and b stickers. if theyre white or yellow, it's fine.
-		 * if they're green or blue, it's also fine.
-		 */
-		
-		for (int[] edge : UnDLayerEdges) {
+		for (int[] edge : allEdges) {
 			if (buttonArray.get(edge[0]).getText() == "W" || buttonArray.get(edge[0]).getText() == "Y") {
 				System.out.println("Edge: "+edge[0]+", "+edge[1]+" oriented correctly.");
+				edgeOrientTotal++;
 			} else if (buttonArray.get(edge[0]).getText() == "G" || buttonArray.get(edge[0]).getText() == "B") {
 				if (buttonArray.get(edge[1]).getText() == "W" || buttonArray.get(edge[1]).getText() == "Y") { 
 					System.out.println("Edge: "+edge[0]+", "+edge[1]+" NOT oriented correctly.");
 				} else {
 					System.out.println("Edge: "+edge[0]+", "+edge[1]+" oriented correctly.");
+					edgeOrientTotal++;
 				}
+			} else {
+				System.out.println("Edge: "+edge[0]+", "+edge[1]+" NOT oriented correctly.");
 			}
 		}
-		
-		
+
+		if (edgeOrientTotal % 2 != 0) {
+			System.out.println("Invalid edges (edge flipped in place, cube unsolvable)");
+			return false;
+		}
 		
 		return true;
 		
 		/*
 		 * I will have to work out some way of telling whether or not I have three types of parity:
-		 * 1) Single flipped edge
-		 * 2) Single twisted corner
+		 * 1) Single flipped edge - DONE
+		 * 2) Single twisted corner - DONE
 		 * 3) Two swapped pieces
-		 * 
-		 * A single flipped edge can be figured out by assigning all edges an orientation and summing them. It should be an even number in the end, if it's possible to solve.
-		 * Same approach with single twisted corner. Just assign a number to orientation and sum them. Should be a multiple of 3.
 		 */
 		
 		

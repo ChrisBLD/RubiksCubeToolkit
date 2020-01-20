@@ -14,6 +14,7 @@ public class Setup {
 	
 	static int bodyCount = 0;
 	static boolean forwardOrBack = true;
+	static ArrayList<Button> buttonArray = new ArrayList<Button>();
 
 	public static void main(ArrayList<Label> elements, Button forward, Button back, SequentialTransition seqIn, SequentialTransition seqOut) {
 		
