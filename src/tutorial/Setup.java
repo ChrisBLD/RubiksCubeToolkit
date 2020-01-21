@@ -8,6 +8,8 @@ import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 
 public class Setup {
@@ -17,6 +19,8 @@ public class Setup {
 	static ArrayList<Button> buttonArray = new ArrayList<Button>();
 	static ArrayList<Label> elements;
 	
+	static Button forward, back;
+	
 	public static final int RED     = 0;
     public static final int GREEN   = 1;
     public static final int BLUE    = 2;
@@ -24,6 +28,8 @@ public class Setup {
     public static final int ORANGE  = 4;
     public static final int WHITE   = 5;
     public static final int GRAY    = 6;
+    
+    private static SequentialTransition seqOut, seqIn;
 
 	public static void main(ArrayList<Label> elements, Button forward, Button back, SequentialTransition seqIn, SequentialTransition seqOut) {
 		
@@ -35,8 +41,11 @@ public class Setup {
 				+ " your own puzzle throughout the tutorial."};
 		String badText = "You can still complete this tutorial without your own cube, but you will be limited to using a default scramble and following the tutorial using only the"
 				+ " virtual cube on the left of the screen. This scramble will teach you everything you need to know - but the best way to learn is to try it yourself!";
-		
+		Setup.seqIn = seqIn;
+		Setup.seqOut = seqOut;
 		Setup.elements = elements;
+		Setup.forward = forward;
+		Setup.back = back;
     	seqOut.playFromStart();
     	seqOut.setOnFinished(new EventHandler<ActionEvent>() {
     		@Override
@@ -105,15 +114,28 @@ public class Setup {
 	
 	private static void generateInputButton() {
 		Button getColours = new Button();
-		
+		getColours.setMinSize(187,96); getColours.setMaxSize(187, 96);
+		getColours.setGraphic(new ImageView(new Image("/resources/puzzleSetupButton.png")));
 		getColours.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
 				CubeInput ci = new CubeInput();
-				ci.inputWindow.showAndWait();
-				setupVirtualCube(elements);
+				boolean passCheck = true;
+				while (passCheck) {
+					try {
+						ci.inputWindow.showAndWait();
+						setupVirtualCube(elements);
+						passCheck = false;
+					} catch (Exception e) {
+						//doNothing
+					}
+				}
+				
+				
 				UserInterface.makeRmove(true); UserInterface.makeRmove(false);
-				CubeSolver.deriveSolution(buttonArray);
+				ArrayList<String> allMoves = CubeSolver.deriveSolution(buttonArray);
+				getColours.setVisible(false);
+				CrossSection.begin(allMoves, seqOut, seqIn, elements, forward, back);
 			}
 		});
 		HBox test = new HBox(); test.setAlignment(Pos.CENTER);

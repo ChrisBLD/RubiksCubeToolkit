@@ -25,6 +25,11 @@ public class CubeSolver {
 	 * B' = N
 	 * L' = K
 	 * D' = S
+	 * 
+	 * Steps (according to return strings):
+	 * 1 - Initial Cross, putting all cross pieces in their positions
+	 * 2 - Proper Cross, orienting all cross pieces correctly.
+	 * 3 - Corners of the First Layer, inserting all pieces in orientation.
 	 */
 		
 	static ArrayList<Button> buttonArray;
@@ -32,8 +37,8 @@ public class CubeSolver {
 	static int[] cornerStickers = {0,2,6,8,9,11,15,17,18,20,24,26,27,29,33,35,36,38,42,44,45,47,51,53};
 	static int[][] edges = {{1,46},{3,28},{5,37},{7,10},{19,16},{21,34},{23,43},{25,52},{12,32},{14,39},{48,41},{50,30}};
 	static int[][] corners = {{6,9,29},{8,36,11},{2,45,38},{0,27,47},{18,35,15},{20,17,42},{26,44,51},{24,53,33}};
-	
-	static ArrayList<String> movesToSolve = new ArrayList<String>();
+		
+	static ArrayList<String> allMoves = new ArrayList<String>();
 	
 	static String[] solvedCrossEdges = {"UF","UR","UB","UL"};
 	static String[] flippedCrossEdges = {"FU","RU","BU","LU"};
@@ -59,7 +64,7 @@ public class CubeSolver {
     			 BLD, BD, BRD, BL, BR, BLU, BU, BRU;
 	
 	
-	public static void deriveSolution(ArrayList<Button> buttonArray) {
+	public static ArrayList<String> deriveSolution(ArrayList<Button> buttonArray) {
 
 		FLD = Arrays.copyOf(UserInterface.FLD, 6); FD = Arrays.copyOf(UserInterface.FD, 6);
 		FRD = Arrays.copyOf(UserInterface.FRD, 6); FL = Arrays.copyOf(UserInterface.FL, 6);
@@ -71,38 +76,47 @@ public class CubeSolver {
 		BRD = Arrays.copyOf(UserInterface.BRD, 6); BL = Arrays.copyOf(UserInterface.BL, 6);
 		BR = Arrays.copyOf(UserInterface.BR, 6); BLU = Arrays.copyOf(UserInterface.BLU, 6); 
 		BU = Arrays.copyOf(UserInterface.BU, 6); BRU = Arrays.copyOf(UserInterface.BRU, 6);
-		
+				
 		CubeSolver.buttonArray = buttonArray;
 		String crossEdgeLoc = findCrossEdge(1); //Green, Red, Blue, Orange
-		System.out.println(crossEdgeLoc);
+		//System.out.println(crossEdgeLoc);
 		String movesToSolve = solveCrossEdge(crossEdgeLoc, "FU");
-		System.out.println("Moves to solve White-Green edge: "+movesToSolve);
+		//System.out.println("Moves to solve White-Green edge: "+movesToSolve);
 		applyMovesLogically(movesToSolve);
+		allMoves.add("1"+movesToSolve);
 		
 		crossEdgeLoc = findCrossEdge(0); //Green, Red, Blue, Orange 1,0,2,4
-		System.out.println(crossEdgeLoc);
+		//System.out.println(crossEdgeLoc);
 		movesToSolve = solveCrossEdge(crossEdgeLoc, "CRU");
-		System.out.println("Moves to solve White-Red edge: "+movesToSolve);
+		//System.out.println("Moves to solve White-Red edge: "+movesToSolve);
 		applyMovesLogically(movesToSolve);
+		allMoves.add("1"+movesToSolve);
 		
 		crossEdgeLoc = findCrossEdge(2); //Green, Red, Blue, Orange 1,0,2,4
-		System.out.println(crossEdgeLoc);
+		//System.out.println(crossEdgeLoc);
 		movesToSolve = solveCrossEdge(crossEdgeLoc, "BU");
-		System.out.println("Moves to solve White-Blue edge: "+movesToSolve);
+		//System.out.println("Moves to solve White-Blue edge: "+movesToSolve);
 		applyMovesLogically(movesToSolve);
+		allMoves.add("1"+movesToSolve);
 		
 		crossEdgeLoc = findCrossEdge(4); //Green, Red, Blue, Orange 1,0,2,4
-		System.out.println(crossEdgeLoc);
+		//System.out.println(crossEdgeLoc);
 		movesToSolve = solveCrossEdge(crossEdgeLoc, "CLU");
-		System.out.println("Moves to solve White-Orange edge: "+movesToSolve);
+		//System.out.println("Moves to solve White-Orange edge: "+movesToSolve);
 		applyMovesLogically(movesToSolve);
+		allMoves.add("1"+movesToSolve);
 		
+		//At this point all cross pieces should be in their place, but they might be flipped. If they're flipped, we need to check and fix
+		//them one by one by taking them out of their slot and sledging them back in. The below function will check this for each edge.
 		
+		orientCrossEdges();
 		
-		
-		
+		for (String s : allMoves) { System.out.println(s);
+		}
 		//System.out.println("Cross Edges: "+crossEdges.get(0)+", "+crossEdges.get(1)+", "+crossEdges.get(2)+", "+crossEdges.get(3));
 		//solveCrossEdges(crossEdges);
+		
+		return allMoves;
 	}
 
 	
@@ -137,7 +151,7 @@ public class CubeSolver {
 			case "CRU": return "RRSFF";
 			case "CLU": return "LLDFF";
 			case "BU": return "BBDDFF";			
-			default: return "solved";
+			default: return "*";
 			}
 		} else if (destination.equals("CRU")) {
 			switch (crossEdgeLoc) {
@@ -152,7 +166,7 @@ public class CubeSolver {
 			case "FU": return "FFDRR";
 			case "CLU": return "LLDDRR";
 			case "BU": return "BBSRR";			
-			default: return "solved";
+			default: return "*";
 			}
 		} else if (destination.equals("BU")) {
 			switch (crossEdgeLoc) {
@@ -166,8 +180,8 @@ public class CubeSolver {
 			case "BL": return "N";
 			case "FU": return "FFDDBB";
 			case "CRU": return "RRDBB";
-			case "BU": return "LLSBB";			
-			default: return "solved";
+			case "CLU": return "LLSBB";			
+			default: return "*";
 			}
 		} else if (destination.equals("CLU")) {
 			switch (crossEdgeLoc) {
@@ -182,7 +196,7 @@ public class CubeSolver {
 			case "FU": return "FFSLL";
 			case "CRU": return "RRDDLL";
 			case "BU": return "BBDLL";			
-			default: return "solved";
+			default: return "*";
 			}
 		}
 		return "";
@@ -208,7 +222,40 @@ public class CubeSolver {
 		}
 		
 	}
-	
+
+	private static void orientCrossEdges() {
+		if (FU[2] == WHITE) {
+			System.out.println("Nothing to do, edge is oriented well.");
+			allMoves.add("2"+"*");
+		} else {
+			System.out.println("Edge needs to be flipped.");
+			allMoves.add("2"+"FFDRGT");
+		}
+		
+		if (CRU[2] == WHITE) {
+			System.out.println("Nothing to do, edge is oriented well.");
+			allMoves.add("2"+"*");
+		} else {
+			System.out.println("Edge needs to be flipped.");
+			allMoves.add("2"+"RRDBTN");
+		}
+		
+		if (CLU[2] == WHITE) {
+			System.out.println("Nothing to do, edge is oriented well.");
+			allMoves.add("2"+"*");
+		} else {
+			System.out.println("Edge needs to be flipped.");
+			allMoves.add("2"+"BBDLNK");
+		}
+		
+		if (BU[2] == WHITE) {
+			System.out.println("Nothing to do, edge is oriented well.");
+			allMoves.add("2"+"*");
+		} else {
+			System.out.println("Edge needs to be flipped.");
+			allMoves.add("2"+"LLDFKG");
+		}
+	}
 
 	private static void cycleColours(int[] list, int one, int two, int three) {
 		int temp = list[three];

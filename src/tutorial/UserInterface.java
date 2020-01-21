@@ -407,7 +407,7 @@ public class UserInterface extends Application {
         
         HBox h1 = new HBox(); h1.getChildren().add(stepLabel); h1.setAlignment(Pos.CENTER);
         h1.setPadding(new Insets(10,0,10,0));
-        HBox h2 = new HBox(); h2.getChildren().add(description);
+        HBox h2 = new HBox(); h2.getChildren().add(description);h2.setAlignment(Pos.CENTER);
         h2.setPadding(new Insets(10,10,10,10));
         HBox h3 = new HBox(); h3.getChildren().addAll(moves, moves2, moves3, moves4, moves5); h3.setAlignment(Pos.CENTER);
         h3.setPadding(new Insets(10,10,10,10));
