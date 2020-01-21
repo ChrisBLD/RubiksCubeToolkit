@@ -1,0 +1,2 @@
+NOTE TO SELF:
+Working on a colour-blind mode for the cube might be a good idea. It would be easy to implement and would do wonders for accessibility for this tutorial. Consider it once the core functionality has been completed.
