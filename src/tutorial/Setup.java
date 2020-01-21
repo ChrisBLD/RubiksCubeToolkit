@@ -15,6 +15,7 @@ public class Setup {
 	static int bodyCount = 0;
 	static boolean forwardOrBack = true;
 	static ArrayList<Button> buttonArray = new ArrayList<Button>();
+	static ArrayList<Label> elements;
 	
 	public static final int RED     = 0;
     public static final int GREEN   = 1;
@@ -35,6 +36,7 @@ public class Setup {
 		String badText = "You can still complete this tutorial without your own cube, but you will be limited to using a default scramble and following the tutorial using only the"
 				+ " virtual cube on the left of the screen. This scramble will teach you everything you need to know - but the best way to learn is to try it yourself!";
 		
+		Setup.elements = elements;
     	seqOut.playFromStart();
     	seqOut.setOnFinished(new EventHandler<ActionEvent>() {
     		@Override
@@ -109,9 +111,9 @@ public class Setup {
 			public void handle(ActionEvent event) {
 				CubeInput ci = new CubeInput();
 				ci.inputWindow.showAndWait();
-				setupVirtualCube();
+				setupVirtualCube(elements);
 				UserInterface.makeRmove(true); UserInterface.makeRmove(false);
-				//CubeSolver.deriveSolution(buttonArray);
+				CubeSolver.deriveSolution(buttonArray);
 			}
 		});
 		HBox test = new HBox(); test.setAlignment(Pos.CENTER);
@@ -119,7 +121,7 @@ public class Setup {
 		TutorialHomepage.toolBarRight.getItems().add(test);
 	}
 	
-	private static void setupVirtualCube() {
+	private static void setupVirtualCube(ArrayList<Label> elements) {
 		ArrayList<Integer> cubeColours = new ArrayList<Integer>();
 		int count = 0;
 		for (Button b : buttonArray) {
@@ -136,7 +138,7 @@ public class Setup {
 		}
 		
 		UserInterface.FLD[0] = cubeColours.get(15); UserInterface.FLD[4] = cubeColours.get(35); UserInterface.FLD[5] = cubeColours.get(18);
-		UserInterface.FD[0] = cubeColours.get(15); UserInterface.FD[5] = cubeColours.get(19);
+		UserInterface.FD[0] = cubeColours.get(16); UserInterface.FD[5] = cubeColours.get(19);
 		UserInterface.FRD[0] = cubeColours.get(17); UserInterface.FRD[1] = cubeColours.get(42); UserInterface.FRD[5] = cubeColours.get(20);
 		UserInterface.FL[0] = cubeColours.get(12); UserInterface.FL[4] = cubeColours.get(32);
 		UserInterface.FR[0] = cubeColours.get(14); UserInterface.FR[1] = cubeColours.get(39);
@@ -162,4 +164,5 @@ public class Setup {
 		
 		
 	}
+
 }

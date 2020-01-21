@@ -444,6 +444,9 @@ public class UserInterface extends Application {
         	switch(e.getCode()) {
 	        	case R: makeRmove(false); break;
 	        	case E: makeRmove(true); break;
+	        	case X: makeXrotation(false); break;
+	        	case Z: makeZrotation(false); break;
+	        	case Y: makeYrotation(false); break;
 	        	default: break;
 
         	}
