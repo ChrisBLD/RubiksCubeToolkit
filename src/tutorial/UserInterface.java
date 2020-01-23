@@ -358,43 +358,19 @@ public class UserInterface extends Application {
         
         
         Label stepLabel = new Label("NAME OF STEP");
-        stepLabel.setTextFill(Color.WHITE);
+        stepLabel.setTextFill(Color.rgb(213,225,227));
         stepLabel.setFont(Font.loadFont(getClass().getResourceAsStream("/resources/ihfont.otf"), 40));
         
         Label description = new Label("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam arcu lorem, tempus id dui eu, pharetra facilisis dolor. "
         		+ "Integer id odio eu augue tincidunt pharetra. Donec augue leo, euismod ut rutrum a, tincidunt ac quam. Morbi odio odio, fermentum eu purus id, "
         		+ "consequat semper sapien. Phasellus et urna metus.");
-        description.setTextFill(Color.WHITE);
+        description.setTextFill(Color.rgb(213,225,227));
         description.setFont(Font.loadFont(getClass().getResourceAsStream("/resources/ihfont.otf"), 23));
         description.setWrapText(true);
         description.setMaxWidth(500);
         
         Label moves = new Label("R U R' U'");
-        moves.setTextFill(Color.WHITE);
-        moves.setFont(Font.loadFont(getClass().getResourceAsStream("/resources/ihfont.otf"), 80));
-        moves.setWrapText(true);
-        moves.setMaxWidth(500);
-        
-        Label moves2 = new Label("R U R' U'");
-        moves.setTextFill(Color.WHITE);
-        moves.setFont(Font.loadFont(getClass().getResourceAsStream("/resources/ihfont.otf"), 80));
-        moves.setWrapText(true);
-        moves.setMaxWidth(500);
-        
-        Label moves3 = new Label("R U R' U'");
-        moves.setTextFill(Color.WHITE);
-        moves.setFont(Font.loadFont(getClass().getResourceAsStream("/resources/ihfont.otf"), 80));
-        moves.setWrapText(true);
-        moves.setMaxWidth(500);
-        
-        Label moves4 = new Label("R U R' U'");
-        moves.setTextFill(Color.WHITE);
-        moves.setFont(Font.loadFont(getClass().getResourceAsStream("/resources/ihfont.otf"), 80));
-        moves.setWrapText(true);
-        moves.setMaxWidth(500);
-        
-        Label moves5 = new Label("R U R' U'");
-        moves.setTextFill(Color.WHITE);
+        moves.setTextFill(Color.rgb(213,225,227));
         moves.setFont(Font.loadFont(getClass().getResourceAsStream("/resources/ihfont.otf"), 80));
         moves.setWrapText(true);
         moves.setMaxWidth(500);
@@ -409,7 +385,7 @@ public class UserInterface extends Application {
         h1.setPadding(new Insets(10,0,10,0));
         HBox h2 = new HBox(); h2.getChildren().add(description);h2.setAlignment(Pos.CENTER);
         h2.setPadding(new Insets(10,10,10,10));
-        HBox h3 = new HBox(); h3.getChildren().addAll(moves, moves2, moves3, moves4, moves5); h3.setAlignment(Pos.CENTER);
+        HBox h3 = new HBox(); h3.getChildren().addAll(moves); h3.setAlignment(Pos.CENTER);
         h3.setPadding(new Insets(10,10,10,10));
         HBox h4 = new HBox(); h4.getChildren().add(bottom); h4.setAlignment(Pos.CENTER);
         

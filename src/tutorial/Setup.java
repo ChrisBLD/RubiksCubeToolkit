@@ -5,7 +5,9 @@ import java.util.ArrayList;
 import javafx.animation.SequentialTransition;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
@@ -113,6 +115,7 @@ public class Setup {
 	}
 	
 	private static void generateInputButton() {
+		forward.setDisable(true);
 		Button getColours = new Button();
 		getColours.setMinSize(187,96); getColours.setMaxSize(187, 96);
 		getColours.setGraphic(new ImageView(new Image("/resources/puzzleSetupButton.png")));
@@ -138,9 +141,11 @@ public class Setup {
 				CrossSection.begin(allMoves, seqOut, seqIn, elements, forward, back);
 			}
 		});
-		HBox test = new HBox(); test.setAlignment(Pos.CENTER);
-		test.getChildren().add(getColours);
-		TutorialHomepage.toolBarRight.getItems().add(test);
+
+		HBox test = new HBox(getColours); test.setAlignment(Pos.CENTER);
+		test.setPadding(new Insets(70,70,70,70));
+		TutorialHomepage.toolBarRight.getItems().set(2,test);
+
 	}
 	
 	private static void setupVirtualCube(ArrayList<Label> elements) {

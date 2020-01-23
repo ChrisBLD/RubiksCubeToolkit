@@ -5,17 +5,26 @@ import java.util.ArrayList;
 import javafx.animation.SequentialTransition;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 
 public class CrossSection {
 
 	static ArrayList<String> placeMoves = new ArrayList<String>();
 	static ArrayList<String> orientMoves = new ArrayList<String>();
 	static boolean forwardOrBack;
-	static int bodyCount;	
+	static int bodyCount;
+	static final int MAX = 13;
+	
+	
 	public static void begin(ArrayList<String> allMoves, SequentialTransition seqOut, SequentialTransition seqIn, ArrayList<Label> elements, Button forward, Button back) {
 		for (String s : allMoves) {
 			if (s.toCharArray()[0] == '1') {
@@ -37,41 +46,67 @@ public class CrossSection {
 							 "This stage is known as the Cross.",
 							 "The Cross is a simple yet powerful way to start a solve - it's even used " + 
 							 "in the most popular speedsolving method, where some people have solved the " + 
-							 "cube in under 5 seconds!",
+							 "cube in under five seconds!",
 							 "The Cross involves building a cross (or plus) shape around one of the centres " + 
 							 "on the puzzle. It can be done in two steps: " + 
-							 "1) Putting the cross pieces into the locations that they need to be in, " + 
-							 "2) Orienting the cross pieces so the same colour is facing up on all pieces. ",
+							 "\n1) Putting the cross pieces into the locations that they need to be in, " + 
+							 "\n2) Orienting the cross pieces so the same colour is facing up on all pieces. ",
 							 "Make sure that the piece you're solving is always the one directly in front " + 
-							 "of you on the top layer!", 
+							 "of you on the top layer! That means each time you solve a piece, rotate the cube "
+							 + "so the next piece you solve is the edge on the top and front:", 
 							 "Pieces of the Cross can be in any place on the cube, but there are three " + 
 							 "distinct categories that tell us how to go about solving each piece: " + 
-							 "1) The Cross piece is on the bottom layer (D), " + 
-							 "2) The Cross piece is on the top layer (U), " + 
-							 "3) The Cross piece is in the middle layer",
+							 "\n1) The Cross piece is on the bottom layer (D), " + 
+							 "\n2) The Cross piece is on the top layer (U), " + 
+							 "\n3) The Cross piece is in the middle layer",
 							 "When a Cross piece is on the bottom layer, it's very simple to move it into " + 
-							 "position: Simply place it below the location it belongs in* using D moves, " + 
+							 "position: Simply place it below the location it belongs in using D moves, " + 
 							 "and then move it up to the top layer with an F2 move (turn the front face " + 
-							 "180 degrees)." + 
-							 "\n*When we say place the piece *below the location where it belongs*, this means\r\n" + 
-							 "to look at the other colour of the cross edge and make sure that matches the\r\n" + 
+							 "180 degrees). ", 
+							 "Note: When we say place the piece below the location where it belongs, this means " + 
+							 "to look at the other colour of the cross edge and make sure that matches the " + 
 							 "centre piece on the face that's in front of you.",
-							 "When a Cross piece is on the top layer, we first have to check if it's in the\r\n" + 
-							 "correct position. If it is, then we can leave it alone as it is already fine!\r\n" + 
-							 "If it isn't, then we need to bring it down, again with another F2 move. Then\r\n" + 
-							 "we can solve it in the same way we would for a piece that started on the\r\n" + 
-							 "bottom layer - bring it below its positon with D moves then perform an F2 \r\n" + 
-							 "move."};
+							 "When a Cross piece is on the top layer, we first have to check if it's in the " + 
+							 "correct position. If it is, then we can leave it alone as it is already fine! " + 
+							 "If it isn't, then we need to bring it down, by turning that face 180 degrees. Then " + 
+							 "we can solve it in the same way we would for a piece that started on the " + 
+							 "bottom layer - bring it below its positon with D moves then perform an F2 " + 
+							 "move.",
+							 "It's important to do this instead of just doing a U' here because we don't want "+
+							 "to affect the pieces we've already solved on the cross. Don't cut corners or "+
+							 "it'll cause big problems!",
+							 "When a Cross piece is in the middle layer, it can either be in the front or " + 
+							 "the back of the cube. If it's in the front, we can solve it simply with " + 
+							 "either an F or an F' move. If it's in the back, we need to bring it to the " + 
+							 "front with a 180 degree turn of the left or right face, do an F or an F' " + 
+							 "move to put it in place, then undo the 180 degree turn.",
+							 "We have to do this final R2 in order to fix the Cross - we need to break it slightly "+
+							 "in order to get the piece we're solving where we want, which is fine as long as we fix "+
+							 "it at the end!",
+							 "With these three cases, you should now be able to place all four cross edges " + 
+							 "into their locations successfully. Let's see how we can do it on your scramble: "};
+							 
+		
+		String[] resources = {"NULL","wgLocation.png", "NULL", "NULL", "whiteCross.png", "crossRotate.png", "crossLocations.png", "dLayerEdge.png", "NULL", "uLayerEdge.png",
+							  "NULL", "eLayerEdge.png", "NULL", "NULL"};
+		
 														 
 		
 		seqOut.playFromStart();
 		seqOut.setOnFinished(new EventHandler<ActionEvent>() {
     		@Override
     		public void handle(ActionEvent event) {
+    			forward.setDisable(false);
+    			back.setDisable(false);
     	    	elements.get(0).setText("Solving the Cross");
     	    	elements.get(1).setText(bodyText[bodyCount]);  
+    	    	HBox newBox = new HBox(elements.get(2));
+    	    	newBox.setPadding(new Insets(40,0,0,0));
+    	    	newBox.setAlignment(Pos.CENTER);
+    	    	TutorialHomepage.toolBarRight.getItems().set(2, newBox);
     	    	elements.get(2).setText("");
     	    	elements.get(3).setText("");
+    	    	
     	    	elements.get(2).setVisible(false);
     	    	elements.get(3).setVisible(false);
     	    	TutorialHomepage.toolBarRight.getItems().remove(TutorialHomepage.toolBarRight.getItems().size()-1);
@@ -86,29 +121,39 @@ public class CrossSection {
 		SequentialTransition seqInText = SharedToolbox.initSeqTrans(text, true);
     	SequentialTransition seqOutText = SharedToolbox.initSeqTrans(text, false);
     	
-    	bodyCount = 0;
+    	bodyCount = 10;
     	forwardOrBack = true;
     	
     	 seqOutText.setOnFinished(new EventHandler<ActionEvent>() {
  	    	@Override
  	    	public void handle(ActionEvent event) {
- 	    		if (forwardOrBack) {
+ 	    		if (bodyCount <=11) {
+	 	    		if (forwardOrBack) {
+	 	    			bodyCount = SharedToolbox.bodyCountInc(bodyCount);
+	 	       			elements.get(1).setText(bodyText[bodyCount]);
+	 	       		} else {
+	 	       			bodyCount = SharedToolbox.bodyCountDec(bodyCount);
+		       			elements.get(1).setText(bodyText[bodyCount]);
+	 	       		}	
+	 	    		if (resources[bodyCount].equals("NULL")) {
+	 	    			elements.get(2).setVisible(false);
+	 	    		} else {
+	 	    			elements.get(2).setVisible(true);
+	       				elements.get(2).setGraphic(new ImageView(new Image("/resources/"+resources[bodyCount])));
+	 	    		}
+ 	    		} else if (bodyCount == 12) {
  	    			bodyCount = SharedToolbox.bodyCountInc(bodyCount);
- 	       			elements.get(1).setText(bodyText[bodyCount]);
- 	       		} else {
- 	       			bodyCount = SharedToolbox.bodyCountDec(bodyCount);
-	       			elements.get(1).setText(bodyText[bodyCount]);
- 	       		}	
- 	    		if (bodyCount == 1) {
- 	    				elements.get(2).setVisible(true);
-	       				elements.get(2).setGraphic(new ImageView(new Image("/resources/dButton.png")));
-	       		} else {
-	       			elements.get(2).setVisible(false);
-	       		}
- 	    		
+ 	    			elements.get(1).setText(bodyText[bodyCount]);
+ 	    			System.out.println("entering, "+solveCrossEdge(allMoves, 1));
+ 	    			elements.get(2).setText(solveCrossEdge(allMoves, 1));
+ 	    			elements.get(2).setGraphic(null);
+ 	    			elements.get(2).setVisible(true);
+ 	    			
+ 	    		}
  	       		seqInText.playFromStart();    			
  	    	}
  	    });
+    	 
     	
     	forward.setOnAction(event -> {changeDir(true); checkValid(seqOutText, bodyText);});
  	    
@@ -119,14 +164,54 @@ public class CrossSection {
 	
 	}
 	
-	public static void checkValid(SequentialTransition seqOutText, String[] bodyText) {
+	private static void checkValid(SequentialTransition seqOutText, String[] bodyText) {
 		if (forwardOrBack) {
-			seqOutText.playFromStart();
+			if (bodyCount != MAX) {
+				seqOutText.playFromStart();
+			}
+		} else {
+			if (bodyCount != 0) {
+				seqOutText.playFromStart();
+			}
 		}
 	}
 	
-	public static void changeDir(boolean dir) {
+	private static void changeDir(boolean dir) {
     	forwardOrBack = dir;
     }
 
+	private static String solveCrossEdge(ArrayList<String> allMoves, int whichEdge) {
+		String toSolveThis = allMoves.get(whichEdge-1);
+
+		char[] moves = toSolveThis.toCharArray();
+		ArrayList<String> movesToUserList = new ArrayList<String>();
+		String movesToUser = "";
+		String currentMove = "";
+		if (moves[1] == '*') {
+			System.out.println("nothing to do");
+		} else {
+			for (int i = 1; i < moves.length; i++) {
+				switch(moves[i]) {
+					case 'G': movesToUserList.add("F'"); break;
+					case 'T': movesToUserList.add("R'"); break;
+					case 'I': movesToUserList.add("U'"); break;
+					case 'N': movesToUserList.add("B'"); break;
+					case 'K': movesToUserList.add("L'"); break;
+					case 'S': movesToUserList.add("D'"); break;
+					case 'F': if (currentMove.equals("F")) {movesToUserList.remove(movesToUserList.size()-1); movesToUserList.add("F2");} else { movesToUserList.add("F");}; break;
+					case 'R': if (currentMove.equals("R")) {movesToUserList.remove(movesToUserList.size()-1); movesToUserList.add("R2");} else { movesToUserList.add("R");}; break;
+					case 'U': if (currentMove.equals("U")) {movesToUserList.remove(movesToUserList.size()-1); movesToUserList.add("U2");} else { movesToUserList.add("U");}; break;
+					case 'B': if (currentMove.equals("B")) {movesToUserList.remove(movesToUserList.size()-1); movesToUserList.add("B2");} else { movesToUserList.add("B");}; break;
+					case 'L': if (currentMove.equals("L")) {movesToUserList.remove(movesToUserList.size()-1); movesToUserList.add("L2");} else { movesToUserList.add("L");}; break;
+					case 'D': if (currentMove.equals("D")) {movesToUserList.remove(movesToUserList.size()-1); movesToUserList.add("D2");} else { movesToUserList.add("D");}; break;
+				}
+				currentMove = ""+moves[i];
+			}
+			for (String s : movesToUserList) {
+				movesToUser = movesToUser+s+" ";
+			}
+			return movesToUser;
+		}
+		return "nothing";
+	}
 }
