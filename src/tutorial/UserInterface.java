@@ -560,7 +560,7 @@ public class UserInterface extends Application {
 		isSolved();
 	}
 	
-	private void makeFmove(boolean prime) {
+	static void makeFmove(boolean prime) {
 		int elem = 0;
 		for (int x = 0; x < frontFacePoints.size(); x++) {
 			elem = x*2;
@@ -617,7 +617,7 @@ public class UserInterface extends Application {
 		
 	}
 	
-	private void makeBmove(boolean prime) {
+	static void makeBmove(boolean prime) {
 		int elem = 0;
 		for (int x = 0; x < backFacePoints.size(); x++) {
 			elem = (x*2)+36;
@@ -742,7 +742,7 @@ public class UserInterface extends Application {
 		
 	}
 
-	private void makeDmove(boolean prime) {
+	static void makeDmove(boolean prime) {
 		int elem = 0;
 		for (int x = 0; x < downFacePoints.size(); x++) {
 			switch(x) {
@@ -813,7 +813,7 @@ public class UserInterface extends Application {
 		
 	}
 	
-	private void makeLmove(boolean prime) {
+	static void makeLmove(boolean prime) {
 		for (int x = 0; x < leftFacePoints.size(); x++) {
         	MeshView msh = (MeshView) sceneRoot.getChildren().get(x*6);
         	Point3D pt = leftFacePoints.get(x);
@@ -868,7 +868,7 @@ public class UserInterface extends Application {
 		isSolved();
 	}
 
-	private void makeXrotation(boolean prime) {
+	static void makeXrotation(boolean prime) {
 		for (int x = 0; x < pointsFaceF.size(); x++) {
         	MeshView msh = (MeshView) sceneRoot.getChildren().get(x*2);
         	Point3D pt = pointsFaceF.get(x);
@@ -974,7 +974,7 @@ public class UserInterface extends Application {
 	            BLD, BD, BRD, BL, B, BR, BLU, BU, BRU);
 	}
 	
-	private void makeYrotation(boolean prime) {
+	static void makeYrotation(boolean prime) {
 		for (int x = 0; x < pointsFaceF.size(); x++) {
         	MeshView msh = (MeshView) sceneRoot.getChildren().get(x*2);
         	Point3D pt = pointsFaceF.get(x);
@@ -1079,7 +1079,7 @@ public class UserInterface extends Application {
 		
 	}
 	
-	private void makeZrotation(boolean prime) {
+	static void makeZrotation(boolean prime) {
 		for (int x = 0; x < pointsFaceF.size(); x++) {
         	MeshView msh = (MeshView) sceneRoot.getChildren().get(x*2);
         	Point3D pt = pointsFaceF.get(x);

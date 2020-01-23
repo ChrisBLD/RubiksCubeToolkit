@@ -141,16 +141,15 @@ public class CrossSection {
 	 	    			elements.get(2).setVisible(true);
 	       				elements.get(2).setGraphic(new ImageView(new Image("/resources/"+resources[bodyCount])));
 	 	    		}
+	 	    		seqInText.playFromStart();   
  	    		} else if (bodyCount == 12) {
  	    			bodyCount = SharedToolbox.bodyCountInc(bodyCount);
  	    			elements.get(1).setText(bodyText[bodyCount]);
- 	    			System.out.println("entering, "+solveCrossEdge(allMoves, 1));
- 	    			elements.get(2).setText(solveCrossEdge(allMoves, 1));
- 	    			elements.get(2).setGraphic(null);
- 	    			elements.get(2).setVisible(true);
+ 	    			MoveManager.main(allMoves, elements, forward, back, 1);
  	    			
- 	    		}
- 	       		seqInText.playFromStart();    			
+ 	    		} else if (bodyCount == 13) {
+ 	    			
+ 	    		} 			
  	    	}
  	    });
     	 
@@ -180,38 +179,4 @@ public class CrossSection {
     	forwardOrBack = dir;
     }
 
-	private static String solveCrossEdge(ArrayList<String> allMoves, int whichEdge) {
-		String toSolveThis = allMoves.get(whichEdge-1);
-
-		char[] moves = toSolveThis.toCharArray();
-		ArrayList<String> movesToUserList = new ArrayList<String>();
-		String movesToUser = "";
-		String currentMove = "";
-		if (moves[1] == '*') {
-			System.out.println("nothing to do");
-		} else {
-			for (int i = 1; i < moves.length; i++) {
-				switch(moves[i]) {
-					case 'G': movesToUserList.add("F'"); break;
-					case 'T': movesToUserList.add("R'"); break;
-					case 'I': movesToUserList.add("U'"); break;
-					case 'N': movesToUserList.add("B'"); break;
-					case 'K': movesToUserList.add("L'"); break;
-					case 'S': movesToUserList.add("D'"); break;
-					case 'F': if (currentMove.equals("F")) {movesToUserList.remove(movesToUserList.size()-1); movesToUserList.add("F2");} else { movesToUserList.add("F");}; break;
-					case 'R': if (currentMove.equals("R")) {movesToUserList.remove(movesToUserList.size()-1); movesToUserList.add("R2");} else { movesToUserList.add("R");}; break;
-					case 'U': if (currentMove.equals("U")) {movesToUserList.remove(movesToUserList.size()-1); movesToUserList.add("U2");} else { movesToUserList.add("U");}; break;
-					case 'B': if (currentMove.equals("B")) {movesToUserList.remove(movesToUserList.size()-1); movesToUserList.add("B2");} else { movesToUserList.add("B");}; break;
-					case 'L': if (currentMove.equals("L")) {movesToUserList.remove(movesToUserList.size()-1); movesToUserList.add("L2");} else { movesToUserList.add("L");}; break;
-					case 'D': if (currentMove.equals("D")) {movesToUserList.remove(movesToUserList.size()-1); movesToUserList.add("D2");} else { movesToUserList.add("D");}; break;
-				}
-				currentMove = ""+moves[i];
-			}
-			for (String s : movesToUserList) {
-				movesToUser = movesToUser+s+" ";
-			}
-			return movesToUser;
-		}
-		return "nothing";
-	}
 }
