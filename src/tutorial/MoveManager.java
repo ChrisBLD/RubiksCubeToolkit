@@ -114,12 +114,12 @@ public class MoveManager {
 				case "B": UserInterface.makeBmove(true); break;
 				case "L": UserInterface.makeLmove(true); break;
 				case "D": UserInterface.makeDmove(true); break;
-				case "F2": UserInterface.makeFmove(true); UserInterface.makeFmove(true); break;
+				case "F2": UserInterface.makeF2move(); break;
 				case "R2": UserInterface.makeR2move(); break;
-				case "U2": UserInterface.makeUmove(false); UserInterface.makeUmove(true); break;
-				case "B2": UserInterface.makeBmove(false); UserInterface.makeBmove(false); break;
-				case "L2": UserInterface.makeLmove(false); UserInterface.makeLmove(false); break;
-				case "D2": UserInterface.makeDmove(false); UserInterface.makeDmove(false); break;
+				case "U2": UserInterface.makeU2move(); break;
+				case "B2": UserInterface.makeB2move(); break;
+				case "L2": UserInterface.makeL2move(); break;
+				case "D2": UserInterface.makeD2move(); break;
 			}
 		}
 	}
@@ -150,12 +150,12 @@ public class MoveManager {
 				case "B": UserInterface.makeBmove(false); break;
 				case "L": UserInterface.makeLmove(false); break;
 				case "D": UserInterface.makeDmove(false); break;
-				case "F2": UserInterface.makeFmove(false); UserInterface.makeFmove(false); break;
+				case "F2": UserInterface.makeF2move(); break;
 				case "R2": UserInterface.makeR2move(); break;
-				case "U2": UserInterface.makeUmove(false); UserInterface.makeUmove(false); break;
-				case "B2": UserInterface.makeBmove(false); UserInterface.makeBmove(false); break;
-				case "L2": UserInterface.makeLmove(false); UserInterface.makeLmove(false); break;
-				case "D2": UserInterface.makeDmove(false); UserInterface.makeDmove(false); break;
+				case "U2": UserInterface.makeU2move(); break;
+				case "B2": UserInterface.makeB2move(); break;
+				case "L2": UserInterface.makeL2move(); break;
+				case "D2": UserInterface.makeD2move(); break;
 			}
 		}
 	}
