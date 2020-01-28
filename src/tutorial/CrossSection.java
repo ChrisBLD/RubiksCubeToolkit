@@ -144,9 +144,9 @@ public class CrossSection {
 	 	    		seqInText.playFromStart();   
  	    		} else if (bodyCount == 12) {
  	    			bodyCount = SharedToolbox.bodyCountInc(bodyCount);
- 	    			elements.get(1).setText(bodyText[bodyCount]);
- 	    			MoveManager.main(allMoves, elements, forward, back, 1);
- 	    			
+    				elements.get(1).setText(bodyText[bodyCount]);
+    				MoveManager.prepareDemo(elements);
+    				MoveManager.main(allMoves, elements, forward, back, 1); 	    			
  	    		} else if (bodyCount == 13) {
  	    			
  	    		} 			
