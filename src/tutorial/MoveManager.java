@@ -5,9 +5,17 @@ import java.util.ArrayList;
 import javafx.animation.SequentialTransition;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.Labeled;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 
 public class MoveManager {
 	
@@ -28,9 +36,11 @@ public class MoveManager {
 	
 	static Button localForward, localBackward;
 	static Button globalForward, globalBackward;
+	static HBox buttonRow, infoRow;
 	static Label infoLabel;
 	static ArrayList<String> movesToUserList;
 	static int count;
+	static int numMoves;
 	
 	public static void main(ArrayList<String> allMoves, ArrayList<Label> elements, Button forward, Button back, int stage) {
 		
@@ -42,37 +52,55 @@ public class MoveManager {
 		globalBackward.setDisable(true); //The user shouldn't be able to move forward or backward in the main program during the demo phase.
 		
 		String moves = "";
+		numMoves = movesToUserList.size();
 		for (String s : movesToUserList) {
-			moves = moves+s+" ";
+			if (moves.toCharArray().length == 0) {
+				moves = moves+s;
+			} else {
+				moves = moves+" "+s;
+			}
 		} //Writes contents of move array to a single string
 		
-		if (moves.equals("SOLVED")) { //This will be returned from the nextSection function if there are no moves required to complete this section.
-			//doNothing
+		if (moves.equals("-")) { //This will be returned from the nextSection function if there are no moves required to complete this section.
+			((HBox) TutorialHomepage.toolBarRight.getItems().get(3)).getChildren().add(localForward);
+			elements.get(2).setText("Done!");
+			elements.get(2).setGraphic(null);
+			elements.get(2).setVisible(true);
+			SharedToolbox.info.setText("Looks like this part is already solved! Continue as normal with the main navigation buttons.");
+			//((Label) buttonRow.getChildren().get(1)).setGraphic(new ImageView(new Image("/resources/moveIndicatorGreen.png")));
+			globalForward.setDisable(false);
+			localForward.setDisable(true);
+			localBackward.setDisable(true);
+			SharedToolbox.info.setVisible(true);
 		} else {
+			SharedToolbox.info.setVisible(true);
+			generateIndicators(movesToUserList);
 			count = 0;
 			elements.get(2).setText(moves);
 			elements.get(2).setGraphic(null);
 			elements.get(2).setVisible(true);
-			@SuppressWarnings("unchecked")
-			ArrayList<Label> text = (ArrayList<Label>) elements.clone();
-			text.remove(0);
-			SequentialTransition seqInText = SharedToolbox.initSeqTrans(text, true);
-	    	SequentialTransition seqOutText = SharedToolbox.initSeqTrans(text, false);
-	    	seqInText.playFromStart();
 		}
+		@SuppressWarnings("unchecked")
+		ArrayList<Label> text = (ArrayList<Label>) elements.clone();
+		text.remove(0);
+		text.add(SharedToolbox.info);
+		SequentialTransition seqInText = SharedToolbox.initSeqTrans(text, true);
+    	//SequentialTransition seqOutText = SharedToolbox.initSeqTrans(text, false);
+    	seqInText.playFromStart();
 	}
 	
 	private static void undoMove() {
 		globalForward.setDisable(true);
 		if (count != 0) {
 			count--;
+			((Label) buttonRow.getChildren().get(count+1)).setGraphic(new ImageView(new Image("/resources/moveIndicatorRed.png")));
 			String move = movesToUserList.get(count);
 			if (count == 0) {
 				localBackward.setDisable(true);
 			} else {
-				localForward.setDisable(false);
 				localBackward.setDisable(false);
 			}
+			localForward.setDisable(false);
 			switch(move) {
 				case "F'": UserInterface.makeFmove(false); break;
 				case "R'": UserInterface.makeRmove(false); break;
@@ -97,17 +125,18 @@ public class MoveManager {
 	}
 	
 	private static void doMove() {
-		if (count != movesToUserList.size()) {
+		if (count != numMoves) {
 			String move = movesToUserList.get(count);
+			((Label) buttonRow.getChildren().get(count+1)).setGraphic(new ImageView(new Image("/resources/moveIndicatorGreen.png")));
 			count++;
-			if (count == movesToUserList.size()) {
+			if (count == numMoves) {
 				localForward.setDisable(true);
 				globalForward.setDisable(false);
 			} else {
 				localForward.setDisable(false);
-				localBackward.setDisable(false);	
 				globalForward.setDisable(true);
 			}
+			localBackward.setDisable(false);
 			switch(move) {
 				case "F'": UserInterface.makeFmove(true); break;
 				case "R'": UserInterface.makeRmove(true); break;
@@ -137,7 +166,7 @@ public class MoveManager {
 		char[] moves = toSolveThis.toCharArray();
 		ArrayList<String> movesToUserList = new ArrayList<String>();
 		ArrayList<String> solvedCase = new ArrayList<String>();
-		solvedCase.add("SOLVED");
+		solvedCase.add("-");
 		String movesToUser = "";
 		String currentMove = "";
 		if (moves[1] == '*') {
@@ -168,20 +197,33 @@ public class MoveManager {
 		return solvedCase;
 	}
 
-	public static void prepareDemo(ArrayList<Label> elements) {
-		localForward = new Button(">");
-		localForward.setOnAction(event -> doMove());
-		localBackward = new Button("<");
-		localBackward.setOnAction(event -> undoMove());
-		infoLabel = new Label();
-		HBox infoRow = new HBox(infoLabel);
-		HBox buttonRow = new HBox(localBackward, localForward);
-		if (TutorialHomepage.toolBarRight.getItems().size() < 5) {
-			TutorialHomepage.toolBarRight.getItems().add(buttonRow);
-			TutorialHomepage.toolBarRight.getItems().add(infoRow);
-		} else {
-			TutorialHomepage.toolBarRight.getItems().set(3, buttonRow);
-			TutorialHomepage.toolBarRight.getItems().set(4, infoRow);
+	private static void generateIndicators(ArrayList<String> movesToUserList) {
+		for (String move : movesToUserList) {
+			Label l = new Label("");
+			l.setGraphic(new ImageView(new Image("/resources/moveIndicatorRed.png")));
+			((HBox) TutorialHomepage.toolBarRight.getItems().get(3)).getChildren().add(l);
 		}
+		((HBox) TutorialHomepage.toolBarRight.getItems().get(3)).getChildren().add(localForward);
+		
+	}
+	public static void prepareDemo(ArrayList<Label> elements) {
+		localForward = new Button();
+		localForward.setOnAction(event -> doMove());
+		localForward.setGraphic(new ImageView (new Image("/resources/rightArrow.png")));
+		localForward.setMinSize(50,50); localForward.setMaxSize(50,50);
+		localBackward = new Button();
+		localBackward.setOnAction(event -> undoMove());
+		localBackward.setDisable(true);
+		localBackward.setGraphic(new ImageView (new Image("/resources/leftArrow.png")));
+		localBackward.setMinSize(50,50); localBackward.setMaxSize(50,50);
+		buttonRow = new HBox(localBackward); buttonRow.setAlignment(Pos.CENTER);
+		buttonRow.setSpacing(20);
+		buttonRow.setPadding(new Insets(20,20,20,20));
+		SharedToolbox.info.setVisible(false);
+		SharedToolbox.info.setText("Click the buttons to apply the moves to the cube!");
+		infoRow = new HBox(SharedToolbox.info); infoRow.setAlignment(Pos.CENTER);
+		TutorialHomepage.toolBarRight.getItems().add(buttonRow);
+		TutorialHomepage.toolBarRight.getItems().add(infoRow);
+		
 	}
 }

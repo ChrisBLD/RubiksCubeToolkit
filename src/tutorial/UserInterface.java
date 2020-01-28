@@ -285,6 +285,7 @@ public class UserInterface extends Application {
     
     static int bodyCount = 0;
     static boolean forwardOrBack = true;
+    static Timeline timeline;
     
     NotationTutorial data = new NotationTutorial(false);
 	static String[][][] changes = 
@@ -320,7 +321,7 @@ public class UserInterface extends Application {
                 new Rotate(-20, Rotate.X_AXIS),
                 new Translate(0, 0, DEFAULT)
         );
-        Timeline timeline = new Timeline();
+        timeline = new Timeline();
         timeline.getKeyFrames().add(new KeyFrame(
                 Duration.seconds(0), 
                 new KeyValue(ytate.angleProperty(), 0)
@@ -368,6 +369,9 @@ public class UserInterface extends Application {
         description.setFont(Font.loadFont(getClass().getResourceAsStream("/resources/ihfont.otf"), 23));
         description.setWrapText(true);
         description.setMaxWidth(500);
+        
+        SharedToolbox st = new SharedToolbox();
+        st.createInfoLabel();
         
         Label moves = new Label("R U R' U'");
         moves.setTextFill(Color.rgb(213,225,227));
@@ -1302,6 +1306,10 @@ public class UserInterface extends Application {
  		
  		//System.out.println(solved);
 
+    }
+    
+    public void playRotate() {
+    	timeline.play();
     }
     
     public static void main(String[] args) {

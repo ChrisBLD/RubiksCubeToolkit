@@ -77,6 +77,7 @@ public class CubeInput {
         	boolean result = verifyInput(buttonArray);
         	if (result) {
         		Setup.buttonArray = buttonArray;
+        		UserInterface.timeline.play();
         		inputWindow.close();
         	}
         });

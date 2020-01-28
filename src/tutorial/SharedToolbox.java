@@ -5,9 +5,14 @@ import java.util.ArrayList;
 import javafx.animation.FadeTransition;
 import javafx.animation.SequentialTransition;
 import javafx.scene.control.Label;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.TextAlignment;
 import javafx.util.Duration;
 
 public class SharedToolbox {
+	
+	static Label info;
 
     public static SequentialTransition initSeqTrans(ArrayList<Label> elements, boolean dir) {
     	SequentialTransition seq = new SequentialTransition();
@@ -35,5 +40,14 @@ public class SharedToolbox {
     public static int bodyCountDec(int bc) {
     	return bc-1;
     }
+    
+    public void createInfoLabel() {
+    	info = new Label();
+    	info.setTextFill(Color.rgb(213,225,227));
+        info.setFont(Font.loadFont(getClass().getResourceAsStream("/resources/ihfont.otf"), 23));
+        info.setWrapText(true);
+        info.setMaxWidth(500);
+        info.setTextAlignment(TextAlignment.CENTER);
+	}
     
 }

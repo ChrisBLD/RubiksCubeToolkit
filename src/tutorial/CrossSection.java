@@ -22,7 +22,7 @@ public class CrossSection {
 	static ArrayList<String> orientMoves = new ArrayList<String>();
 	static boolean forwardOrBack;
 	static int bodyCount;
-	static final int MAX = 13;
+	static final int MAX = 14;
 	
 	
 	public static void begin(ArrayList<String> allMoves, SequentialTransition seqOut, SequentialTransition seqIn, ArrayList<Label> elements, Button forward, Button back) {
@@ -148,7 +148,8 @@ public class CrossSection {
     				MoveManager.prepareDemo(elements);
     				MoveManager.main(allMoves, elements, forward, back, 1); 	    			
  	    		} else if (bodyCount == 13) {
- 	    			
+ 	    			//TutorialHomepage
+ 	    			System.out.println("demo completed");
  	    		} 			
  	    	}
  	    });

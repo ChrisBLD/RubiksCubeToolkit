@@ -135,7 +135,8 @@ public class Setup {
 				}
 				
 				
-				UserInterface.makeRmove(true); UserInterface.makeRmove(false);
+				UserInterface.makeRmove(true); UserInterface.makeUmove(true); UserInterface.makeFmove(true); UserInterface.makeLmove(true); UserInterface.makeDmove(true);
+				UserInterface.makeDmove(false); UserInterface.makeLmove(false); UserInterface.makeFmove(false); UserInterface.makeUmove(false); UserInterface.makeRmove(false);
 				ArrayList<String> allMoves = CubeSolver.deriveSolution(buttonArray);
 				getColours.setVisible(false);
 				CrossSection.begin(allMoves, seqOut, seqIn, elements, forward, back);
