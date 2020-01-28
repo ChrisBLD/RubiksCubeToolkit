@@ -240,7 +240,7 @@ public class CubeSolver {
 			allMoves.add("2"+"RRDBTN");
 		}
 		
-		if (CLU[2] == WHITE) {
+		if (BU[2] == WHITE) {
 			System.out.println("Nothing to do, edge is oriented well.");
 			allMoves.add("2"+"*");
 		} else {
@@ -248,7 +248,7 @@ public class CubeSolver {
 			allMoves.add("2"+"BBDLNK");
 		}
 		
-		if (BU[2] == WHITE) {
+		if (CLU[2] == WHITE) {
 			System.out.println("Nothing to do, edge is oriented well.");
 			allMoves.add("2"+"*");
 		} else {

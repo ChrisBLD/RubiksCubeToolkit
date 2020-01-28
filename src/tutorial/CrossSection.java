@@ -91,11 +91,18 @@ public class CrossSection {
 							 "We've now successfully placed each cross edge in its correct location! Now we move on "+
 							 "to the next stage, which is orienting each of the mis-oriented cross edges.",
 							 "After this stage, the entire cross should be solved with all edges matching the "+
-							 "correct centres."};
+							 "correct centres.",
+							 "When we have an edge that is misoriented, it's pretty simple to solve. We can simply hold it "+
+							 "at the front, and then perform this simple algorithm to flip it without affecting the other cross "+
+							 "pieces.",
+							 "So let's have a go! We're going to check if each edge is flipped",
+							 "Great! Now let's move on to orienting the second cross edge...",
+							 "Great! Now let's move on to orienting the third cross edge...   ",
+							 "Great! Now let's move on to orienting the fourth cross edge..."};
 							 
 		
 		String[] resources = {"NULL","wgLocation.png", "NULL", "NULL", "whiteCross.png", "crossRotate.png", "crossLocations.png", "dLayerEdge.png", "NULL", "uLayerEdge.png",
-							  "NULL", "eLayerEdge.png", "NULL", "NULL", "NULL", "NULL", "NULL", "orientingEdges.png", "solvedCross.png"};
+							  "NULL", "eLayerEdge.png", "NULL", "NULL", "NULL", "NULL", "NULL", "orientingEdges.png", "solvedCross.png", "NULL", "NULL"};
 		
 														 
 		
@@ -134,7 +141,8 @@ public class CrossSection {
     	 seqOutText.setOnFinished(new EventHandler<ActionEvent>() {
  	    	@Override
  	    	public void handle(ActionEvent event) {
- 	    		if (bodyCount <=11 || bodyCount >=16) {
+ 	    		System.out.println("BODY COUNT IS:"+bodyCount);
+ 	    		if (bodyCount <=11 || bodyCount == 16 || bodyCount == 17 || bodyCount == 18) {
  	    			if (bodyCount == 16) {
  	    				MoveManager.kill();
  	    				UserInterface.timeline2.play();
@@ -160,7 +168,20 @@ public class CrossSection {
  	    			}
  	    			bodyCount = SharedToolbox.bodyCountInc(bodyCount);
     				elements.get(1).setText(bodyText[bodyCount]);
+    				System.out.println("BODY COUNT: "+bodyCount+", STAGE: "+(bodyCount-12));
     				MoveManager.main(allMoves, elements, forward, back, bodyCount-12); 	    
+ 	    			seqInText.playFromStart(); 
+ 	    		}
+ 	    		else if (bodyCount <= 22) {
+ 	    			if (bodyCount == 19) {
+ 	    				System.out.println("BODY COUNT IS 20");
+ 	    				MoveManager.prepareDemo(elements);
+ 	    			} else {
+ 	    				UserInterface.makeYrotation(false);
+ 	    			}
+ 	    			bodyCount = SharedToolbox.bodyCountInc(bodyCount);
+    				elements.get(1).setText(bodyText[bodyCount]);
+    				MoveManager.main(allMoves, elements, forward, back, bodyCount-15);    
  	    			seqInText.playFromStart(); 
  	    		}
  	    	}

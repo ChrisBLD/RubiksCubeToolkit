@@ -48,6 +48,7 @@ public class MoveManager {
 
 	public static void main(ArrayList<String> allMoves, ArrayList<Label> elements, Button forward, Button back, int stage) {
 		
+		System.out.println("MOVE MANAGER IS AGO");
 		movesToUserList = nextSection(allMoves, stage); //Gets array of moves which need to be applied to cube
 		globalForward = forward;
 		globalBackward = back;
@@ -167,10 +168,10 @@ public class MoveManager {
 	}
 
 	private static ArrayList<String> nextSection(ArrayList<String> allMoves, int stage) {
+		ArrayList<String> movesToUserList = new ArrayList<String>();
 		String toSolveThis = allMoves.get(stage-1);
 		System.out.println("NOW SOLVING: "+toSolveThis);
 		char[] moves = toSolveThis.toCharArray();
-		ArrayList<String> movesToUserList = new ArrayList<String>();
 		ArrayList<String> solvedCase = new ArrayList<String>();
 		solvedCase.add("-");
 		String movesToUser = "";
@@ -178,6 +179,10 @@ public class MoveManager {
 		if (moves[1] == '*') {
 			System.out.println("nothing to do");
 		} else {
+			if (moves[0] == '2') {
+				movesToUserList.add("F2"); movesToUserList.add("D"); movesToUserList.add("R"); movesToUserList.add("F'"); movesToUserList.add("R'"); 
+				return movesToUserList;
+			}
 			for (int i = 1; i < moves.length; i++) {
 				switch(moves[i]) {
 					case 'G': movesToUserList.add("F'"); break;
@@ -212,6 +217,7 @@ public class MoveManager {
 		((HBox) TutorialHomepage.toolBarRight.getItems().get(3)).getChildren().add(localForward);
 		
 	}
+	
 	public static void prepareDemo(ArrayList<Label> elements) {
 		System.out.println("LENGTH OF TBR: "+TutorialHomepage.toolBarRight.getItems().size());
 		localForward = new Button();
