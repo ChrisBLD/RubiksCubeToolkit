@@ -22,7 +22,7 @@ public class CrossSection {
 	static ArrayList<String> orientMoves = new ArrayList<String>();
 	static boolean forwardOrBack;
 	static int bodyCount;
-	static final int MAX = 14;
+	static final int MAX = 999;
 	
 	
 	public static void begin(ArrayList<String> allMoves, SequentialTransition seqOut, SequentialTransition seqIn, ArrayList<Label> elements, Button forward, Button back) {
@@ -84,11 +84,18 @@ public class CrossSection {
 							 "in order to get the piece we're solving where we want, which is fine as long as we fix "+
 							 "it at the end!",
 							 "With these three cases, you should now be able to place all four cross edges " + 
-							 "into their locations successfully. Let's see how we can do it on your scramble: "};
+							 "into their locations successfully. Let's see how we can do it on your scramble: ",
+							 "Great! Now let's move on to placing the second cross edge...",
+							 "Great! Now let's move on to placing the third cross edge...   ",
+							 "Great! Now let's move on to placing the fourth cross edge...",
+							 "We've now successfully placed each cross edge in its correct location! Now we move on "+
+							 "to the next stage, which is orienting each of the mis-oriented cross edges.",
+							 "After this stage, the entire cross should be solved with all edges matching the "+
+							 "correct centres."};
 							 
 		
 		String[] resources = {"NULL","wgLocation.png", "NULL", "NULL", "whiteCross.png", "crossRotate.png", "crossLocations.png", "dLayerEdge.png", "NULL", "uLayerEdge.png",
-							  "NULL", "eLayerEdge.png", "NULL", "NULL"};
+							  "NULL", "eLayerEdge.png", "NULL", "NULL", "NULL", "NULL", "NULL", "orientingEdges.png", "solvedCross.png"};
 		
 														 
 		
@@ -127,7 +134,12 @@ public class CrossSection {
     	 seqOutText.setOnFinished(new EventHandler<ActionEvent>() {
  	    	@Override
  	    	public void handle(ActionEvent event) {
- 	    		if (bodyCount <=11) {
+ 	    		if (bodyCount <=11 || bodyCount >=16) {
+ 	    			if (bodyCount == 16) {
+ 	    				MoveManager.kill();
+ 	    				UserInterface.timeline2.play();
+ 	    				elements.get(2).setText("");
+ 	    			}
 	 	    		if (forwardOrBack) {
 	 	    			bodyCount = SharedToolbox.bodyCountInc(bodyCount);
 	 	       			elements.get(1).setText(bodyText[bodyCount]);
@@ -142,15 +154,15 @@ public class CrossSection {
 	       				elements.get(2).setGraphic(new ImageView(new Image("/resources/"+resources[bodyCount])));
 	 	    		}
 	 	    		seqInText.playFromStart();   
- 	    		} else if (bodyCount == 12) {
+ 	    		} else if (bodyCount <=15) {
+ 	    			if (bodyCount == 12) {
+ 	    				MoveManager.prepareDemo(elements);
+ 	    			}
  	    			bodyCount = SharedToolbox.bodyCountInc(bodyCount);
     				elements.get(1).setText(bodyText[bodyCount]);
-    				MoveManager.prepareDemo(elements);
-    				MoveManager.main(allMoves, elements, forward, back, 1); 	    			
- 	    		} else if (bodyCount == 13) {
- 	    			//TutorialHomepage
- 	    			System.out.println("demo completed");
- 	    		} 			
+    				MoveManager.main(allMoves, elements, forward, back, bodyCount-12); 	    
+ 	    			seqInText.playFromStart(); 
+ 	    		}
  	    	}
  	    });
     	 

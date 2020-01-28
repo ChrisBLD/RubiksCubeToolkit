@@ -2,11 +2,14 @@ package tutorial;
 
 import java.util.ArrayList;
 
+
+import javafx.animation.FadeTransition;
 import javafx.animation.SequentialTransition;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -16,6 +19,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import javafx.util.Duration;
 
 public class MoveManager {
 	
@@ -41,7 +45,7 @@ public class MoveManager {
 	static ArrayList<String> movesToUserList;
 	static int count;
 	static int numMoves;
-	
+
 	public static void main(ArrayList<String> allMoves, ArrayList<Label> elements, Button forward, Button back, int stage) {
 		
 		movesToUserList = nextSection(allMoves, stage); //Gets array of moves which need to be applied to cube
@@ -60,6 +64,8 @@ public class MoveManager {
 				moves = moves+" "+s;
 			}
 		} //Writes contents of move array to a single string
+		
+		clearAll();
 		
 		if (moves.equals("-")) { //This will be returned from the nextSection function if there are no moves required to complete this section.
 			((HBox) TutorialHomepage.toolBarRight.getItems().get(3)).getChildren().add(localForward);
@@ -162,7 +168,7 @@ public class MoveManager {
 
 	private static ArrayList<String> nextSection(ArrayList<String> allMoves, int stage) {
 		String toSolveThis = allMoves.get(stage-1);
-
+		System.out.println("NOW SOLVING: "+toSolveThis);
 		char[] moves = toSolveThis.toCharArray();
 		ArrayList<String> movesToUserList = new ArrayList<String>();
 		ArrayList<String> solvedCase = new ArrayList<String>();
@@ -207,6 +213,7 @@ public class MoveManager {
 		
 	}
 	public static void prepareDemo(ArrayList<Label> elements) {
+		System.out.println("LENGTH OF TBR: "+TutorialHomepage.toolBarRight.getItems().size());
 		localForward = new Button();
 		localForward.setOnAction(event -> doMove());
 		localForward.setGraphic(new ImageView (new Image("/resources/rightArrow.png")));
@@ -222,8 +229,33 @@ public class MoveManager {
 		SharedToolbox.info.setVisible(false);
 		SharedToolbox.info.setText("Click the buttons to apply the moves to the cube!");
 		infoRow = new HBox(SharedToolbox.info); infoRow.setAlignment(Pos.CENTER);
-		TutorialHomepage.toolBarRight.getItems().add(buttonRow);
-		TutorialHomepage.toolBarRight.getItems().add(infoRow);
+		if (TutorialHomepage.toolBarRight.getItems().size() >= 5) {
+			TutorialHomepage.toolBarRight.getItems().set(3, buttonRow);
+			TutorialHomepage.toolBarRight.getItems().set(4, infoRow);
+		} else {
+			TutorialHomepage.toolBarRight.getItems().add(buttonRow);
+			TutorialHomepage.toolBarRight.getItems().add(infoRow);
+		}
 		
+	}
+	
+	public static void cleanStart() {
+		((HBox) TutorialHomepage.toolBarRight.getItems().get(3)).getChildren().clear();
+		((HBox) TutorialHomepage.toolBarRight.getItems().get(3)).getChildren().add(localBackward);	
+		localForward.setDisable(false);
+		localBackward.setDisable(false);
+	}
+	
+	public static void kill() {
+		System.out.println("LENGTH OF TBR: "+TutorialHomepage.toolBarRight.getItems().size());
+		TutorialHomepage.toolBarRight.getItems().remove(3);
+		TutorialHomepage.toolBarRight.getItems().remove(3);
+	}
+	
+	private static void clearAll() {
+		((HBox) TutorialHomepage.toolBarRight.getItems().get(3)).getChildren().clear();
+		((HBox) TutorialHomepage.toolBarRight.getItems().get(3)).getChildren().add(localBackward);
+		localBackward.setDisable(true);
+		localForward.setDisable(false);
 	}
 }

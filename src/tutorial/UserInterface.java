@@ -285,7 +285,7 @@ public class UserInterface extends Application {
     
     static int bodyCount = 0;
     static boolean forwardOrBack = true;
-    static Timeline timeline;
+    static Timeline timeline, timeline2;
     
     NotationTutorial data = new NotationTutorial(false);
 	static String[][][] changes = 
@@ -321,6 +321,19 @@ public class UserInterface extends Application {
                 new Rotate(-20, Rotate.X_AXIS),
                 new Translate(0, 0, DEFAULT)
         );
+        
+        timeline2 = new Timeline();
+        timeline2.getKeyFrames().add(new KeyFrame(
+                Duration.seconds(0), 
+                new KeyValue(ytate.angleProperty(), -395)
+        ));
+        timeline2.getKeyFrames().add(new KeyFrame(
+                Duration.seconds(3), 
+                new KeyValue(ytate.angleProperty(), -755)
+        ));
+        
+        timeline2.setCycleCount(1);
+        
         timeline = new Timeline();
         timeline.getKeyFrames().add(new KeyFrame(
                 Duration.seconds(0), 
