@@ -22,7 +22,7 @@ public class CrossSection {
 	static ArrayList<String> orientMoves = new ArrayList<String>();
 	static boolean forwardOrBack;
 	static int bodyCount;
-	static final int MAX = 999;
+	static final int MAX = 24;
 	
 	
 	public static void begin(ArrayList<String> allMoves, SequentialTransition seqOut, SequentialTransition seqIn, ArrayList<Label> elements, Button forward, Button back) {
@@ -98,11 +98,14 @@ public class CrossSection {
 							 "So let's have a go! We're going to check if each edge is flipped",
 							 "Great! Now let's move on to orienting the second cross edge...",
 							 "Great! Now let's move on to orienting the third cross edge...   ",
-							 "Great! Now let's move on to orienting the fourth cross edge..."};
+							 "Great! Now let's move on to orienting the fourth cross edge...",
+							 "We've now successfully finished the cross! All four cross pieces are in place and correctly oriented. "+
+							 "Now, let's move on to the next stage: Finishing the first layer by solving the corners."};
 							 
 		
-		String[] resources = {"NULL","wgLocation.png", "NULL", "NULL", "whiteCross.png", "crossRotate.png", "crossLocations.png", "dLayerEdge.png", "NULL", "uLayerEdge.png",
-							  "NULL", "eLayerEdge.png", "NULL", "NULL", "NULL", "NULL", "NULL", "orientingEdges.png", "solvedCross.png", "NULL", "NULL"};
+		String[] resources = {"NULL","wgLocation.png", "NULL", "NULL", "whiteCross.png", "crossRotate.png", "crossLocations.png", "dLayerEdge.png",
+							  "NULL", "uLayerEdge.png", "NULL", "eLayerEdge.png", "NULL", "NULL", "NULL", "NULL", "NULL", "orientingEdges.png", 
+							  "solvedCross.png", "NULL", "NULL", "NULL", "NULL", "NULL", "NULL"};
 		
 														 
 		
@@ -135,15 +138,18 @@ public class CrossSection {
 		SequentialTransition seqInText = SharedToolbox.initSeqTrans(text, true);
     	SequentialTransition seqOutText = SharedToolbox.initSeqTrans(text, false);
     	
-    	bodyCount = 10;
+    	bodyCount = 17;
     	forwardOrBack = true;
     	
     	 seqOutText.setOnFinished(new EventHandler<ActionEvent>() {
  	    	@Override
  	    	public void handle(ActionEvent event) {
  	    		System.out.println("BODY COUNT IS:"+bodyCount);
- 	    		if (bodyCount <=11 || bodyCount == 16 || bodyCount == 17 || bodyCount == 18) {
- 	    			if (bodyCount == 16) {
+ 	    		if (bodyCount <=11 || bodyCount == 16 || bodyCount == 17 || bodyCount == 18 || bodyCount == 23) {
+ 	    			if (bodyCount == 16 || bodyCount == 23) {
+ 	    				if (bodyCount == 23) {
+ 	    					UserInterface.makeYrotation(false);
+ 	    				}
  	    				MoveManager.kill();
  	    				UserInterface.timeline2.play();
  	    				elements.get(2).setText("");
@@ -156,6 +162,7 @@ public class CrossSection {
 		       			elements.get(1).setText(bodyText[bodyCount]);
 	 	       		}	
 	 	    		if (resources[bodyCount].equals("NULL")) {
+	 	    			elements.get(2).setGraphic(null);
 	 	    			elements.get(2).setVisible(false);
 	 	    		} else {
 	 	    			elements.get(2).setVisible(true);
@@ -183,6 +190,8 @@ public class CrossSection {
     				elements.get(1).setText(bodyText[bodyCount]);
     				MoveManager.main(allMoves, elements, forward, back, bodyCount-15);    
  	    			seqInText.playFromStart(); 
+ 	    		} else if (bodyCount == 24) {
+ 	    			FirstLayerCornersSection.begin(allMoves, seqOut, seqIn, elements, forward, back);
  	    		}
  	    	}
  	    });

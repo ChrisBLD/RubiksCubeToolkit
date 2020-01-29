@@ -43,7 +43,8 @@ public class CubeSolver {
 	static String[] solvedCrossEdges = {"UF","UR","UB","UL"};
 	static String[] flippedCrossEdges = {"FU","RU","BU","LU"};
 	static String[] edgeLetters = {"FD", "FL", "FR", "FU", "CLD", "CRD", "CLU", "CRU", "BD", "BL", "BR", "BU"};
-
+	static String[] cornerLetters = {"FRU", "BRU", "BLU", "FLU", "FRD", "BRD", "BLD", "FLD"};
+	
 	static final int RED     = 0;
 	static final int GREEN   = 1;
 	static final int BLUE    = 2;
@@ -59,13 +60,17 @@ public class CubeSolver {
     private static final int L_FACE = 4;
     private static final int D_FACE = 5;
     
-    static int[] FLD, FD, FRD, FL, FR, FLU, FU, FRU,
-    			 CLD, CRD, CLU, CRU,
-    			 BLD, BD, BRD, BL, BR, BLU, BU, BRU;
+    static int[] FLD, FD, FRD, FL, F, FR, FLU, FU, FRU,
+    			 CLD, CD, CRD, CL, CR, CLU, CU, CRU,
+    			 BLD, BD, BRD, BL, B, BR, BLU, BU, BRU;
 	
 	
 	public static ArrayList<String> deriveSolution(ArrayList<Button> buttonArray) {
 
+		F = Arrays.copyOf(UserInterface.F, 6); B = Arrays.copyOf(UserInterface.B, 6);
+		CL = Arrays.copyOf(UserInterface.CL, 6); CR = Arrays.copyOf(UserInterface.CR, 6);
+		CU = Arrays.copyOf(UserInterface.CU, 6); CD = Arrays.copyOf(UserInterface.CD, 6);
+		
 		FLD = Arrays.copyOf(UserInterface.FLD, 6); FD = Arrays.copyOf(UserInterface.FD, 6);
 		FRD = Arrays.copyOf(UserInterface.FRD, 6); FL = Arrays.copyOf(UserInterface.FL, 6);
 		FR = Arrays.copyOf(UserInterface.FR, 6); FLU = Arrays.copyOf(UserInterface.FLU, 6); 
@@ -111,12 +116,39 @@ public class CubeSolver {
 		
 		orientCrossEdges();
 		
-		for (String s : allMoves) { System.out.println(s);
+		processFirstLayerCorners();
+
+		
+		for (String s : allMoves) {
+			System.out.println(s);
 		}
-		//System.out.println("Cross Edges: "+crossEdges.get(0)+", "+crossEdges.get(1)+", "+crossEdges.get(2)+", "+crossEdges.get(3));
-		//solveCrossEdges(crossEdges);
+		//allMoves.add(movesToSolve);
 		
 		return allMoves;
+	}
+
+
+	private static void processFirstLayerCorners() {
+		String movesToSolve;
+		String cornerFLloc;
+		
+		for (int i = 0; i < 4; i++) {
+			cornerFLloc = findFLCorner(i);
+			System.out.println("found corner "+i+", it's in "+cornerFLloc);
+			movesToSolve = bringCornerDown(cornerFLloc);
+			if (movesToSolve.equals("SOLVED")) {
+				allMoves.add("3*");	
+				allMoves.add("4*");
+			} else if (movesToSolve.equals("NULL")) {
+				allMoves.add("3*");	
+				allMoves.add("4"+insertCorner());
+			} else {
+				applyMovesLogically(movesToSolve);
+				allMoves.add("3"+movesToSolve);
+				allMoves.add("4"+insertCorner());
+			}
+			makeYrotation(false);
+		}
 	}
 
 	
@@ -202,6 +234,67 @@ public class CubeSolver {
 		return "";
 	}
 	
+	private static String findFLCorner(int cornerNum) {
+		int[][] allCorners = {FRU, BRU, BLU, FLU, FRD, BRD, BLD, FLD};		
+		int[] cornerToSolve = {WHITE, GRAY, GRAY};
+		switch (cornerNum) {
+			case 0: cornerToSolve[1] = RED; cornerToSolve[2] = GREEN; break;
+			case 1: cornerToSolve[1] = BLUE; cornerToSolve[2] = RED; break;
+			case 2: cornerToSolve[1] = ORANGE; cornerToSolve[2] = BLUE; break;
+			case 3: cornerToSolve[1] = GREEN; cornerToSolve[2] = ORANGE; break;
+		}
+		System.out.println("with input "+cornerNum+", cornerToSolve: "+cornerToSolve[0]+", "+cornerToSolve[1]+", "+cornerToSolve[2]);
+		int count = 0;
+		
+		for (int[] corner : allCorners) {
+			if(Arrays.stream(corner).anyMatch(i -> i == WHITE)) {
+				if(Arrays.stream(corner).anyMatch(i -> i == cornerToSolve[1])) {
+					if(Arrays.stream(corner).anyMatch(i -> i == cornerToSolve[2])) {
+						return cornerLetters[count];
+					}
+				} 
+			}
+			count++;
+		}
+		
+		return("N/A");
+
+
+		
+	}
+	
+	private static String bringCornerDown(String flCornerLoc) {
+		if (flCornerLoc.toCharArray()[2] == 'U') {
+			switch (flCornerLoc) {
+			case "FRU": if (FRU[2] == WHITE) {return "SOLVED";} else {return "TSRD";}
+			case "FLU": return "QTSRDYD";
+			case "BLU": return "QQTSRDYYDD";
+			case "BRU": return "YTSRDQS";
+			}
+		} else {
+			switch (flCornerLoc) {
+			case "FRD": return "NULL";
+			case "FLD": return "D";
+			case "BLD": return "DD";
+			case "BRD": return "S";
+			}
+		}
+		return "NULL";
+	}
+	
+	private static String insertCorner() {
+		if (FRD[1] == WHITE) {
+			applyMovesLogically("TSRD");
+			return "TSRD";
+		} else if (FRD[0] == WHITE) {
+			applyMovesLogically("STDR");
+			return "STDR";
+		} else {
+			applyMovesLogically("TDDRDTSRD");
+			return "TDDRDTSRD";
+		}
+	}
+	
 	private static void applyMovesLogically(String moves) {
 		char[] movesLeft = moves.toCharArray();
 		for (char move : movesLeft) {
@@ -218,6 +311,8 @@ public class CubeSolver {
 			case 'N': makeBmove(true); break;
 			case 'K': makeLmove(true); break;
 			case 'S': makeDmove(true); break;
+			case 'Y': makeYrotation(false); break;
+			case 'Q': makeYrotation(true); break;
 			}
 		}
 		
@@ -230,6 +325,7 @@ public class CubeSolver {
 		} else {
 			System.out.println("Edge needs to be flipped.");
 			allMoves.add("2"+"FFDRGT");
+			applyMovesLogically("FFDRGT");
 		}
 		
 		if (CRU[2] == WHITE) {
@@ -238,6 +334,7 @@ public class CubeSolver {
 		} else {
 			System.out.println("Edge needs to be flipped.");
 			allMoves.add("2"+"RRDBTN");
+			applyMovesLogically("RRDBTN");
 		}
 		
 		if (BU[2] == WHITE) {
@@ -246,6 +343,7 @@ public class CubeSolver {
 		} else {
 			System.out.println("Edge needs to be flipped.");
 			allMoves.add("2"+"BBDLNK");
+			applyMovesLogically("BBDLNK");
 		}
 		
 		if (CLU[2] == WHITE) {
@@ -254,6 +352,7 @@ public class CubeSolver {
 		} else {
 			System.out.println("Edge needs to be flipped.");
 			allMoves.add("2"+"LLDFKG");
+			applyMovesLogically("LLDFKG");
 		}
 	}
 
@@ -420,7 +519,72 @@ public class CubeSolver {
 		}
 	}
 
-	
+	private static void makeYrotation(boolean prime) {
+		if (prime) {
+			int[] temp1 = FRU; int[] temp2 = FU;
+			FRU = FLU; FU = CLU; FLU = BLU; CLU = BU; BLU = BRU; BU = CRU; BRU = temp1; CRU = temp2;
+			cycleColours(FU, L_FACE, F_FACE, R_FACE);
+			cycleColours(FRU, L_FACE, F_FACE, R_FACE);
+			cycleColours(CRU, F_FACE, R_FACE, B_FACE);
+			cycleColours(BRU, F_FACE, R_FACE, B_FACE);
+			cycleColours(BU, R_FACE,  B_FACE, L_FACE);
+			cycleColours(BLU, R_FACE, B_FACE, L_FACE);
+			cycleColours(CLU, B_FACE, L_FACE, F_FACE);
+			cycleColours(FLU, B_FACE, L_FACE, F_FACE);
+			temp1 = CLD; temp2 = BLD;
+			CLD = BD; BLD = BRD; BD = CRD; BRD = FRD; CRD = FD; FRD = FLD; FD = temp1; FLD = temp2;
+			cycleColours(CLD, R_FACE, B_FACE, L_FACE);
+			cycleColours(BLD, R_FACE, B_FACE, L_FACE);
+			cycleColours(BD, F_FACE, R_FACE, B_FACE);
+			cycleColours(BRD, F_FACE, R_FACE, B_FACE);
+			cycleColours(CRD, L_FACE, F_FACE, R_FACE);
+			cycleColours(FRD, L_FACE, F_FACE, R_FACE);
+			cycleColours(FD, B_FACE, L_FACE, F_FACE);
+			cycleColours(FLD, B_FACE, L_FACE, F_FACE);
+			temp1 = F; temp2 = FR;
+			F = CL; CL = B; B = CR; CR = temp1;
+			FR = FL; FL = BL; BL = BR; BR = temp2;
+			cycleColours(F, B_FACE, L_FACE, F_FACE);
+			cycleColours(FR, L_FACE, F_FACE, R_FACE);
+			cycleColours(CR, L_FACE, F_FACE, R_FACE);
+			cycleColours(BR, F_FACE, R_FACE, B_FACE);
+			cycleColours(B, F_FACE, R_FACE, B_FACE);
+			cycleColours(BL, R_FACE, B_FACE, L_FACE);
+			cycleColours(CL, R_FACE, B_FACE, L_FACE);
+			cycleColours(FL, B_FACE, L_FACE, F_FACE);
+		} else {
+			int[] temp1 = FRU; int[] temp2 = CRU;		
+			FRU = BRU; CRU = BU; BRU = BLU; BU = CLU; BLU = FLU; CLU = FU; FLU = temp1; FU = temp2;
+			cycleColours(FU, B_FACE, R_FACE, F_FACE);
+			cycleColours(FRU, B_FACE, R_FACE, F_FACE);
+			cycleColours(CRU, L_FACE, B_FACE, R_FACE);
+			cycleColours(BRU, L_FACE, B_FACE, R_FACE);
+			cycleColours(BU, F_FACE, L_FACE, B_FACE);
+			cycleColours(BLU, F_FACE, L_FACE, B_FACE);
+			cycleColours(CLU, R_FACE, F_FACE, L_FACE);
+			cycleColours(FLU, R_FACE, F_FACE, L_FACE);	
+			temp1 = CLD; temp2 = FLD;
+			CLD = FD; FLD = FRD; FD = CRD; FRD = BRD; CRD = BD; BRD = BLD; BD = temp1; BLD = temp2;
+			cycleColours(FLD, R_FACE, F_FACE, L_FACE);
+			cycleColours(CLD, R_FACE, F_FACE, L_FACE);
+			cycleColours(BLD, F_FACE, L_FACE, B_FACE); 
+			cycleColours(BD, F_FACE, L_FACE, B_FACE);
+			cycleColours(BRD, L_FACE, B_FACE, R_FACE);
+			cycleColours(CRD, L_FACE, B_FACE, R_FACE);
+			cycleColours(FRD, B_FACE, R_FACE, F_FACE);
+			cycleColours(FD, B_FACE, R_FACE, F_FACE);
+			F = CR; CR = B; B = CL; CL = temp1;
+			FR = BR; BR = BL; BL = FL; FL = temp2;
+			cycleColours(FL, R_FACE, F_FACE, L_FACE);
+			cycleColours(F, R_FACE, F_FACE, L_FACE);
+			cycleColours(FR, B_FACE, R_FACE, F_FACE);
+			cycleColours(CR, B_FACE, R_FACE, F_FACE);
+			cycleColours(BR, L_FACE, B_FACE, R_FACE);
+			cycleColours(B, L_FACE, B_FACE, R_FACE);
+			cycleColours(BL, F_FACE, L_FACE, B_FACE);
+			cycleColours(CL, F_FACE, L_FACE, B_FACE);
+		}
+	}
 
 
 

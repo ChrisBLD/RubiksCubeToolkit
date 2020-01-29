@@ -231,7 +231,7 @@ public class MoveManager {
 		localBackward.setMinSize(50,50); localBackward.setMaxSize(50,50);
 		buttonRow = new HBox(localBackward); buttonRow.setAlignment(Pos.CENTER);
 		buttonRow.setSpacing(20);
-		buttonRow.setPadding(new Insets(20,20,20,20));
+		buttonRow.setPadding(new Insets(10,10,10,10));
 		SharedToolbox.info.setVisible(false);
 		SharedToolbox.info.setText("Click the buttons to apply the moves to the cube!");
 		infoRow = new HBox(SharedToolbox.info); infoRow.setAlignment(Pos.CENTER);
