@@ -137,6 +137,7 @@ public class CubeSolver {
 			System.out.println("found corner "+i+", it's in "+cornerFLloc);
 			movesToSolve = bringCornerDown(cornerFLloc);
 			if (movesToSolve.equals("SOLVED")) {
+				applyMovesLogically("Y");
 				allMoves.add("3*");	
 				allMoves.add("4*");
 			} else if (movesToSolve.equals("NULL")) {
@@ -147,8 +148,12 @@ public class CubeSolver {
 				allMoves.add("3"+movesToSolve);
 				allMoves.add("4"+insertCorner());
 			}
-			makeYrotation(false);
+			//applyMovesLogically("Y");
 		}
+		//System.out.println("B: "+FRD[3]+", L: "+FRD[4]+", D: "+FRD[5]);
+		//applyMovesLogically("DD");
+		//System.out.println("R: "+FRD[1]+", F: "+FRD[0]+", D: "+FRD[5]);
+		//System.out.println("movesToSolve: "+insertCorner());
 	}
 
 	
@@ -283,14 +288,15 @@ public class CubeSolver {
 	}
 	
 	private static String insertCorner() {
+		System.out.println("R: "+FRD[1]+", F: "+FRD[0]+", D: "+FRD[5]);
 		if (FRD[1] == WHITE) {
-			applyMovesLogically("TSRD");
+			applyMovesLogically("TSRDY");
 			return "TSRD";
 		} else if (FRD[0] == WHITE) {
-			applyMovesLogically("STDR");
+			applyMovesLogically("STDRY");
 			return "STDR";
 		} else {
-			applyMovesLogically("TDDRDTSRD");
+			applyMovesLogically("TDDRDTSRDY");
 			return "TDDRDTSRD";
 		}
 	}
@@ -522,7 +528,7 @@ public class CubeSolver {
 	private static void makeYrotation(boolean prime) {
 		if (prime) {
 			int[] temp1 = FRU; int[] temp2 = FU;
-			FRU = FLU; FU = CLU; FLU = BLU; CLU = BU; BLU = BRU; BU = CRU; BRU = temp1; CRU = temp2;
+			FRU = FLU; FU = CLU; FLU = BLU; CLU = BU; BLU = BRU; BU = CRU; BRU = temp1; CRU = temp2; 
 			cycleColours(FU, L_FACE, F_FACE, R_FACE);
 			cycleColours(FRU, L_FACE, F_FACE, R_FACE);
 			cycleColours(CRU, F_FACE, R_FACE, B_FACE);
@@ -564,7 +570,7 @@ public class CubeSolver {
 			cycleColours(CLU, R_FACE, F_FACE, L_FACE);
 			cycleColours(FLU, R_FACE, F_FACE, L_FACE);	
 			temp1 = CLD; temp2 = FLD;
-			CLD = FD; FLD = FRD; FD = CRD; FRD = BRD; CRD = BD; BRD = BLD; BD = temp1; BLD = temp2;
+			CLD = FD; FLD = FRD; FD = CRD; FRD = BRD; CRD = BD; BRD = BLD; BD = temp1; BLD = temp2; 
 			cycleColours(FLD, R_FACE, F_FACE, L_FACE);
 			cycleColours(CLD, R_FACE, F_FACE, L_FACE);
 			cycleColours(BLD, F_FACE, L_FACE, B_FACE); 
@@ -573,6 +579,7 @@ public class CubeSolver {
 			cycleColours(CRD, L_FACE, B_FACE, R_FACE);
 			cycleColours(FRD, B_FACE, R_FACE, F_FACE);
 			cycleColours(FD, B_FACE, R_FACE, F_FACE);
+			temp1 = F; temp2 = FR;
 			F = CR; CR = B; B = CL; CL = temp1;
 			FR = BR; BR = BL; BL = FL; FL = temp2;
 			cycleColours(FL, R_FACE, F_FACE, L_FACE);
@@ -584,6 +591,7 @@ public class CubeSolver {
 			cycleColours(BL, F_FACE, L_FACE, B_FACE);
 			cycleColours(CL, F_FACE, L_FACE, B_FACE);
 		}
+	
 	}
 
 

@@ -433,14 +433,37 @@ public class UserInterface extends Application {
         elements.add(moves);
         elements.add(bottom);
         
+        
+   	 	/* F = F
+   			 * R = R
+   			 * U = U
+   			 * B = B
+   			 * L = L
+   			 * D = D
+   			 * 
+   			 * F' = G
+   			 * R' = T
+   			 * U' = I
+   			 * B' = N
+   			 * L' = K
+   			 * D' = S
+   		*/
         scene.setOnKeyPressed(e -> {
         	switch(e.getCode()) {
-        		case R: makeR2move(); break;
-	        	case F: makeF2move(); break;
-	        	case U: makeU2move(); break;
-	        	case B: makeB2move(); break;
-	        	case L: makeL2move(); break;
-	        	case D: makeD2move(); break;
+        		case F: makeFmove(false); break;
+	        	case R: makeRmove(false); break;
+	        	case U: makeUmove(false); break;
+	        	case B: makeBmove(false); break;
+	        	case L: makeLmove(false); break;
+	        	case D: makeDmove(false); break;
+	        	case G: makeFmove(true); break;
+	        	case T: makeRmove(true); break;
+	        	case I: makeUmove(true); break;
+	        	case N: makeBmove(true); break;
+	        	case K: makeLmove(true); break;
+	        	case S: makeDmove(true); break;
+	        	case Q: makeYrotation(true); break;
+	        	case Y: makeYrotation(false); break;
 	        	default: break;
 
         	}
