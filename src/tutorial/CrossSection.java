@@ -21,7 +21,7 @@ public class CrossSection {
 	static ArrayList<String> placeMoves = new ArrayList<String>();
 	static ArrayList<String> orientMoves = new ArrayList<String>();
 	static boolean forwardOrBack;
-	static int bodyCount;
+	static int bodyCount, bodyCountFloor;
 	static final int MAX = 24;
 	
 	
@@ -33,6 +33,7 @@ public class CrossSection {
 				orientMoves.add(s);
 			}
 		}
+		bodyCountFloor = 0;
 		
 		String[] bodyText = {"We will use the centre stickers on the Rubik's Cube as our guide. We should " + 
 							 "always consider centres as fixed points that never change place - every " + 
@@ -100,7 +101,9 @@ public class CrossSection {
 							 "Great! Now let's move on to orienting the third cross edge...   ",
 							 "Great! Now let's move on to orienting the fourth cross edge...",
 							 "We've now successfully finished the cross! All four cross pieces are in place and correctly oriented. "+
-							 "Now, let's move on to the next stage: Finishing the first layer by solving the corners."};
+							 "Now, let's move on to the next stage: Finishing the first layer by solving the corners.\n\n Press "+
+							 "\"Next\" when you're ready to continue."};
+		
 							 
 		
 		String[] resources = {"NULL","wgLocation.png", "NULL", "NULL", "whiteCross.png", "crossRotate.png", "crossLocations.png", "dLayerEdge.png",
@@ -113,21 +116,28 @@ public class CrossSection {
 		seqOut.setOnFinished(new EventHandler<ActionEvent>() {
     		@Override
     		public void handle(ActionEvent event) {
-    			forward.setDisable(false);
-    			back.setDisable(false);
-    	    	elements.get(0).setText("Solving the Cross");
-    	    	elements.get(1).setText(bodyText[bodyCount]);  
-    	    	HBox newBox = new HBox(elements.get(2));
-    	    	newBox.setPadding(new Insets(40,0,0,0));
-    	    	newBox.setAlignment(Pos.CENTER);
-    	    	TutorialHomepage.toolBarRight.getItems().set(2, newBox);
-    	    	elements.get(2).setText("");
-    	    	elements.get(3).setText("");
-    	    	
-    	    	elements.get(2).setVisible(false);
-    	    	elements.get(3).setVisible(false);
-    	    	TutorialHomepage.toolBarRight.getItems().remove(TutorialHomepage.toolBarRight.getItems().size()-1);
-    			seqIn.playFromStart();
+    			if (bodyCount == MAX) {
+    				elements.get(0).setText("");
+    				elements.get(1).setText("                                                    "+
+    										"                                                    ");
+    				FirstLayerCornersSection.begin(allMoves, seqOut, seqIn, elements, forward, back);
+    			} else {
+	    			forward.setDisable(false);
+	    			back.setDisable(false);
+	    	    	elements.get(0).setText("Solving the Cross");
+	    	    	elements.get(1).setText(bodyText[bodyCount]);  
+	    	    	HBox newBox = new HBox(elements.get(2));
+	    	    	newBox.setPadding(new Insets(40,0,0,0));
+	    	    	newBox.setAlignment(Pos.CENTER);
+	    	    	TutorialHomepage.toolBarRight.getItems().set(2, newBox);
+	    	    	elements.get(2).setText("");
+	    	    	elements.get(3).setText("");
+	    	    	
+	    	    	elements.get(2).setVisible(false);
+	    	    	elements.get(3).setVisible(false);
+	    	    	TutorialHomepage.toolBarRight.getItems().remove(TutorialHomepage.toolBarRight.getItems().size()-1);
+	    			seqIn.playFromStart();
+    			}
     		}
 		});
 		
@@ -138,7 +148,7 @@ public class CrossSection {
 		SequentialTransition seqInText = SharedToolbox.initSeqTrans(text, true);
     	SequentialTransition seqOutText = SharedToolbox.initSeqTrans(text, false);
     	
-    	bodyCount = 17;
+    	bodyCount = 24;
     	forwardOrBack = true;
     	
     	 seqOutText.setOnFinished(new EventHandler<ActionEvent>() {
@@ -149,10 +159,18 @@ public class CrossSection {
  	    			if (bodyCount == 16 || bodyCount == 23) {
  	    				if (bodyCount == 23) {
  	    					UserInterface.makeYrotation(false);
+ 	    				} 
+ 	    				if (forwardOrBack) {
+ 	    					MoveManager.kill();
+ 	    					back.setDisable(false);
+ 	    					UserInterface.timeline2.play();
  	    				}
- 	    				MoveManager.kill();
- 	    				UserInterface.timeline2.play();
  	    				elements.get(2).setText("");
+ 	    			}
+ 	    			if (bodyCount == 16) {
+ 	    				bodyCountFloor = 17;
+ 	    			} else if (bodyCount == 23) {
+ 	    				back.setDisable(true);
  	    			}
 	 	    		if (forwardOrBack) {
 	 	    			bodyCount = SharedToolbox.bodyCountInc(bodyCount);
@@ -190,29 +208,29 @@ public class CrossSection {
     				elements.get(1).setText(bodyText[bodyCount]);
     				MoveManager.main(allMoves, elements, forward, back, bodyCount-15);    
  	    			seqInText.playFromStart(); 
- 	    		} else if (bodyCount == 24) {
- 	    			FirstLayerCornersSection.begin(allMoves, seqOut, seqIn, elements, forward, back);
  	    		}
  	    	}
  	    });
     	 
     	
-    	forward.setOnAction(event -> {changeDir(true); checkValid(seqOutText, bodyText);});
+    	forward.setOnAction(event -> {changeDir(true); checkValid(seqOut, seqOutText, bodyText);});
  	    
- 	    back.setOnAction(event -> {changeDir(false); checkValid(seqOutText,bodyText);});
+ 	    back.setOnAction(event -> {changeDir(false); checkValid(seqOut, seqOutText,bodyText);});
  	    	
  	    	
 		
 	
 	}
 	
-	private static void checkValid(SequentialTransition seqOutText, String[] bodyText) {
+	private static void checkValid(SequentialTransition seqOut, SequentialTransition seqOutText, String[] bodyText) {
 		if (forwardOrBack) {
 			if (bodyCount != MAX) {
 				seqOutText.playFromStart();
+			} else {
+				seqOut.playFromStart();
 			}
 		} else {
-			if (bodyCount != 0) {
+			if (bodyCount != bodyCountFloor) {
 				seqOutText.playFromStart();
 			}
 		}
