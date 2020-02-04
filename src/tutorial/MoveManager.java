@@ -45,6 +45,7 @@ public class MoveManager {
 	static ArrayList<String> movesToUserList;
 	static int count;
 	static int numMoves;
+	static boolean size = false;
 
 	public static void main(ArrayList<String> allMoves, ArrayList<Label> elements, Button forward, Button back, int stage) {
 		
@@ -81,8 +82,12 @@ public class MoveManager {
 			SharedToolbox.info.setVisible(true);
 		} else {
 			SharedToolbox.info.setVisible(true);
+			if (movesToUserList.size() >= 7) {
+				size = true;
+			}
 			generateIndicators(movesToUserList);
 			count = 0;
+			
 			elements.get(2).setText(moves);
 			elements.get(2).setGraphic(null);
 			elements.get(2).setVisible(true);
@@ -100,7 +105,11 @@ public class MoveManager {
 		globalForward.setDisable(true);
 		if (count != 0) {
 			count--;
-			((Label) buttonRow.getChildren().get(count+1)).setGraphic(new ImageView(new Image("/resources/moveIndicatorRed.png")));
+			if (size) {
+				((Label) buttonRow.getChildren().get(count+1)).setGraphic(new ImageView(new Image("/resources/moveIndicatorRedSMALL.png")));
+			} else {
+				((Label) buttonRow.getChildren().get(count+1)).setGraphic(new ImageView(new Image("/resources/moveIndicatorRed.png")));
+			}
 			String move = movesToUserList.get(count);
 			if (count == 0) {
 				localBackward.setDisable(true);
@@ -134,7 +143,11 @@ public class MoveManager {
 	private static void doMove() {
 		if (count != numMoves) {
 			String move = movesToUserList.get(count);
-			((Label) buttonRow.getChildren().get(count+1)).setGraphic(new ImageView(new Image("/resources/moveIndicatorGreen.png")));
+			if (size) {
+				((Label) buttonRow.getChildren().get(count+1)).setGraphic(new ImageView(new Image("/resources/moveIndicatorGreenSMALL.png")));
+			} else {
+				((Label) buttonRow.getChildren().get(count+1)).setGraphic(new ImageView(new Image("/resources/moveIndicatorGreen.png")));
+			}
 			count++;
 			if (count == numMoves) {
 				localForward.setDisable(true);
@@ -209,9 +222,15 @@ public class MoveManager {
 	}
 
 	private static void generateIndicators(ArrayList<String> movesToUserList) {
+		String graphic = "";
+		if (size) {
+			graphic = "/resources/moveIndicatorRedSMALL.png";
+		} else {
+			graphic = "/resources/moveIndicatorRed.png";
+		}
 		for (String move : movesToUserList) {
 			Label l = new Label("");
-			l.setGraphic(new ImageView(new Image("/resources/moveIndicatorRed.png")));
+			l.setGraphic(new ImageView(new Image(graphic)));
 			((HBox) TutorialHomepage.toolBarRight.getItems().get(3)).getChildren().add(l);
 		}
 		((HBox) TutorialHomepage.toolBarRight.getItems().get(3)).getChildren().add(localForward);
@@ -230,8 +249,7 @@ public class MoveManager {
 		localBackward.setGraphic(new ImageView (new Image("/resources/leftArrow.png")));
 		localBackward.setMinSize(50,50); localBackward.setMaxSize(50,50);
 		buttonRow = new HBox(localBackward); buttonRow.setAlignment(Pos.CENTER);
-		buttonRow.setSpacing(20);
-		buttonRow.setPadding(new Insets(10,10,10,10));
+		buttonRow.setSpacing(3);
 		SharedToolbox.info.setVisible(false);
 		SharedToolbox.info.setText("Click the buttons to apply the moves to the cube!");
 		infoRow = new HBox(SharedToolbox.info); infoRow.setAlignment(Pos.CENTER);

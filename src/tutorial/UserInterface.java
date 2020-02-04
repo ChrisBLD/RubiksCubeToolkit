@@ -388,7 +388,7 @@ public class UserInterface extends Application {
         
         Label moves = new Label("R U R' U'");
         moves.setTextFill(Color.rgb(213,225,227));
-        moves.setFont(Font.loadFont(getClass().getResourceAsStream("/resources/ihfont.otf"), 80));
+        moves.setFont(Font.loadFont(getClass().getResourceAsStream("/resources/ihfont.otf"), 60));
         moves.setWrapText(true);
         moves.setMaxWidth(500);
         
@@ -1508,6 +1508,105 @@ public class UserInterface extends Application {
 	            BLD, BD, BRD, BL, B, BR, BLU, BU, BRU);
 	}
 
+	static void makeZ2rotation() {
+		for (int x = 0; x < pointsFaceF.size(); x++) {
+        	MeshView msh = (MeshView) sceneRoot.getChildren().get(x*2);
+        	Point3D pt = pointsFaceF.get(x);
+        	msh.getTransforms().clear();
+        	msh.getTransforms().add(new Translate(pt.getX(), pt.getY(), pt.getZ()));
+        	RotateTransition rt = new RotateTransition(Duration.millis(300), msh);
+        	rt.setAxis(Rotate.Z_AXIS);
+        	rt.setByAngle(90);
+        	rt.setCycleCount(1);
+    		rt.setOnFinished(e -> buildMesh(sceneRoot, mat, meshGroup));
+        	rt.play();
+        	sceneRoot.getChildren().set(x*2, msh);
+        }
+		
+		int[] temp1 = FU; int[] temp2 = FLU;
+		FU = FL; FLU = FLD; FL = FD; FLD = FRD; FD = FR; FRD = FRU; FR = temp1; FRU = temp2;
+		Point3D ptemp1 = pFU; Point3D ptemp2 = pFLU;
+		pFU = pFL; pFLU = pFLD; pFL = pFD; pFLD = pFRD; pFD = pFR; pFRD = pFRU; pFR = ptemp1; pFRU = ptemp2;
+		cycleColours(FRU, L_FACE, U_FACE, R_FACE);
+		cycleColours(FR, L_FACE, U_FACE, R_FACE);
+		cycleColours(FRD, U_FACE, R_FACE, D_FACE);
+		cycleColours(FD, U_FACE, R_FACE, D_FACE);
+		cycleColours(FLD, R_FACE, D_FACE, L_FACE);
+		cycleColours(FL, R_FACE, D_FACE, L_FACE);
+		cycleColours(FLU, D_FACE, L_FACE, U_FACE);
+		cycleColours(FU, D_FACE, L_FACE, U_FACE);
+		temp1 = BLD; temp2 = BD;
+		BLD = BRD; BD = BR; BRD = BRU; BR = BU; BRU = BLU; BU = BL; BLU = temp1; BL = temp2;
+		ptemp1 = pBLD; ptemp2 = pBD;
+		pBLD = pBRD; pBD = pBR; pBRD = pBRU; pBR = pBU; pBRU = pBLU; pBU = pBL; pBLU = ptemp1; pBL = ptemp2;
+		cycleColours(BLU, D_FACE, L_FACE, U_FACE);
+		cycleColours(BU, D_FACE, L_FACE, U_FACE);
+		cycleColours(BRU, L_FACE, U_FACE, R_FACE);
+		cycleColours(BR, L_FACE, U_FACE, R_FACE);
+		cycleColours(BRD, U_FACE, R_FACE, D_FACE);
+		cycleColours(BD, U_FACE, R_FACE, D_FACE);
+		cycleColours(BLD, R_FACE, D_FACE, L_FACE);
+		cycleColours(BL, R_FACE, D_FACE, L_FACE);
+		temp1 = CU; temp2 = CRU;
+		CU = CL; CL = CD; CD = CR; CR = temp1;
+		CRU = CLU; CLU = CLD; CLD = CRD; CRD = temp2;
+		//ptemp1 = pCU; ptemp2 = pCRU;
+		//pCU = pCL; pCL = pCD; pCD = pCR; pCR = ptemp1;
+		//pCRU = pCLU; pCLU = pCLD; pCLD = pCRD; pCRD = ptemp2;
+		cycleColours(CU, D_FACE, L_FACE, U_FACE);
+		cycleColours(CRU, L_FACE, U_FACE, R_FACE);
+		cycleColours(CR, L_FACE, U_FACE, R_FACE);
+		cycleColours(CRD, U_FACE, R_FACE, D_FACE);
+		cycleColours(CD, U_FACE, R_FACE, D_FACE);
+		cycleColours(CLD, R_FACE, D_FACE, L_FACE);
+		cycleColours(CL, R_FACE, D_FACE, L_FACE);
+		cycleColours(CLU, D_FACE, L_FACE, U_FACE);	
+		
+		temp1 = FU; temp2 = FLU;
+		FU = FL; FLU = FLD; FL = FD; FLD = FRD; FD = FR; FRD = FRU; FR = temp1; FRU = temp2;
+		ptemp1 = pFU; ptemp2 = pFLU;
+		pFU = pFL; pFLU = pFLD; pFL = pFD; pFLD = pFRD; pFD = pFR; pFRD = pFRU; pFR = ptemp1; pFRU = ptemp2;
+		cycleColours(FRU, L_FACE, U_FACE, R_FACE);
+		cycleColours(FR, L_FACE, U_FACE, R_FACE);
+		cycleColours(FRD, U_FACE, R_FACE, D_FACE);
+		cycleColours(FD, U_FACE, R_FACE, D_FACE);
+		cycleColours(FLD, R_FACE, D_FACE, L_FACE);
+		cycleColours(FL, R_FACE, D_FACE, L_FACE);
+		cycleColours(FLU, D_FACE, L_FACE, U_FACE);
+		cycleColours(FU, D_FACE, L_FACE, U_FACE);
+		temp1 = BLD; temp2 = BD;
+		BLD = BRD; BD = BR; BRD = BRU; BR = BU; BRU = BLU; BU = BL; BLU = temp1; BL = temp2;
+		ptemp1 = pBLD; ptemp2 = pBD;
+		pBLD = pBRD; pBD = pBR; pBRD = pBRU; pBR = pBU; pBRU = pBLU; pBU = pBL; pBLU = ptemp1; pBL = ptemp2;
+		cycleColours(BLU, D_FACE, L_FACE, U_FACE);
+		cycleColours(BU, D_FACE, L_FACE, U_FACE);
+		cycleColours(BRU, L_FACE, U_FACE, R_FACE);
+		cycleColours(BR, L_FACE, U_FACE, R_FACE);
+		cycleColours(BRD, U_FACE, R_FACE, D_FACE);
+		cycleColours(BD, U_FACE, R_FACE, D_FACE);
+		cycleColours(BLD, R_FACE, D_FACE, L_FACE);
+		cycleColours(BL, R_FACE, D_FACE, L_FACE);
+		temp1 = CU; temp2 = CRU;
+		CU = CL; CL = CD; CD = CR; CR = temp1;
+		CRU = CLU; CLU = CLD; CLD = CRD; CRD = temp2;
+		//ptemp1 = pCU; ptemp2 = pCRU;
+		//pCU = pCL; pCL = pCD; pCD = pCR; pCR = ptemp1;
+		//pCRU = pCLU; pCLU = pCLD; pCLD = pCRD; pCRD = ptemp2;
+		cycleColours(CU, D_FACE, L_FACE, U_FACE);
+		cycleColours(CRU, L_FACE, U_FACE, R_FACE);
+		cycleColours(CR, L_FACE, U_FACE, R_FACE);
+		cycleColours(CRD, U_FACE, R_FACE, D_FACE);
+		cycleColours(CD, U_FACE, R_FACE, D_FACE);
+		cycleColours(CLD, R_FACE, D_FACE, L_FACE);
+		cycleColours(CL, R_FACE, D_FACE, L_FACE);
+		cycleColours(CLU, D_FACE, L_FACE, U_FACE);	
+	
+	patternFaceF = Arrays.asList(    		
+            FLD, FD, FRD, FL, F, FR, FLU, FU, FRU,
+            CLD, CD, CRD, CL, C, CR, CLU, CU, CRU,
+            BLD, BD, BRD, BL, B, BR, BLU, BU, BRU);
+	}
+	
 	private static void cycleColours(int[] list, int one, int two, int three) {
 		int temp = list[three];
 		list[three] = list[two];
