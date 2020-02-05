@@ -118,6 +118,9 @@ public class CubeSolver {
 		
 		processFirstLayerCorners();
 
+		applyMovesLogically("ZZ");
+		
+		processSecondLayerEdges();
 		
 		for (String s : allMoves) {
 			System.out.println(s);
@@ -156,7 +159,110 @@ public class CubeSolver {
 		//System.out.println("movesToSolve: "+insertCorner());
 	}
 
+	private static void processSecondLayerEdges() {
+		String destination = "";
+		for (int i = 0; i < 4; i++) {
+			switch (i) {
+			case 0: destination = "FR";
+			case 1: destination = "BR";
+			case 2: destination = "BL";
+			case 3: destination = "FL";
+			}
+			String edgeLoc = findSLedge(i);
+			System.out.println(edgeLoc+" is the location for edge #"+i);
+			String movesToSolve = positionEdge(edgeLoc);
+			if (movesToSolve.equals("SOLVED")) {
+				applyMovesLogically("Y");
+				allMoves.add("5*");	
+				allMoves.add("6*");
+			} else if (movesToSolve.equals("NULL")) {
+				allMoves.add("5*");	
+				allMoves.add("6"+insertSLedge());
+			} else {
+				applyMovesLogically(movesToSolve);
+				allMoves.add("5"+movesToSolve);
+				allMoves.add("6"+insertSLedge());
+			}
+		}
+		
+		
+	}
 	
+	private static String findSLedge(int e) {
+		int[][] slEdges = {FL, FR, FU, CLU, CRU, BL, BR, BU};
+		String[] slEdgeLetters = {"FL", "FR", "FU", "LU", "RU", "BL", "BR", "BU"};
+		int count = 0;
+		int col1 = 0; 
+		int col2 = 0;
+		
+		switch (e) {
+		case 0: col1 = 1; col2 = 4; break; //Green-Orange Edge
+		case 1: col1 = 4; col2 = 2; break; //Orange-Blue Edge
+		case 2: col1 = 2; col2 = 0; break; //Blue-Red Edge
+		case 3: col1 = 0; col2 = 1; break; //Red-Green Edge
+		}
+		
+		final int colour1 = col1;
+		final int colour2 = col2;
+		
+		for (int[] edge : slEdges) {
+			if(Arrays.stream(edge).anyMatch(i -> i == colour1)) {
+				System.out.println("Edge "+slEdgeLetters[count]+" matches edge on "+colour1);
+				if(Arrays.stream(edge).anyMatch(i -> i == colour2)) {
+					System.out.println("Edge "+count+" matches edge on "+colour2);
+					return slEdgeLetters[count];
+				} 
+			}
+			count++;
+		}
+		
+		return "NA";
+	}
+	
+	private static String positionEdge(String slEdgeLoc) {
+		
+		if (slEdgeLoc.toCharArray()[1] == 'U') {
+			switch (slEdgeLoc.toCharArray()[0]) {
+			case 'F': return ("NULL");
+			case 'B': return ("UU");
+			case 'R': return ("U");
+			case 'L': return ("I");
+			}
+		} else if (slEdgeLoc.toCharArray()[0] == 'F') {
+			switch (slEdgeLoc.toCharArray()[1]) {
+			case 'R': return checkFlipped();
+			case 'L': return ("IKILUFUG");
+			}
+		} else if (slEdgeLoc.toCharArray()[0] == 'B') {
+			switch (slEdgeLoc.toCharArray()[1]) {
+			case 'R': return ("YRUTIGIFIQ");
+			case 'L': return ("QIKILUFUGY");
+			}
+		}
+		
+		
+		
+		return "";
+	}
+	
+	private static String checkFlipped() {
+		if (FR[0] == F[0]) {
+			return "SOLVED";
+		} else {
+			return "URUTIGIFUU";
+		}
+	}
+
+	private static String insertSLedge() {
+		if (FU[0] == F[0]) {
+			applyMovesLogically("URUTIGIFY");
+			return "URUTIGIF";
+		} else {
+			applyMovesLogically("YIIKILUFUG");
+			return "YIIKILUFUGQ";
+		}
+	}
+
 	private static String findCrossEdge(int col) {
 		int[][] allEdges = {FD, FL, FR, FU, CLD, CRD, CLU, CRU, BD, BL, BR, BU};
 		int count = 0;
@@ -319,7 +425,27 @@ public class CubeSolver {
 			case 'S': makeDmove(true); break;
 			case 'Y': makeYrotation(false); break;
 			case 'Q': makeYrotation(true); break;
+			case 'Z': makeZrotation(); break;
 			}
+			/*
+			 * 			switch (move) {
+			case 'F': makeFmove(false); UserInterface.makeFmove(false); break;
+			case 'R': makeRmove(false); UserInterface.makeRmove(false); break;
+			case 'U': makeUmove(false); UserInterface.makeUmove(false); break;
+			case 'B': makeBmove(false); UserInterface.makeBmove(false); break;
+			case 'L': makeLmove(false); UserInterface.makeLmove(false); break;
+			case 'D': makeDmove(false); UserInterface.makeDmove(false); break;
+			case 'G': makeFmove(true); UserInterface.makeFmove(true); break;
+			case 'T': makeRmove(true); UserInterface.makeRmove(true); break;
+			case 'I': makeUmove(true); UserInterface.makeUmove(true); break;
+			case 'N': makeBmove(true); UserInterface.makeBmove(true); break;
+			case 'K': makeLmove(true); UserInterface.makeLmove(true); break;
+			case 'S': makeDmove(true); UserInterface.makeDmove(true); break;
+			case 'Y': makeYrotation(false); UserInterface.makeYrotation(false); break;
+			case 'Q': makeYrotation(true); UserInterface.makeYrotation(true); break;
+			case 'Z': makeZrotation(); UserInterface.makeZrotation(false); break;
+			}
+			 */
 		}
 		
 	}
@@ -594,6 +720,38 @@ public class CubeSolver {
 	
 	}
 
-
+	private static void makeZrotation() {
+		int[] temp1 = FU; int[] temp2 = FLU;
+		FU = FL; FLU = FLD; FL = FD; FLD = FRD; FD = FR; FRD = FRU; FR = temp1; FRU = temp2;
+		cycleColours(FRU, L_FACE, U_FACE, R_FACE);
+		cycleColours(FR, L_FACE, U_FACE, R_FACE);
+		cycleColours(FRD, U_FACE, R_FACE, D_FACE);
+		cycleColours(FD, U_FACE, R_FACE, D_FACE);
+		cycleColours(FLD, R_FACE, D_FACE, L_FACE);
+		cycleColours(FL, R_FACE, D_FACE, L_FACE);
+		cycleColours(FLU, D_FACE, L_FACE, U_FACE);
+		cycleColours(FU, D_FACE, L_FACE, U_FACE);
+		temp1 = BLD; temp2 = BD;
+		BLD = BRD; BD = BR; BRD = BRU; BR = BU; BRU = BLU; BU = BL; BLU = temp1; BL = temp2;
+		cycleColours(BLU, D_FACE, L_FACE, U_FACE);
+		cycleColours(BU, D_FACE, L_FACE, U_FACE);
+		cycleColours(BRU, L_FACE, U_FACE, R_FACE);
+		cycleColours(BR, L_FACE, U_FACE, R_FACE);
+		cycleColours(BRD, U_FACE, R_FACE, D_FACE);
+		cycleColours(BD, U_FACE, R_FACE, D_FACE);
+		cycleColours(BLD, R_FACE, D_FACE, L_FACE);
+		cycleColours(BL, R_FACE, D_FACE, L_FACE);
+		temp1 = CU; temp2 = CRU;
+		CU = CL; CL = CD; CD = CR; CR = temp1;
+		CRU = CLU; CLU = CLD; CLD = CRD; CRD = temp2;
+		cycleColours(CU, D_FACE, L_FACE, U_FACE);
+		cycleColours(CRU, L_FACE, U_FACE, R_FACE);
+		cycleColours(CR, L_FACE, U_FACE, R_FACE);
+		cycleColours(CRD, U_FACE, R_FACE, D_FACE);
+		cycleColours(CD, U_FACE, R_FACE, D_FACE);
+		cycleColours(CLD, R_FACE, D_FACE, L_FACE);
+		cycleColours(CL, R_FACE, D_FACE, L_FACE);
+		cycleColours(CLU, D_FACE, L_FACE, U_FACE);
+	}
 
 }
