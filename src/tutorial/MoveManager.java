@@ -176,6 +176,9 @@ public class MoveManager {
 				case "B2": UserInterface.makeB2move(); break;
 				case "L2": UserInterface.makeL2move(); break;
 				case "D2": UserInterface.makeD2move(); break;
+				case "y": UserInterface.makeYrotation(false); break;
+				case "y'": UserInterface.makeYrotation(true); break;
+				case "y2": UserInterface.makeY2rotation(); break;
 			}
 		}
 	}
@@ -198,18 +201,20 @@ public class MoveManager {
 			}
 			for (int i = 1; i < moves.length; i++) {
 				switch(moves[i]) {
-					case 'G': movesToUserList.add("F'"); break;
-					case 'T': movesToUserList.add("R'"); break;
-					case 'I': movesToUserList.add("U'"); break;
-					case 'N': movesToUserList.add("B'"); break;
-					case 'K': movesToUserList.add("L'"); break;
-					case 'S': movesToUserList.add("D'"); break;
+					case 'G': if (currentMove.equals("G")) {movesToUserList.remove(movesToUserList.size()-1); movesToUserList.add("R2");} else { movesToUserList.add("F'");}; break;
+					case 'T': if (currentMove.equals("T")) {movesToUserList.remove(movesToUserList.size()-1); movesToUserList.add("F2");} else { movesToUserList.add("R'");}; break;
+					case 'I': if (currentMove.equals("I")) {movesToUserList.remove(movesToUserList.size()-1); movesToUserList.add("U2");} else { movesToUserList.add("U'");}; break;
+					case 'N': if (currentMove.equals("N")) {movesToUserList.remove(movesToUserList.size()-1); movesToUserList.add("B2");} else { movesToUserList.add("B'");}; break;
+					case 'K': if (currentMove.equals("K")) {movesToUserList.remove(movesToUserList.size()-1); movesToUserList.add("L2");} else { movesToUserList.add("L'");}; break;
+					case 'S': if (currentMove.equals("S")) {movesToUserList.remove(movesToUserList.size()-1); movesToUserList.add("D2");} else { movesToUserList.add("D'");}; break;
 					case 'F': if (currentMove.equals("F")) {movesToUserList.remove(movesToUserList.size()-1); movesToUserList.add("F2");} else { movesToUserList.add("F");}; break;
 					case 'R': if (currentMove.equals("R")) {movesToUserList.remove(movesToUserList.size()-1); movesToUserList.add("R2");} else { movesToUserList.add("R");}; break;
 					case 'U': if (currentMove.equals("U")) {movesToUserList.remove(movesToUserList.size()-1); movesToUserList.add("U2");} else { movesToUserList.add("U");}; break;
 					case 'B': if (currentMove.equals("B")) {movesToUserList.remove(movesToUserList.size()-1); movesToUserList.add("B2");} else { movesToUserList.add("B");}; break;
 					case 'L': if (currentMove.equals("L")) {movesToUserList.remove(movesToUserList.size()-1); movesToUserList.add("L2");} else { movesToUserList.add("L");}; break;
 					case 'D': if (currentMove.equals("D")) {movesToUserList.remove(movesToUserList.size()-1); movesToUserList.add("D2");} else { movesToUserList.add("D");}; break;
+					case 'Y': if (currentMove.equals("Y")) {movesToUserList.remove(movesToUserList.size()-1); movesToUserList.add("y2");} else { movesToUserList.add("y");}; break;
+					case 'Q': if (currentMove.equals("Q")) {movesToUserList.remove(movesToUserList.size()-1); movesToUserList.add("y2");} else { movesToUserList.add("y'");}; break;
 				}
 				currentMove = ""+moves[i];
 			}
