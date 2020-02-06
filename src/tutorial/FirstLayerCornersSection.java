@@ -92,7 +92,7 @@ public class FirstLayerCornersSection {
 							 "							                                                               ",
 							 "and solve it to complete the First Layer!\n "+
 							 "							                                                                ",
-							 "Congratluations! You've now solved the first layer of the Rubik's Cube! Now that the top is "+
+							 "Congratulations! You've now solved the first layer of the Rubik's Cube! Now that the top is "+
 							 "completely solved, you can flip the puzzle round to place the white face on the bottom - we "+
 						     "won't need it anymore. Keep the Green centre on the front though!"
 		};

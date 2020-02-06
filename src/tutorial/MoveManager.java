@@ -81,7 +81,7 @@ public class MoveManager {
 			localBackward.setDisable(true);
 			SharedToolbox.info.setVisible(true);
 		} else {
-			SharedToolbox.info.setVisible(true);
+			SharedToolbox.info.setVisible(false);
 			if (movesToUserList.size() >= 7) {
 				size = true;
 			}

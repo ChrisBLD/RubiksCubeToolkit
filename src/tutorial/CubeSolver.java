@@ -231,12 +231,12 @@ public class CubeSolver {
 		} else if (slEdgeLoc.toCharArray()[0] == 'F') {
 			switch (slEdgeLoc.toCharArray()[1]) {
 			case 'R': return checkFlipped();
-			case 'L': return ("IKILUFUG");
+			case 'L': return ("QRUTIGIFIY");
 			}
 		} else if (slEdgeLoc.toCharArray()[0] == 'B') {
 			switch (slEdgeLoc.toCharArray()[1]) {
 			case 'R': return ("YRUTIGIFIQ");
-			case 'L': return ("QIKILUFUGY");
+			case 'L': return ("YYRUTIGIFIQQ");
 			}
 		}
 		
