@@ -101,7 +101,7 @@ public class FirstLayerCornersSection {
 		String[] resources = {"solvedLayer1.png", "stepsForFirstLayer.png", "incorrectLocation.png", "twoCasesFLC.png", "bottomLayerFLC.png", "topLayerFLC.png",
 							  "placingCornerCasesFLC.png", "solveWhiteRightFLC.png", "solveWhiteFrontFLC.png", "solveWhiteBottomFLC.png", "NULL"};
 		System.out.println("here!");
-		bodyCount = 0;
+		bodyCount = 9;
 		seqOut.playFromStart();
 		seqOut.setOnFinished(new EventHandler<ActionEvent>() {
     		@Override
@@ -111,7 +111,7 @@ public class FirstLayerCornersSection {
     				elements.get(0).setText("");
     				elements.get(1).setText("                                                    "+
     										"                                                    ");
-    				//FirstLayerCornersSection.begin(allMoves, seqOut, seqIn, elements, forward, back);
+    				SecondLayerEdgesSection.begin(allMoves, seqOut, seqIn, elements, forward, back);
     				System.out.println("we're done!");
     			} else {
 	    			forward.setDisable(false);
@@ -183,6 +183,7 @@ public class FirstLayerCornersSection {
 	    				UserInterface.timeline2.play();
 	    			}
 	    			elements.get(1).setText(bodyText[bodyCount]);
+	    			elements.get(2).setText("");
 	    			elements.get(2).setGraphic(null);
 	    			elements.get(3).setText("");
 	    			seqInText.playFromStart();   

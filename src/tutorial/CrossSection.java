@@ -148,7 +148,7 @@ public class CrossSection {
 		SequentialTransition seqInText = SharedToolbox.initSeqTrans(text, true);
     	SequentialTransition seqOutText = SharedToolbox.initSeqTrans(text, false);
     	
-    	bodyCount = 0;
+    	bodyCount = 18;
     	forwardOrBack = true;
     	
     	 seqOutText.setOnFinished(new EventHandler<ActionEvent>() {

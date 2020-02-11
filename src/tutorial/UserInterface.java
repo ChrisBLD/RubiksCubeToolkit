@@ -1613,9 +1613,9 @@ public class UserInterface extends Application {
         	Point3D pt = pointsFaceF.get(x);
         	msh.getTransforms().clear();
         	msh.getTransforms().add(new Translate(pt.getX(), pt.getY(), pt.getZ()));
-        	RotateTransition rt = new RotateTransition(Duration.millis(300), msh);
+        	RotateTransition rt = new RotateTransition(Duration.millis(450), msh);
         	rt.setAxis(Rotate.Z_AXIS);
-        	rt.setByAngle(90);
+        	rt.setByAngle(180);
         	rt.setCycleCount(1);
     		rt.setOnFinished(e -> buildMesh(sceneRoot, mat, meshGroup));
         	rt.play();
