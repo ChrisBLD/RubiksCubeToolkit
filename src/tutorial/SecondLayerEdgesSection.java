@@ -19,7 +19,7 @@ public class SecondLayerEdgesSection {
 	static ArrayList<String> insertEdge = new ArrayList<String>();
 	static boolean forwardOrBack;
 	static int bodyCount, bodyCountFloor;
-	static final int MAX = 18;
+	static final int MAX = 30;
 	
 	
 	public static void begin(ArrayList<String> allMoves, SequentialTransition seqOut, SequentialTransition seqIn, ArrayList<Label> elements, Button forward, Button back) {
@@ -90,12 +90,17 @@ public class SecondLayerEdgesSection {
 							 "below...",
 							 
 							 "Nice! Now, let's insert that edge using the correct algorithm from the two we just saw: ",
-							 "........................................................................................",
-							 "........................................................................................",
-							 "........................................................................................",
-							 "........................................................................................",
-							 "........................................................................................",
-							 "........................................................................................"
+							 
+							 "Now for the second edge: Let's first place it above its location as shown previously...",
+							 
+							 "...and insert it into its position to solve the second edge on the middle layer",
+							 
+							 "Once again for the third edge, first placing it above its location...                         ",
+							 
+							 "....................................................................................................................................................",
+							 "....................................................................................................................................................",
+							 
+							 "we outtie 5 thousand"
 		};
 		
 		String[] resources = {"solvedF2L.png", "NULL", "edgeLocationF2L.png", "twoCasesF2L.png", "topLayerF2L.png", 
@@ -103,12 +108,12 @@ public class SecondLayerEdgesSection {
 							  "insertEdgeOneF2L.png", "insertEdgeTwoF2L.png", "insertEdgeOverviewBF2L.png", 
 							  "insertEdgeThreeF2L.png", "insertEdgeFourF2L.png", "middleLayerBF2L.png"};
 
-		bodyCount = 0;
+		bodyCount = 11;
 		seqOut.playFromStart();
 		seqOut.setOnFinished(new EventHandler<ActionEvent>() {
     		@Override
     		public void handle(ActionEvent event) {
-    			if (bodyCount == 18) {
+    			if (bodyCount == 30) {
 
     				elements.get(0).setText("");
     				elements.get(1).setText("                                                    "+
@@ -148,7 +153,7 @@ public class SecondLayerEdgesSection {
  	    	@Override
  	    	public void handle(ActionEvent event) {
  	    		System.out.println("BODY COUNT IS:"+bodyCount);
- 	    		if (bodyCount <= 14) {
+ 	    		if (bodyCount <= 12) {
  	    			if (forwardOrBack) {
 	 	    			bodyCount = SharedToolbox.bodyCountInc(bodyCount);
 	 	       			elements.get(1).setText(bodyText[bodyCount]);
@@ -165,8 +170,31 @@ public class SecondLayerEdgesSection {
 	       				elements.get(2).setGraphic(new ImageView(new Image("/resources/"+resources[bodyCount])));
 	 	    		}
 	 	    		seqInText.playFromStart();   
+ 	    		} else if (bodyCount <=20) {
+ 	    			if (bodyCount == 13) {
+ 	    				MoveManager.prepareDemo(elements);
+ 	    			} else if (bodyCount % 2 == 1) {
+ 	    				UserInterface.makeYrotation(false);
+ 	    			}
+ 	    			bodyCount = SharedToolbox.bodyCountInc(bodyCount);
+    				elements.get(1).setText(bodyText[bodyCount]);
+    				System.out.println("BODY COUNT: "+bodyCount+", STAGE: "+(bodyCount+3));
+    				MoveManager.main(allMoves, elements, forward, back, bodyCount+3); 	    
+ 	    			seqInText.playFromStart(); 
+ 	    		} else if (bodyCount == 23) {
+	    			UserInterface.makeYrotation(false);
+	    			if (forwardOrBack) {
+	    				bodyCount = SharedToolbox.bodyCountInc(bodyCount);
+	    				MoveManager.kill();
+	    				back.setDisable(false);
+	    				UserInterface.timeline2.play();
+	    			}
+	    			elements.get(1).setText(bodyText[bodyCount]);
+	    			elements.get(2).setText("");
+	    			elements.get(2).setGraphic(null);
+	    			elements.get(3).setText("");
+	    			seqInText.playFromStart();   
  	    		}
- 	    		
  	    	}
     	});
     	
