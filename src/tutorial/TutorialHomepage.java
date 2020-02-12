@@ -45,7 +45,7 @@ public class TutorialHomepage {
 	    		public void handle(ActionEvent arg0) {
 	    			back.setDisable(true);
 	    			forward.setDisable(true);
-	    			Setup.main(elements, forward, back, seqIn, seqOut);
+	    			Setup.main(elements, forward, back, restartSection, seqIn, seqOut);
 	    		}
 	    	});
     	

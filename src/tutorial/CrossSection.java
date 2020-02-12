@@ -25,7 +25,7 @@ public class CrossSection {
 	static final int MAX = 24;
 	
 	
-	public static void begin(ArrayList<String> allMoves, SequentialTransition seqOut, SequentialTransition seqIn, ArrayList<Label> elements, Button forward, Button back) {
+	public static void begin(ArrayList<String> allMoves, SequentialTransition seqOut, SequentialTransition seqIn, ArrayList<Label> elements, Button forward, Button back, Button restartSection) {
 		for (String s : allMoves) {
 			if (s.toCharArray()[0] == '1') {
 				placeMoves.add(s);
@@ -34,6 +34,7 @@ public class CrossSection {
 			}
 		}
 		bodyCountFloor = 0;
+		restartSection.setDisable(false);
 		
 		String[] bodyText = {"We will use the centre stickers on the Rubik's Cube as our guide. We should " + 
 							 "always consider centres as fixed points that never change place - every " + 
@@ -156,7 +157,14 @@ public class CrossSection {
  	    	@Override
  	    	public void handle(ActionEvent event) {
  	    		System.out.println("BODY COUNT IS:"+bodyCount);
- 	    		if (bodyCount <=11 || bodyCount == 16 || bodyCount == 17 || bodyCount == 18 || bodyCount == 23) {
+ 	    		if (bodyCount == -1) {
+ 	    			bodyCount = SharedToolbox.bodyCountInc(bodyCount);
+ 	    			bodyCount = SharedToolbox.bodyCountInc(bodyCount);
+ 	    			elements.get(2).setGraphic(null);
+ 	    			elements.get(2).setVisible(false);
+ 	       			elements.get(1).setText(bodyText[bodyCount]);
+ 	       			seqInText.playFromStart();  
+ 	    		} else if (bodyCount <=11 || bodyCount == 16 || bodyCount == 17 || bodyCount == 18 || bodyCount == 23) {
  	    			if (bodyCount == 16 || bodyCount == 23) {
  	    				if (bodyCount == 23) {
  	    					UserInterface.makeYrotation(false);
@@ -189,6 +197,7 @@ public class CrossSection {
 	 	    		}
 	 	    		seqInText.playFromStart();   
  	    		} else if (bodyCount <=15) {
+ 	    			restartSection.setDisable(true);
  	    			if (bodyCount == 12) {
  	    				MoveManager.prepareDemo(elements);
  	    			}
@@ -218,7 +227,7 @@ public class CrossSection {
  	    
  	    back.setOnAction(event -> {changeDir(false); checkValid(seqOut, seqOutText,bodyText);});
  	    	
- 	    	
+ 	    restartSection.setOnAction(event -> {restart(seqOutText);});
 		
 	
 	}
@@ -240,5 +249,11 @@ public class CrossSection {
 	private static void changeDir(boolean dir) {
     	forwardOrBack = dir;
     }
+	
+	private static void restart(SequentialTransition seqOutText) {
+		bodyCount = -1;
+		seqOutText.playFromStart();
+	}
 
 }
+
