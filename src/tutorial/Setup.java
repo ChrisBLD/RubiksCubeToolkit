@@ -35,14 +35,23 @@ public class Setup {
 
 	public static void main(ArrayList<Label> elements, Button forward, Button back, SequentialTransition seqIn, SequentialTransition seqOut) {
 		
-		String[] bodyText = {"To continue with this tutorial, it is strongly advised that you have your own Rubik's Cube so you can try the moves yourself"
-				+ " and follow what happens on screen. Do you have your own puzzle?",
-				"Great! If your puzzle is currently solved, then scramble it as well as you can before proceeding to the next step. If your puzzle is already scrambled,"
-				+ " then you're ready to get going!",
-				"Please open the cube net below and replicate your scrambled puzzle on the net shown. It's important you get it right so that you can follow along with"
-				+ " your own puzzle throughout the tutorial."};
-		String badText = "You can still complete this tutorial without your own cube, but you will be limited to using a default scramble and following the tutorial using only the"
-				+ " virtual cube on the left of the screen. This scramble will teach you everything you need to know - but the best way to learn is to try it yourself!";
+		String[] bodyText = {"To continue with this tutorial, it is strongly advised that you have your own Rubik's Cube "+
+							 "so you can try the moves yourself and follow what happens on screen. Do you have your own puzzle?",
+							 
+							 "Great! If your puzzle is currently solved, then scramble it as well as you can before proceeding "+
+							 "to the next step. If your puzzle is already scrambled, then you're ready to get going!",
+							 
+							 "Please open the cube net below and replicate your scrambled puzzle on the net shown. It's important "+
+							 "you get it right so that you can follow along with your own puzzle throughout the tutorial."
+									 
+		};
+		String[] badText = {"You can still complete this tutorial without your own cube, but you will be limited to using a default "+
+						    "scramble and following the tutorial using only the virtual cube on the left of the screen. This scramble "+
+						    "will teach you everything you need to know - but the best way to learn is to try it yourself!",
+						    
+						    "This is the scramble that Yusheng Du set the current 3x3 Speedsolve World Record. He used "+
+						    "a more advanced version of the method that we'll be learning, so we won't quite do the same solution as him!"
+		};
 		Setup.seqIn = seqIn;
 		Setup.seqOut = seqOut;
 		Setup.elements = elements;
@@ -84,9 +93,21 @@ public class Setup {
 	    				generateInputButton();
 	    			}
     			} else {
-    				elements.get(1).setText(badText);
-	    			elements.get(2).setText("");
-	    			seqInText.playFromStart();
+    				if (bodyCount == 4) {
+    					UserInterface.yushengScramble();
+    					UserInterface.timeline.playFromStart();
+    					elements.get(2).setGraphic(new ImageView(new Image("/resources/yusheng-du-record.jpg")));
+    					elements.get(1).setText(badText[bodyCount-3]);
+		    			elements.get(2).setText("");
+		    			seqInText.playFromStart();
+    				} else if (bodyCount == 5) {
+    					ArrayList<String> allMoves = CubeSolver.deriveSolution(buttonArray);
+    					CrossSection.begin(allMoves, seqOut, seqIn, elements, forward, back);
+    				} else {
+	    				elements.get(1).setText(badText[bodyCount-3]);
+		    			elements.get(2).setText("");
+		    			seqInText.playFromStart();
+    				}
     			}
     			back.setDisable(true);
     			seqInText.playFromStart();

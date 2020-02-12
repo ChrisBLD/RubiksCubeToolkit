@@ -1826,6 +1826,13 @@ public class UserInterface extends Application {
 
     }
     
+    public static void yushengScramble() {
+    	makeFmove(false); makeU2move(); makeL2move(); makeB2move(); makeFmove(true); makeUmove(false); makeL2move();
+    	makeUmove(false); makeR2move(); makeD2move(); makeLmove(true); makeBmove(false); makeL2move(); makeBmove(true);
+    	makeR2move(); makeU2move();
+    	//F U2 L2 B2 F' U L2 U R2 D2 L' B L2 B' R2 U2
+    }
+    
     public void playRotate() {
     	timeline.play();
     }
