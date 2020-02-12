@@ -84,6 +84,8 @@ public class MoveManager {
 			SharedToolbox.info.setVisible(false);
 			if (movesToUserList.size() >= 7) {
 				size = true;
+			} else {
+				size = false;
 			}
 			generateIndicators(movesToUserList);
 			count = 0;

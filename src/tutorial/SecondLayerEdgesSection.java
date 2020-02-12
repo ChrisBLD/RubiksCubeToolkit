@@ -108,7 +108,7 @@ public class SecondLayerEdgesSection {
 							  "insertEdgeOneF2L.png", "insertEdgeTwoF2L.png", "insertEdgeOverviewBF2L.png", 
 							  "insertEdgeThreeF2L.png", "insertEdgeFourF2L.png", "middleLayerBF2L.png"};
 
-		bodyCount = 11;
+		bodyCount = 0;
 		seqOut.playFromStart();
 		seqOut.setOnFinished(new EventHandler<ActionEvent>() {
     		@Override

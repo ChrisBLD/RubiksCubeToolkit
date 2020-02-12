@@ -356,14 +356,23 @@ public class UserInterface extends Application {
         pane.setCenter(subScene);
         
         Button back = new Button();
-        back.setGraphic(new ImageView(new Image("/resources/minusButton.png")));
-        back.setMinSize(45,45); back.setMaxSize(45,45);
+        back.setGraphic(new ImageView(new Image("/resources/backButton.png")));
+        back.setMinSize(90,67); back.setMaxSize(90,67);
         Button forward = new Button();
-        forward.setGraphic(new ImageView(new Image("/resources/plusButton.png")));
-        forward.setMinSize(45,45); forward.setMaxSize(45,45);
+        forward.setGraphic(new ImageView(new Image("/resources/nextButton.png")));
+        forward.setMinSize(90,67); forward.setMaxSize(90,67);
+        Separator s1 = new Separator();
+        s1.setOrientation(Orientation.VERTICAL);
+        s1.setVisible(false);
+        Separator s2 = new Separator();
+        s2.setOrientation(Orientation.VERTICAL);
+        s2.setVisible(false);
+        Button restartSection = new Button();
+        restartSection.setGraphic(new ImageView(new Image("/resources/sectionStartButton.png")));
+        restartSection.setMinSize(111,67); restartSection.setMaxSize(111,67);
         
-        HBox h = new HBox(10);
-        h.getChildren().addAll(back, forward);
+        HBox h = new HBox(30);
+        h.getChildren().addAll(s1, forward, back, s2, restartSection);
 
         ToolBar toolBar = new ToolBar(h);
         toolBar.setOrientation(Orientation.HORIZONTAL);
@@ -470,7 +479,7 @@ public class UserInterface extends Application {
         });
 
         
-        TutorialHomepage.main(elements, back, forward, toolBarRight, toolBar);
+        TutorialHomepage.main(elements, back, forward, restartSection, toolBarRight, toolBar);
         
         //beginTutorial(stepLabel, description, moves, bottom, back, forward, toolBarRight, toolBar);
     }

@@ -101,7 +101,7 @@ public class FirstLayerCornersSection {
 		String[] resources = {"solvedLayer1.png", "stepsForFirstLayer.png", "incorrectLocation.png", "twoCasesFLC.png", "bottomLayerFLC.png", "topLayerFLC.png",
 							  "placingCornerCasesFLC.png", "solveWhiteRightFLC.png", "solveWhiteFrontFLC.png", "solveWhiteBottomFLC.png", "NULL"};
 		System.out.println("here!");
-		bodyCount = 9;
+		bodyCount = 0;
 		seqOut.playFromStart();
 		seqOut.setOnFinished(new EventHandler<ActionEvent>() {
     		@Override

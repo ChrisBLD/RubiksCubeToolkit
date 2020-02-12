@@ -21,7 +21,7 @@ public abstract class NotationSection {
 	static SequentialTransition seqIn, seqOut;
 
 	
-	 public static void main(ArrayList<Label> elements, Button forward, Button back, SequentialTransition seqIn, SequentialTransition seqOut) {
+	 public static void main(ArrayList<Label> elements, Button forward, Button back, Button restartSection, SequentialTransition seqIn, SequentialTransition seqOut) {
  	   	
 		 NotationSection.elements = elements;
 		 NotationSection.forward = forward;
@@ -61,6 +61,7 @@ public abstract class NotationSection {
 	    	public void handle(ActionEvent event) {
 	        	elements.get(0).setText("Notation");
 	        	elements.get(1).setText(bodyText[bodyCount]);  
+	        	back.setDisable(true);
 	    		seqIn.playFromStart();
 	    	}
 	    });
@@ -84,13 +85,20 @@ public abstract class NotationSection {
 	    	@Override
 	    	public void handle(ActionEvent event) {
 	    		if (forwardOrBack) {
+	    			if (bodyCount == -1) {
+	    				back.setDisable(true);
+	    			} else {
+	    				back.setDisable(false);
+	    			}
 	    			bodyCount = SharedToolbox.bodyCountInc(bodyCount);
 	       			elements.get(1).setText(bodyText[bodyCount]);
 	       			elements.get(2).setText("");
 	       			elements.get(3).setText("");
 	       		} else {
 	       			bodyCount = SharedToolbox.bodyCountDec(bodyCount);
-	       			if (bodyCount == 4) {
+	       			if (bodyCount == 0) {
+	       				back.setDisable(true);
+	       			} else if (bodyCount == 4) {
 	       				bodyCount = SharedToolbox.bodyCountDec(bodyCount);
 	       			} else if (bodyCount == 7) {
 	    				elements.get(1).setText(bodyText[4]);
@@ -170,6 +178,7 @@ public abstract class NotationSection {
 	    
 	    back.setOnAction(event -> {changeDir(false); checkValid(seqOutText, seqOutMove, bodyText);});
 	    	
+	    restartSection.setOnAction(event -> {restartSection(seqOutText);});
 	    	
 	 }
 	  
@@ -241,6 +250,23 @@ public abstract class NotationSection {
 	    	if (bodyCount == 14) {
 	    		Setup.main(elements, forward, back, seqIn, seqOut);
 	    	}
+	    }
+	    
+	    public static void restartSection(SequentialTransition seqOutText) {
+	    	
+	    	switch (bodyCount) {
+	    	case 5: UserInterface.makeRmove(true); break;
+	    	case 6: UserInterface.makeRmove(false); break;
+	    	case 7: UserInterface.makeR2move(); break;
+	    	case 9: UserInterface.makeRmove(true); break;
+	    	case 10: UserInterface.makeUmove(true); UserInterface.makeRmove(true); break;
+	    	case 11: UserInterface.makeRmove(false); UserInterface.makeUmove(true); UserInterface.makeRmove(true); break;
+	    	case 12: UserInterface.makeUmove(false); UserInterface.makeRmove(false); UserInterface.makeUmove(true); UserInterface.makeRmove(true); break;
+	    	}
+
+	    	bodyCount = -1;
+	    	forwardOrBack = true;
+	    	seqOutText.playFromStart();
 	    }
 	    
 		

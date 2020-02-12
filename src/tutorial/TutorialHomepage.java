@@ -16,7 +16,7 @@ public class TutorialHomepage {
 
 	static ToolBar toolBarRight, toolBar;
 	
-	public static void main(ArrayList<Label> elements, Button back, Button forward, ToolBar toolBarRight, ToolBar toolBar) {
+	public static void main(ArrayList<Label> elements, Button back, Button forward, Button restartSection, ToolBar toolBarRight, ToolBar toolBar) {
     	
 			TutorialHomepage.toolBarRight = toolBarRight;
 			TutorialHomepage.toolBar = toolBar;
@@ -25,7 +25,7 @@ public class TutorialHomepage {
 	    	elements.get(0).setText("Welcome!");
 	    	elements.get(1).setText("This is an interactive Rubik's Cube tutorial. Using this tool, you can learn how to solve "
 	    					    +"the Rubik's Cube using the Layer by Layer method. To begin, would you like to learn the notation for the Rubik's Cube?"
-	    					    + " (recommended for complete beginners!)");
+	    					    + " (recommended for complete beginners!)\n\nClick 'Next Page' for Yes\nClick 'Previous Page' for No");
 	    	elements.get(2).setText("");
 	    	elements.get(3).setText("");
 
@@ -36,7 +36,7 @@ public class TutorialHomepage {
 	    	forward.setOnAction(new EventHandler<ActionEvent>() {
 				@Override
 				public void handle(ActionEvent arg0) {
-					NotationSection.main(elements, forward, back, seqIn, seqOut);
+					NotationSection.main(elements, forward, back, restartSection, seqIn, seqOut);
 				}
 	    	});
 	    	

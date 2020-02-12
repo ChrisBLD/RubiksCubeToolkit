@@ -131,6 +131,7 @@ public class CrossSection {
 	    	    	newBox.setAlignment(Pos.CENTER);
 	    	    	TutorialHomepage.toolBarRight.getItems().set(2, newBox);
 	    	    	elements.get(2).setText("");
+	    	    	elements.get(2).setGraphic(null);
 	    	    	elements.get(3).setText("");
 	    	    	
 	    	    	elements.get(2).setVisible(false);
@@ -148,7 +149,7 @@ public class CrossSection {
 		SequentialTransition seqInText = SharedToolbox.initSeqTrans(text, true);
     	SequentialTransition seqOutText = SharedToolbox.initSeqTrans(text, false);
     	
-    	bodyCount = 18;
+    	bodyCount = 0;
     	forwardOrBack = true;
     	
     	 seqOutText.setOnFinished(new EventHandler<ActionEvent>() {

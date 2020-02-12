@@ -49,7 +49,7 @@ public class Setup {
 						    "scramble and following the tutorial using only the virtual cube on the left of the screen. This scramble "+
 						    "will teach you everything you need to know - but the best way to learn is to try it yourself!",
 						    
-						    "This is the scramble that Yusheng Du set the current 3x3 Speedsolve World Record. He used "+
+						    "This is the scramble that Yusheng Du set the current 3x3 Speedsolve World Record on. He used "+
 						    "a more advanced version of the method that we'll be learning, so we won't quite do the same solution as him!"
 		};
 		Setup.seqIn = seqIn;
@@ -101,6 +101,7 @@ public class Setup {
 		    			elements.get(2).setText("");
 		    			seqInText.playFromStart();
     				} else if (bodyCount == 5) {
+    					elements.get(2).setGraphic(null);
     					ArrayList<String> allMoves = CubeSolver.deriveSolution(buttonArray);
     					CrossSection.begin(allMoves, seqOut, seqIn, elements, forward, back);
     				} else {
