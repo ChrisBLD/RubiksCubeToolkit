@@ -62,10 +62,6 @@ public class SecondLayerEdgesSection {
 							 "Now, when we've got the edge where we want it - above its location - we can solve " + 
 							 "it. We can solve this with one of two algorithms, depending on which way the edge " + 
 							 "is oriented.",
-							 
-							 "These two algorithms are very similar! In fact, the second algorithm is a \"mirror\" " + 
-							 "of the first algorithm (this means that all R moves become L moves and vice versa,  " + 
-							 "and all F and U moves swap direction).",
 
 							 "The first algorithm will be used when the side of the edge facing us matches the " + 
 							 "centre below it. This algorithm will insert this edge into its location without " + 
@@ -80,13 +76,32 @@ public class SecondLayerEdgesSection {
 							 "The second algorithm will be used when the side of the edge facing us does not match "+
 							 "the centre below it. This algorithm will do the same as the previous one, but just from "+
 							 "the other side of the puzzle.",
+							 
+							 "We solve this in the same way but with slight different moves: First, we take the corner "+
+							 "out using the following moves...",
+							 
+							 "...and then we pair it up with the edge and insert the whole pair back into the slot.",
+							 
+							 "If an edge is inserted into the wrong location, simply rotate so that the slot is in the "+
+							 "front position and perform the first algorithm to get the edge out. That long algorith from "+
+							 "earlier is doing just that!",
 
-				
+							 "Now let's try it with your scramble: Place the first edge above its location with the moves "+
+							 "below...",
+							 
+							 "Nice! Now, let's insert that edge using the correct algorithm from the two we just saw: ",
+							 "........................................................................................",
+							 "........................................................................................",
+							 "........................................................................................",
+							 "........................................................................................",
+							 "........................................................................................",
+							 "........................................................................................"
 		};
 		
-		String[] resources = {"solvedF2L.png", "NULL", "edgeLocationF2L.png", "twoCasesF2L.png", "topLayerF2L.png", "middleLayerF2L.png", 
-							  "edgeOrientationsF2L.png", "mirrorAlgF2L.png", "insertEdgeF2LOverview.png", "insertEdgeOneF2L.png", 
-							  "insertEdgeTwoF2L.png"};
+		String[] resources = {"solvedF2L.png", "NULL", "edgeLocationF2L.png", "twoCasesF2L.png", "topLayerF2L.png", 
+							  "middleLayerF2L.png", "edgeOrientationsF2L.png", "insertEdgeOverviewF2L.png", 
+							  "insertEdgeOneF2L.png", "insertEdgeTwoF2L.png", "insertEdgeOverviewBF2L.png", 
+							  "insertEdgeThreeF2L.png", "insertEdgeFourF2L.png", "middleLayerBF2L.png"};
 
 		bodyCount = 0;
 		seqOut.playFromStart();
@@ -133,7 +148,7 @@ public class SecondLayerEdgesSection {
  	    	@Override
  	    	public void handle(ActionEvent event) {
  	    		System.out.println("BODY COUNT IS:"+bodyCount);
- 	    		if (bodyCount <= 10) {
+ 	    		if (bodyCount <= 14) {
  	    			if (forwardOrBack) {
 	 	    			bodyCount = SharedToolbox.bodyCountInc(bodyCount);
 	 	       			elements.get(1).setText(bodyText[bodyCount]);
