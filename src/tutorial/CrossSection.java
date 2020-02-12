@@ -121,7 +121,7 @@ public class CrossSection {
     				elements.get(0).setText("");
     				elements.get(1).setText("                                                    "+
     										"                                                    ");
-    				FirstLayerCornersSection.begin(allMoves, seqOut, seqIn, elements, forward, back);
+    				FirstLayerCornersSection.begin(allMoves, seqOut, seqIn, elements, forward, back, restartSection);
     			} else {
 	    			forward.setDisable(false);
 	    			back.setDisable(false);

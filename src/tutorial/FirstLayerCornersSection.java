@@ -22,7 +22,7 @@ public class FirstLayerCornersSection {
 	static final int MAX = 18;
 	
 	
-	public static void begin(ArrayList<String> allMoves, SequentialTransition seqOut, SequentialTransition seqIn, ArrayList<Label> elements, Button forward, Button back) {
+	public static void begin(ArrayList<String> allMoves, SequentialTransition seqOut, SequentialTransition seqIn, ArrayList<Label> elements, Button forward, Button back, Button restartSection) {
 		for (String s : allMoves) {
 			if (s.toCharArray()[0] == '3') {
 				bringCornerDownMoves.add(s);
@@ -103,6 +103,7 @@ public class FirstLayerCornersSection {
 		System.out.println("here!");
 		bodyCount = 0;
 		seqOut.playFromStart();
+		restartSection.setDisable(false);
 		seqOut.setOnFinished(new EventHandler<ActionEvent>() {
     		@Override
     		public void handle(ActionEvent event) {
@@ -164,6 +165,7 @@ public class FirstLayerCornersSection {
 	 	    		}
 	 	    		seqInText.playFromStart();   
  	    		} else if (bodyCount <=16) {
+ 	    			restartSection.setDisable(true);
  	    			if (bodyCount == 9) {
  	    				MoveManager.prepareDemo(elements);
  	    			} else if (bodyCount % 2 == 1) {
@@ -195,7 +197,9 @@ public class FirstLayerCornersSection {
     	forward.setOnAction(event -> {changeDir(true); checkValid(seqOut, seqOutText, bodyText);});
  	    
  	    back.setOnAction(event -> {changeDir(false); checkValid(seqOut, seqOutText,bodyText);});
- 	    	
+ 	    
+ 	    restartSection.setOnAction(event -> {restart(seqOutText);});
+		
 	}
     	
     private static void checkValid(SequentialTransition seqOut, SequentialTransition seqOutText, String[] bodyText) {
@@ -216,4 +220,8 @@ public class FirstLayerCornersSection {
     	forwardOrBack = dir;
     }
 	
+	private static void restart(SequentialTransition seqOutText) {
+		bodyCount = -1;
+		seqOutText.playFromStart();
+	}
 }
