@@ -122,6 +122,10 @@ public class CubeSolver {
 		
 		processSecondLayerEdges();
 		
+		solveYellowCross();
+		
+		
+		
 		for (String s : allMoves) {
 			System.out.println(s);
 		}
@@ -130,6 +134,55 @@ public class CubeSolver {
 		return allMoves;
 	}
 
+	private static void solveYellowCross() {
+		
+		int[][] topEdges = {BU, CRU, FU, CLU};
+		boolean[] edgeOrientations = {false, false, false, false};
+		
+		for (int i = 0; i < 4; i++) {
+			if (topEdges[i][2] == YELLOW) {
+				edgeOrientations[i] = true;
+			}
+		}
+		
+		if (edgeOrientations[0]) { //If UB yellow:
+			if (edgeOrientations[1]) { //If UR yellow:
+				if (edgeOrientations[2]) { //If UF yellow:
+					allMoves.add("7*"); //Cross already solved.
+				} else {
+					allMoves.add("7IFURITG"); //U' to adj edge case
+					applyMovesLogically("IFURITG");
+					return;
+				}
+			} else if (edgeOrientations[2]) { //If UF yellow:
+				allMoves.add("7UFRUTIG"); //U to opp edge case
+				applyMovesLogically("UFRUTIG");
+				return;
+			} else {
+				allMoves.add("7FURITG"); //Pure adj edge case
+				applyMovesLogically("FURITG");
+				return;
+			}
+		} else if (edgeOrientations[1]) { //If UR yellow:
+			if (edgeOrientations[2]) { //If UF yellow:
+				allMoves.add("7UUFURITG"); //U2 to adj edge case
+				applyMovesLogically("UUFURITG");
+				return;
+			} else {
+				allMoves.add("7FRUTIG"); //Pure opp edge case
+				applyMovesLogically("FRUTIG");
+				return;
+			}
+		} else if (edgeOrientations[2]) {
+			allMoves.add("7UFURITG"); //U to adj edge case
+			applyMovesLogically("UFURITG");
+			return;
+		} else {
+			allMoves.add("7FURITGUFRUTIG"); //dot case
+			applyMovesLogically("FURITGUFRUTIG");
+			return;
+		}
+	}
 
 	private static void processFirstLayerCorners() {
 		String movesToSolve;
