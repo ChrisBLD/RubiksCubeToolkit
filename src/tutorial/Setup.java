@@ -36,7 +36,8 @@ public class Setup {
 	public static void main(ArrayList<Label> elements, Button forward, Button back, Button restartSection, SequentialTransition seqIn, SequentialTransition seqOut) {
 		
 		String[] bodyText = {"To continue with this tutorial, it is strongly advised that you have your own Rubik's Cube "+
-							 "so you can try the moves yourself and follow what happens on screen. Do you have your own puzzle?",
+							 "so you can try the moves yourself and follow what happens on screen. Do you have your own puzzle?"+
+							 "\n\nClick 'Next Page' for Yes\nClick 'Previous Page' for No",
 							 
 							 "Great! If your puzzle is currently solved, then scramble it as well as you can before proceeding "+
 							 "to the next step. If your puzzle is already scrambled, then you're ready to get going!",

@@ -74,7 +74,7 @@ public class MoveManager {
 			elements.get(2).setText("Done!");
 			elements.get(2).setGraphic(null);
 			elements.get(2).setVisible(true);
-			SharedToolbox.info.setText("Looks like this part is already solved! Continue as normal with the main navigation buttons.");
+			SharedToolbox.info.setText("Looks like this part is already solved! Continue as normal by pressing 'Next Page'.");
 			//((Label) buttonRow.getChildren().get(1)).setGraphic(new ImageView(new Image("/resources/moveIndicatorGreen.png")));
 			globalForward.setDisable(false);
 			localForward.setDisable(true);

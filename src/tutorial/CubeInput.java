@@ -36,6 +36,7 @@ public class CubeInput {
 	
 	int[][] allEdges = {{1,46},{3,28},{5,37},{7,10},{19,16},{21,34},{23,43},{25,52},{12,32},{14,39},{48,41},{50,30}};
 	
+	ArrayList<Button> buttonArray;
 	
 	public CubeInput() {
 		Pane p = new Pane();
@@ -50,7 +51,8 @@ public class CubeInput {
 		inputWindow.setScene(inputScene);
 		inputWindow.setResizable(false);
 		
-		Label colourPick = new Label("Click the colours to make them match your puzzle. Make sure the centres match too!");
+		Label colourPick = new Label("Click the colours and select white (W), yellow (Y), green (G), blue (B), "
+								   + "orange (O) or red (R) with your keyboard!");
         colourPick.setTextFill(Color.WHITE);
         colourPick.setWrapText(true);
         colourPick.setMaxWidth(300);
@@ -61,7 +63,7 @@ public class CubeInput {
         colourPick.setLayoutY(30);
         p.getChildren().add(colourPick);
         
-        ArrayList<Button> buttonArray = new ArrayList<Button>();
+        buttonArray = new ArrayList<Button>();
         for (int face = 1; face < 7; face++) {
         	for (int i = 0; i < 9; i++) {
         		if (i == 4 || i == 31 || i == 13 || i == 40 || i == 49 || i == 22) {
@@ -74,11 +76,18 @@ public class CubeInput {
         
         Button submit = new Button("Submit");
         submit.setOnAction(event -> {
-        	boolean result = verifyInput(buttonArray);
-        	if (result) {
-        		Setup.buttonArray = buttonArray;
-        		UserInterface.timeline2.play();
-        		inputWindow.close();
+        	int result = verifyInput();
+        	switch(result) {
+        	case 0: Setup.buttonArray = buttonArray; UserInterface.timeline2.play(); inputWindow.close(); break;
+        	case 1: colourPick.setText("Woops! You have an edge with two of the same colour on it. Please fix it and try again!"); break;
+        	case 2: colourPick.setText("Woops! You have an edge with two opposite colours on it. Please fix it and try again!"); break;
+        	case 3: colourPick.setText("Woops! You have a duplicate edge. Please fix it and try again!"); break;
+        	case 4: colourPick.setText("Woops! You have a corner with two of the same colour on it. Please fix it and try again!"); break;
+        	case 5: colourPick.setText("Woops! You have a corner with two opposite colours on it. Please fix it and try again!"); break;
+        	case 6: colourPick.setText("Woops! You have a corner that can't exist (entered incorrectly). Please fix it and try again!"); break;
+        	case 7: colourPick.setText("Woops! You have a duplicate corner. Please fix it and try again!"); break;
+        	case 8: colourPick.setText("Woops! You have a corner that is twisted, so the cube isn't solvable. Try twisting a single corner and entering it again"); break;
+        	case 9: colourPick.setText("Woops! You have an edge that is flipped, so the cube isn't solvable. Take out an edge, flip it, and put it back in, then try entering it again!"); break;
         	}
         });
         submit.setLayoutX(400);
@@ -86,7 +95,7 @@ public class CubeInput {
         
         p.getChildren().add(submit);
         
-        placeButtons(buttonArray, p);
+        placeButtons(p);
         
 	}
 
@@ -104,24 +113,55 @@ public class CubeInput {
 		
 		if (!centre) {
 	        b.setOnMouseClicked(event -> {
+	        	deselectButtons();
 	        	String col = b.getText();
 	        	switch (col) {
-	        	case "Y": b.setText("W"); b.setGraphic(new ImageView(new Image("/resources/whiteBorder.png"))); break;
-	        	case "W": b.setText("B"); b.setGraphic(new ImageView(new Image("/resources/blueBorder.png"))); break;
-	        	case "B": b.setText("G"); b.setGraphic(new ImageView(new Image("/resources/greenBorder.png"))); break;
-	        	case "G": b.setText("O"); b.setGraphic(new ImageView(new Image("/resources/orangeBorder.png"))); break;
-	        	case "O": b.setText("R"); b.setGraphic(new ImageView(new Image("/resources/redBorder.png"))); break;
-	        	case "R": b.setText("Y"); b.setGraphic(new ImageView(new Image("/resources/yellowBorder.png"))); break;
+	        	case "Y": b.setGraphic(new ImageView(new Image("/resources/yellowBorderS.png"))); break;
+	        	case "W": b.setGraphic(new ImageView(new Image("/resources/whiteBorderS.png"))); break;
+	        	case "B": b.setGraphic(new ImageView(new Image("/resources/blueBorderS.png"))); break;
+	        	case "G": b.setGraphic(new ImageView(new Image("/resources/greenBorderS.png"))); break;
+	        	case "O": b.setGraphic(new ImageView(new Image("/resources/orangeBorderS.png"))); break;
+	        	case "R": b.setGraphic(new ImageView(new Image("/resources/redBorderS.png"))); break;
 	        	}
+	        	b.setOnKeyPressed(e -> {
+	        		switch(e.getCode()) {
+		        	case Y: b.setText("Y"); b.setGraphic(new ImageView(new Image("/resources/yellowBorderS.png"))); break;
+		        	case W: b.setText("W"); b.setGraphic(new ImageView(new Image("/resources/whiteBorderS.png"))); break;
+		        	case B: b.setText("B"); b.setGraphic(new ImageView(new Image("/resources/blueBorderS.png"))); break;
+		        	case G: b.setText("G"); b.setGraphic(new ImageView(new Image("/resources/greenBorderS.png"))); break;
+		        	case O: b.setText("O"); b.setGraphic(new ImageView(new Image("/resources/orangeBorderS.png"))); break;
+		        	case R: b.setText("R"); b.setGraphic(new ImageView(new Image("/resources/redBorderS.png"))); break;
+	        		}
+	        	});
 	        });
+	        
 		}
+		
+		
         
         b.setMaxSize(0,0); b.setMinSize(0,0);
         return b;
         
 	}
+	
+	private void deselectButtons() {
+		for (int i = 0; i < buttonArray.size(); i++) {
+			Button b = buttonArray.get(i);
+			switch (b.getText()) {
+			case "W": b.setGraphic(new ImageView(new Image("/resources/whiteBorder.png"))); break;
+			case "G": b.setGraphic(new ImageView(new Image("/resources/greenBorder.png"))); break;
+			case "Y": b.setGraphic(new ImageView(new Image("/resources/yellowBorder.png"))); break;
+			case "O": b.setGraphic(new ImageView(new Image("/resources/orangeBorder.png"))); break;
+			case "R": b.setGraphic(new ImageView(new Image("/resources/redBorder.png"))); break;
+			case "B": b.setGraphic(new ImageView(new Image("/resources/blueBorder.png"))); break;
+			}
+			if (i == 4 || i == 31 || i == 13 || i == 40 || i == 49 || i == 22) {
+			} 
 
-	void placeButtons(ArrayList<Button> buttonArray, Pane p) {
+		}
+	}
+
+	void placeButtons(Pane p) {
 		
 		int initX = 160;
 		int initY = 30;
@@ -222,7 +262,7 @@ public class CubeInput {
 		}
 	}
 	
-	boolean verifyInput(ArrayList<Button> buttonArray) {
+	int verifyInput() {
 		Button b1, b2, b3;
 		String foundPair;
 		ArrayList<String> pairsPresent = new ArrayList<String>();
@@ -232,20 +272,20 @@ public class CubeInput {
 			b2 = buttonArray.get(pair[1]);
 			if (b1.getText().equals(b2.getText())) {
 				System.out.println("Invalid edges at: "+pair[0]+", "+pair[1]+" (match)");
-				return false;
+				return 1;
 			}
 			switch (b1.getText()) {
-			case "W": if (b2.getText().equals("Y")) { System.out.println("Invalid edges at: "+pair[0]+", "+pair[1]+" (opp)"); return false;}; break;
-			case "Y": if (b2.getText().equals("W")) { System.out.println("Invalid edges at: "+pair[0]+", "+pair[1]+" (opp)"); return false;}; break;
-			case "B": if (b2.getText().equals("G")) { System.out.println("Invalid edges at: "+pair[0]+", "+pair[1]+" (opp)"); return false;}; break;
-			case "G": if (b2.getText().equals("B")) { System.out.println("Invalid edges at: "+pair[0]+", "+pair[1]+" (opp)"); return false;}; break;
-			case "O": if (b2.getText().equals("R")) { System.out.println("Invalid edges at: "+pair[0]+", "+pair[1]+" (opp)"); return false;}; break;
-			case "R": if (b2.getText().equals("O")) { System.out.println("Invalid edges at: "+pair[0]+", "+pair[1]+" (opp)"); return false;}; break;
+			case "W": if (b2.getText().equals("Y")) { System.out.println("Invalid edges at: "+pair[0]+", "+pair[1]+" (opp)"); return 2;}; break;
+			case "Y": if (b2.getText().equals("W")) { System.out.println("Invalid edges at: "+pair[0]+", "+pair[1]+" (opp)"); return 2;}; break;
+			case "B": if (b2.getText().equals("G")) { System.out.println("Invalid edges at: "+pair[0]+", "+pair[1]+" (opp)"); return 2;}; break;
+			case "G": if (b2.getText().equals("B")) { System.out.println("Invalid edges at: "+pair[0]+", "+pair[1]+" (opp)"); return 2;}; break;
+			case "O": if (b2.getText().equals("R")) { System.out.println("Invalid edges at: "+pair[0]+", "+pair[1]+" (opp)"); return 2;}; break;
+			case "R": if (b2.getText().equals("O")) { System.out.println("Invalid edges at: "+pair[0]+", "+pair[1]+" (opp)"); return 2;}; break;
 			}
 			foundPair = b1.getText()+b2.getText();
 			if (pairsPresent.contains(foundPair)) {
 				System.out.println("Invalid edges at: "+pair[0]+", "+pair[1]+" (already exists)"); 
-				return false;
+				return 3;
 			}
 			pairsPresent.add(foundPair);
 			foundPair = b2.getText()+b1.getText();
@@ -257,23 +297,23 @@ public class CubeInput {
 			b3 = buttonArray.get(trip[2]);
 			if (b1.getText().equals(b2.getText()) || b2.getText().equals(b3.getText()) || b1.getText().equals(b3.getText())) {
 				System.out.println("Invalid corners at: "+trip[0]+", "+trip[1]+", "+trip[2]+" (match)");
-				return false;
+				return 4;
 			}			
 			switch(b1.getText()) {
-			case "W": if (b2.getText().equals("Y") || b3.getText().equals("Y")) { System.out.println("Invalid corners at: "+trip[0]+", "+trip[1]+", "+trip[2]+" (opp)"); return false;}; break;
-			case "Y": if (b2.getText().equals("W") || b3.getText().equals("W")) { System.out.println("Invalid corners at: "+trip[0]+", "+trip[1]+", "+trip[2]+" (opp)"); return false;}; break;
-			case "B": if (b2.getText().equals("G") || b3.getText().equals("G")) { System.out.println("Invalid corners at: "+trip[0]+", "+trip[1]+", "+trip[2]+" (opp)"); return false;}; break;
-			case "G": if (b2.getText().equals("B") || b3.getText().equals("B")) { System.out.println("Invalid corners at: "+trip[0]+", "+trip[1]+", "+trip[2]+" (opp)"); return false;}; break;
-			case "O": if (b2.getText().equals("R") || b3.getText().equals("R")) { System.out.println("Invalid corners at: "+trip[0]+", "+trip[1]+", "+trip[2]+" (opp)"); return false;}; break;
-			case "R": if (b2.getText().equals("O") || b3.getText().equals("O")) { System.out.println("Invalid corners at: "+trip[0]+", "+trip[1]+", "+trip[2]+" (opp)"); return false;}; break;
+			case "W": if (b2.getText().equals("Y") || b3.getText().equals("Y")) { System.out.println("Invalid corners at: "+trip[0]+", "+trip[1]+", "+trip[2]+" (opp)"); return 5;}; break;
+			case "Y": if (b2.getText().equals("W") || b3.getText().equals("W")) { System.out.println("Invalid corners at: "+trip[0]+", "+trip[1]+", "+trip[2]+" (opp)"); return 5;}; break;
+			case "B": if (b2.getText().equals("G") || b3.getText().equals("G")) { System.out.println("Invalid corners at: "+trip[0]+", "+trip[1]+", "+trip[2]+" (opp)"); return 5;}; break;
+			case "G": if (b2.getText().equals("B") || b3.getText().equals("B")) { System.out.println("Invalid corners at: "+trip[0]+", "+trip[1]+", "+trip[2]+" (opp)"); return 5;}; break;
+			case "O": if (b2.getText().equals("R") || b3.getText().equals("R")) { System.out.println("Invalid corners at: "+trip[0]+", "+trip[1]+", "+trip[2]+" (opp)"); return 5;}; break;
+			case "R": if (b2.getText().equals("O") || b3.getText().equals("O")) { System.out.println("Invalid corners at: "+trip[0]+", "+trip[1]+", "+trip[2]+" (opp)"); return 5;}; break;
 			}
 			switch(b2.getText()) {
-			case "W": if (b1.getText().equals("Y") || b3.getText().equals("Y")) { System.out.println("Invalid corners at: "+trip[0]+", "+trip[1]+", "+trip[2]+" (opp)"); return false;}; break;
-			case "Y": if (b1.getText().equals("W") || b3.getText().equals("W")) { System.out.println("Invalid corners at: "+trip[0]+", "+trip[1]+", "+trip[2]+" (opp)"); return false;}; break;
-			case "B": if (b1.getText().equals("G") || b3.getText().equals("G")) { System.out.println("Invalid corners at: "+trip[0]+", "+trip[1]+", "+trip[2]+" (opp)"); return false;}; break;
-			case "G": if (b1.getText().equals("B") || b3.getText().equals("B")) { System.out.println("Invalid corners at: "+trip[0]+", "+trip[1]+", "+trip[2]+" (opp)"); return false;}; break;
-			case "O": if (b1.getText().equals("R") || b3.getText().equals("R")) { System.out.println("Invalid corners at: "+trip[0]+", "+trip[1]+", "+trip[2]+" (opp)"); return false;}; break;
-			case "R": if (b1.getText().equals("O") || b3.getText().equals("O")) { System.out.println("Invalid corners at: "+trip[0]+", "+trip[1]+", "+trip[2]+" (opp)"); return false;}; break;
+			case "W": if (b1.getText().equals("Y") || b3.getText().equals("Y")) { System.out.println("Invalid corners at: "+trip[0]+", "+trip[1]+", "+trip[2]+" (opp)"); return 5;}; break;
+			case "Y": if (b1.getText().equals("W") || b3.getText().equals("W")) { System.out.println("Invalid corners at: "+trip[0]+", "+trip[1]+", "+trip[2]+" (opp)"); return 5;}; break;
+			case "B": if (b1.getText().equals("G") || b3.getText().equals("G")) { System.out.println("Invalid corners at: "+trip[0]+", "+trip[1]+", "+trip[2]+" (opp)"); return 5;}; break;
+			case "G": if (b1.getText().equals("B") || b3.getText().equals("B")) { System.out.println("Invalid corners at: "+trip[0]+", "+trip[1]+", "+trip[2]+" (opp)"); return 5;}; break;
+			case "O": if (b1.getText().equals("R") || b3.getText().equals("R")) { System.out.println("Invalid corners at: "+trip[0]+", "+trip[1]+", "+trip[2]+" (opp)"); return 5;}; break;
+			case "R": if (b1.getText().equals("O") || b3.getText().equals("O")) { System.out.println("Invalid corners at: "+trip[0]+", "+trip[1]+", "+trip[2]+" (opp)"); return 5;}; break;
 			}
 			
 			switch(b1.getText()) {
@@ -296,13 +336,13 @@ public class CubeInput {
 				}
 			}
 
-			if (!goodTriple) { System.out.println("Invalid corners at: "+trip[0]+", "+trip[1]+", "+trip[2]+" (not possible given scheme)"); return false;}
+			if (!goodTriple) { System.out.println("Invalid corners at: "+trip[0]+", "+trip[1]+", "+trip[2]+" (not possible given scheme)"); return 6;}
 			
 			foundPair = b1.getText()+b2.getText()+b3.getText();
 			//System.out.println("Attempting to add: "+foundPair);
 			if (pairsPresent.contains(foundPair)) {
 				System.out.println("Invalid edges at: "+trip[0]+", "+trip[1]+", "+trip[2]+" (already exists)"); 
-				return false;
+				return 7;
 			}
 			//System.out.println("Adding: "+foundPair);
 			pairsPresent.add(foundPair);
@@ -331,7 +371,7 @@ public class CubeInput {
 		
 		if (cornerOrientTotal % 3 != 0) {
 			System.out.println("Invalid corners (corner twist, cube unsolvable)");
-			return false;
+			return 8;
 		}
 		
 		int edgeOrientTotal = 0;
@@ -353,10 +393,10 @@ public class CubeInput {
 
 		if (edgeOrientTotal % 2 != 0) {
 			System.out.println("Invalid edges (edge flipped in place, cube unsolvable)");
-			return false;
+			return 9;
 		}
 		
-		return true;
+		return 0;
 		
 		/*
 		 * I will have to work out some way of telling whether or not I have three types of parity:

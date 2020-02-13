@@ -147,7 +147,12 @@ public class FirstLayerCornersSection {
  	    	@Override
  	    	public void handle(ActionEvent event) {
  	    		System.out.println("BODY COUNT IS:"+bodyCount);
- 	    		if (bodyCount <= 8) {
+ 	    		if (bodyCount == -1) {
+	    			bodyCount = SharedToolbox.bodyCountInc(bodyCount);
+ 	       			elements.get(1).setText(bodyText[bodyCount]);
+ 	       			
+	    		} else if (bodyCount <= 8) {
+ 	    			
  	    			if (forwardOrBack) {
 	 	    			bodyCount = SharedToolbox.bodyCountInc(bodyCount);
 	 	       			elements.get(1).setText(bodyText[bodyCount]);
