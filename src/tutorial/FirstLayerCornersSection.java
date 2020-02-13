@@ -15,21 +15,12 @@ import javafx.scene.layout.HBox;
 
 public class FirstLayerCornersSection {
 	
-	static ArrayList<String> bringCornerDownMoves = new ArrayList<String>();
-	static ArrayList<String> insertCornerMoves = new ArrayList<String>();
 	static boolean forwardOrBack;
 	static int bodyCount, bodyCountFloor;
 	static final int MAX = 18;
 	
 	
 	public static void begin(ArrayList<String> allMoves, SequentialTransition seqOut, SequentialTransition seqIn, ArrayList<Label> elements, Button forward, Button back, Button restartSection, Button skipToDemo) {
-		for (String s : allMoves) {
-			if (s.toCharArray()[0] == '3') {
-				bringCornerDownMoves.add(s);
-			} else if (s.toCharArray()[0] == '4') {
-				insertCornerMoves.add(s);
-			}
-		}
 		
 		String[] bodyText = {"In order to finish the first layer of the puzzle, we have to insert the " + 
 							 "corners that match the edges into the respective slots. Once we've inserted " + 

@@ -124,7 +124,7 @@ public class CubeSolver {
 		
 		solveYellowCross();
 		
-		
+		solveYellowCorners();
 		
 		for (String s : allMoves) {
 			System.out.println(s);
@@ -134,6 +134,73 @@ public class CubeSolver {
 		return allMoves;
 	}
 
+	private static void solveYellowCorners() {
+		int[][] topCorners = {BLU, BRU, FRU, FLU};
+		int count = 0;
+		
+		for (int i = 0; i < 4; i++) {
+			if (topCorners[i][2] == YELLOW) {
+				count++;
+			}
+		}
+		
+		if (count == 0) {
+			if (FLU[4] == YELLOW) {
+				allMoves.add("8RUTURUUT");
+				if (FLU[2] == YELLOW) {
+					allMoves.add("9RUTURUUT");
+				} else if (FRU[2] == YELLOW) {
+					allMoves.add("9URUTURUUT");
+				} else {
+					allMoves.add("9IRUTURUUT");
+				}
+				
+			} else if (FRU[0] == YELLOW) {
+				allMoves.add("8URUTURUUT");
+				if (FLU[2] == YELLOW) {
+					allMoves.add("9RUTURUUT");
+				} else {
+					allMoves.add("9IRUTURUUT");
+				}
+			} else {
+				allMoves.add("8UURUTURUUT");
+				allMoves.add("9IRUTURUUT");
+			}
+			allMoves.add("10*");
+		} else if (count == 1) {
+			if (FLU[2] == YELLOW) {
+				pureSune("");
+			} else if (FRU[2] == YELLOW) {
+				pureSune("U");
+			} else if (BRU[2] == YELLOW) {
+				pureSune("UU");
+			} else {
+				pureSune("I");
+			}
+		} else if (count == 2) {
+			//if two corners oriented, make FLU sticker yellow then sune
+		} else {
+			allMoves.add("8*");
+			allMoves.add("9*");
+			allMoves.add("10*");
+		}
+		
+		
+		
+	}
+	
+	private static void pureSune(String pre) {
+		if (FRU[0] == YELLOW) {
+			allMoves.add("8"+pre+"RUTURUUT");
+			allMoves.add("9*");
+			allMoves.add("10*");
+		} else {
+			allMoves.add("8"+pre+"RUTURUUT");
+			allMoves.add("9UURUTURUUT");
+			allMoves.add("10*");
+		}
+	}
+	
 	private static void solveYellowCross() {
 		
 		int[][] topEdges = {BU, CRU, FU, CLU};

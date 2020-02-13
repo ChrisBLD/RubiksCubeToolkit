@@ -18,21 +18,13 @@ import javafx.scene.text.Font;
 
 public class CrossSection {
 
-	static ArrayList<String> placeMoves = new ArrayList<String>();
-	static ArrayList<String> orientMoves = new ArrayList<String>();
 	static boolean forwardOrBack;
 	static int bodyCount, bodyCountFloor;
 	static final int MAX = 24;
 	
 	
 	public static void begin(ArrayList<String> allMoves, SequentialTransition seqOut, SequentialTransition seqIn, ArrayList<Label> elements, Button forward, Button back, Button restartSection, Button skipToDemo) {
-		for (String s : allMoves) {
-			if (s.toCharArray()[0] == '1') {
-				placeMoves.add(s);
-			} else if (s.toCharArray()[0] == '2') {
-				orientMoves.add(s);
-			}
-		}
+
 		bodyCountFloor = 0;
 		restartSection.setDisable(false);
 		

@@ -15,21 +15,12 @@ import javafx.scene.layout.HBox;
 
 public class SecondLayerEdgesSection {
 	
-	static ArrayList<String> positionEdge = new ArrayList<String>();
-	static ArrayList<String> insertEdge = new ArrayList<String>();
 	static boolean forwardOrBack;
 	static int bodyCount, bodyCountFloor;
 	static final int MAX = 30;
 	
 	
 	public static void begin(ArrayList<String> allMoves, SequentialTransition seqOut, SequentialTransition seqIn, ArrayList<Label> elements, Button forward, Button back, Button restartSection, Button skipToDemo) {
-		for (String s : allMoves) {
-			if (s.toCharArray()[0] == '5') {
-				positionEdge.add(s);
-			} else if (s.toCharArray()[0] == '6') {
-				insertEdge.add(s);
-			}
-		}
 		
 		String[] bodyText = {"Now that we've solved the first layer, we can move on to solving the edges of  " + 
 							 "the second layer - this is the only step required to solve the second layer, " + 
