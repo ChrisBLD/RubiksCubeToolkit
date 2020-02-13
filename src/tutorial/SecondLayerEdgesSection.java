@@ -97,10 +97,14 @@ public class SecondLayerEdgesSection {
 							 
 							 "Once again for the third edge, first placing it above its location...                         ",
 							 
-							 "....................................................................................................................................................",
-							 "....................................................................................................................................................",
+							 "...and then bringing it down into its location as shown below.",
 							 
-							 "we outtie 5 thousand"
+							 "One more time, we need to bring the final edge above its location...",
+							 
+							 "...and finally, we need to insert the last edge to complete the second layer...",
+							 "",
+							 
+							 "yeet"
 		};
 		
 		String[] resources = {"solvedF2L.png", "NULL", "edgeLocationF2L.png", "twoCasesF2L.png", "topLayerF2L.png", 
@@ -109,6 +113,8 @@ public class SecondLayerEdgesSection {
 							  "insertEdgeThreeF2L.png", "insertEdgeFourF2L.png", "middleLayerBF2L.png"};
 
 		bodyCount = 0;
+		restartSection.setDisable(false);
+		skipToDemo.setDisable(false);
 		seqOut.playFromStart();
 		seqOut.setOnFinished(new EventHandler<ActionEvent>() {
     		@Override
@@ -172,6 +178,8 @@ public class SecondLayerEdgesSection {
 	 	    		seqInText.playFromStart();   
  	    		} else if (bodyCount <=20) {
  	    			if (bodyCount == 13) {
+ 	    				skipToDemo.setDisable(true);
+ 	    				restartSection.setDisable(true);
  	    				MoveManager.prepareDemo(elements);
  	    			} else if (bodyCount % 2 == 1) {
  	    				UserInterface.makeYrotation(false);
@@ -201,7 +209,10 @@ public class SecondLayerEdgesSection {
     	forward.setOnAction(event -> {changeDir(true); checkValid(seqOut, seqOutText, bodyText);});
  	    
  	    back.setOnAction(event -> {changeDir(false); checkValid(seqOut, seqOutText,bodyText);});
- 	    	
+ 	    
+ 	    restartSection.setOnAction(event -> {restart(seqOutText);});
+ 	    
+ 	    skipToDemo.setOnAction(event -> {skipInfo(seqOutText);});
 	}
 	
     private static void checkValid(SequentialTransition seqOut, SequentialTransition seqOutText, String[] bodyText) {
@@ -222,4 +233,13 @@ public class SecondLayerEdgesSection {
     	forwardOrBack = dir;
     }
 
+	private static void skipInfo(SequentialTransition seqOutText) {
+		bodyCount = 13;
+		seqOutText.playFromStart();
+	}
+	
+	private static void restart(SequentialTransition seqOutText) {
+		bodyCount = -1;
+		seqOutText.playFromStart();
+	}
 }
