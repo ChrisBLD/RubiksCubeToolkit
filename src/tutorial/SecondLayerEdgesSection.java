@@ -22,7 +22,7 @@ public class SecondLayerEdgesSection {
 	static final int MAX = 30;
 	
 	
-	public static void begin(ArrayList<String> allMoves, SequentialTransition seqOut, SequentialTransition seqIn, ArrayList<Label> elements, Button forward, Button back) {
+	public static void begin(ArrayList<String> allMoves, SequentialTransition seqOut, SequentialTransition seqIn, ArrayList<Label> elements, Button forward, Button back, Button restartSection, Button skipToDemo) {
 		for (String s : allMoves) {
 			if (s.toCharArray()[0] == '5') {
 				positionEdge.add(s);

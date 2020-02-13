@@ -21,7 +21,7 @@ public class Setup {
 	static ArrayList<Button> buttonArray = new ArrayList<Button>();
 	static ArrayList<Label> elements;
 	
-	static Button forward, back, restartSection;
+	static Button forward, back, restartSection, skipToDemo;
 	
 	public static final int RED     = 0;
     public static final int GREEN   = 1;
@@ -33,7 +33,7 @@ public class Setup {
     
     private static SequentialTransition seqOut, seqIn;
 
-	public static void main(ArrayList<Label> elements, Button forward, Button back, Button restartSection, SequentialTransition seqIn, SequentialTransition seqOut) {
+	public static void main(ArrayList<Label> elements, Button forward, Button back, Button restartSection, Button skipToDemo, SequentialTransition seqIn, SequentialTransition seqOut) {
 		
 		String[] bodyText = {"To continue with this tutorial, it is strongly advised that you have your own Rubik's Cube "+
 							 "so you can try the moves yourself and follow what happens on screen. Do you have your own puzzle?"+
@@ -59,7 +59,9 @@ public class Setup {
 		Setup.forward = forward;
 		Setup.back = back;
 		Setup.restartSection = restartSection;
+		Setup.skipToDemo = skipToDemo;
 		restartSection.setDisable(true);
+		skipToDemo.setDisable(true);
     	seqOut.playFromStart();
     	seqOut.setOnFinished(new EventHandler<ActionEvent>() {
     		@Override
@@ -106,7 +108,7 @@ public class Setup {
     				} else if (bodyCount == 5) {
     					elements.get(2).setGraphic(null);
     					ArrayList<String> allMoves = CubeSolver.deriveSolution(buttonArray);
-    					CrossSection.begin(allMoves, seqOut, seqIn, elements, forward, back, restartSection);
+    					CrossSection.begin(allMoves, seqOut, seqIn, elements, forward, back, restartSection, skipToDemo);
     				} else {
 	    				elements.get(1).setText(badText[bodyCount-3]);
 		    			elements.get(2).setText("");
@@ -164,7 +166,7 @@ public class Setup {
 				UserInterface.makeDmove(false); UserInterface.makeLmove(false); UserInterface.makeFmove(false); UserInterface.makeUmove(false); UserInterface.makeRmove(false);
 				ArrayList<String> allMoves = CubeSolver.deriveSolution(buttonArray);
 				getColours.setVisible(false);
-				CrossSection.begin(allMoves, seqOut, seqIn, elements, forward, back, restartSection);
+				CrossSection.begin(allMoves, seqOut, seqIn, elements, forward, back, restartSection, skipToDemo);
 			}
 		});
 

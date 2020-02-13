@@ -22,7 +22,7 @@ public class FirstLayerCornersSection {
 	static final int MAX = 18;
 	
 	
-	public static void begin(ArrayList<String> allMoves, SequentialTransition seqOut, SequentialTransition seqIn, ArrayList<Label> elements, Button forward, Button back, Button restartSection) {
+	public static void begin(ArrayList<String> allMoves, SequentialTransition seqOut, SequentialTransition seqIn, ArrayList<Label> elements, Button forward, Button back, Button restartSection, Button skipToDemo) {
 		for (String s : allMoves) {
 			if (s.toCharArray()[0] == '3') {
 				bringCornerDownMoves.add(s);
@@ -96,7 +96,6 @@ public class FirstLayerCornersSection {
 							 "completely solved, you can flip the puzzle round to place the white face on the bottom - we "+
 						     "won't need it anymore. Keep the Green centre on the front though!"
 		};
-							 
 		
 		String[] resources = {"solvedLayer1.png", "stepsForFirstLayer.png", "incorrectLocation.png", "twoCasesFLC.png", "bottomLayerFLC.png", "topLayerFLC.png",
 							  "placingCornerCasesFLC.png", "solveWhiteRightFLC.png", "solveWhiteFrontFLC.png", "solveWhiteBottomFLC.png", "NULL"};
@@ -104,6 +103,7 @@ public class FirstLayerCornersSection {
 		bodyCount = 0;
 		seqOut.playFromStart();
 		restartSection.setDisable(false);
+		skipToDemo.setDisable(false);
 		seqOut.setOnFinished(new EventHandler<ActionEvent>() {
     		@Override
     		public void handle(ActionEvent event) {
@@ -112,7 +112,7 @@ public class FirstLayerCornersSection {
     				elements.get(0).setText("");
     				elements.get(1).setText("                                                    "+
     										"                                                    ");
-    				SecondLayerEdgesSection.begin(allMoves, seqOut, seqIn, elements, forward, back);
+    				SecondLayerEdgesSection.begin(allMoves, seqOut, seqIn, elements, forward, back, restartSection, skipToDemo);
     				System.out.println("we're done!");
     			} else {
 	    			forward.setDisable(false);
@@ -150,7 +150,7 @@ public class FirstLayerCornersSection {
  	    		if (bodyCount == -1) {
 	    			bodyCount = SharedToolbox.bodyCountInc(bodyCount);
  	       			elements.get(1).setText(bodyText[bodyCount]);
- 	       			
+ 	       			seqInText.playFromStart(); 
 	    		} else if (bodyCount <= 8) {
  	    			
  	    			if (forwardOrBack) {
@@ -172,6 +172,7 @@ public class FirstLayerCornersSection {
  	    		} else if (bodyCount <=16) {
  	    			restartSection.setDisable(true);
  	    			if (bodyCount == 9) {
+ 	    				skipToDemo.setDisable(true);
  	    				MoveManager.prepareDemo(elements);
  	    			} else if (bodyCount % 2 == 1) {
  	    				UserInterface.makeYrotation(false);
@@ -204,6 +205,8 @@ public class FirstLayerCornersSection {
  	    back.setOnAction(event -> {changeDir(false); checkValid(seqOut, seqOutText,bodyText);});
  	    
  	    restartSection.setOnAction(event -> {restart(seqOutText);});
+ 	    
+ 	    skipToDemo.setOnAction(event -> {skipInfo(seqOutText);});
 		
 	}
     	
@@ -224,6 +227,11 @@ public class FirstLayerCornersSection {
 	private static void changeDir(boolean dir) {
     	forwardOrBack = dir;
     }
+	
+	private static void skipInfo(SequentialTransition seqOutText) {
+		bodyCount = 9;
+		seqOutText.playFromStart();
+	}
 	
 	private static void restart(SequentialTransition seqOutText) {
 		bodyCount = -1;

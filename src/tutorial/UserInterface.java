@@ -482,7 +482,7 @@ public class UserInterface extends Application {
         });
 
         
-        TutorialHomepage.main(elements, back, forward, restartSection, toolBarRight, toolBar);
+        TutorialHomepage.main(elements, back, forward, restartSection, skipToDemo, toolBarRight, toolBar);
         
         //beginTutorial(stepLabel, description, moves, bottom, back, forward, toolBarRight, toolBar);
     }

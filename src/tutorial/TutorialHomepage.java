@@ -16,7 +16,7 @@ public class TutorialHomepage {
 
 	static ToolBar toolBarRight, toolBar;
 	
-	public static void main(ArrayList<Label> elements, Button back, Button forward, Button restartSection, ToolBar toolBarRight, ToolBar toolBar) {
+	public static void main(ArrayList<Label> elements, Button back, Button forward, Button restartSection, Button skipToDemo, ToolBar toolBarRight, ToolBar toolBar) {
     	
 			TutorialHomepage.toolBarRight = toolBarRight;
 			TutorialHomepage.toolBar = toolBar;
@@ -45,7 +45,7 @@ public class TutorialHomepage {
 	    		public void handle(ActionEvent arg0) {
 	    			back.setDisable(true);
 	    			forward.setDisable(true);
-	    			Setup.main(elements, forward, back, restartSection, seqIn, seqOut);
+	    			Setup.main(elements, forward, back, restartSection, skipToDemo, seqIn, seqOut);
 	    		}
 	    	});
     	

@@ -25,7 +25,7 @@ public class CrossSection {
 	static final int MAX = 24;
 	
 	
-	public static void begin(ArrayList<String> allMoves, SequentialTransition seqOut, SequentialTransition seqIn, ArrayList<Label> elements, Button forward, Button back, Button restartSection) {
+	public static void begin(ArrayList<String> allMoves, SequentialTransition seqOut, SequentialTransition seqIn, ArrayList<Label> elements, Button forward, Button back, Button restartSection, Button skipToDemo) {
 		for (String s : allMoves) {
 			if (s.toCharArray()[0] == '1') {
 				placeMoves.add(s);
@@ -114,6 +114,7 @@ public class CrossSection {
 														 
 		
 		seqOut.playFromStart();
+		skipToDemo.setDisable(false);
 		seqOut.setOnFinished(new EventHandler<ActionEvent>() {
     		@Override
     		public void handle(ActionEvent event) {
@@ -121,7 +122,7 @@ public class CrossSection {
     				elements.get(0).setText("");
     				elements.get(1).setText("                                                    "+
     										"                                                    ");
-    				FirstLayerCornersSection.begin(allMoves, seqOut, seqIn, elements, forward, back, restartSection);
+    				FirstLayerCornersSection.begin(allMoves, seqOut, seqIn, elements, forward, back, restartSection, skipToDemo);
     			} else {
 	    			forward.setDisable(false);
 	    			back.setDisable(false);
@@ -199,6 +200,7 @@ public class CrossSection {
  	    		} else if (bodyCount <=15) {
  	    			restartSection.setDisable(true);
  	    			if (bodyCount == 12) {
+ 	    				skipToDemo.setDisable(true);
  	    				MoveManager.prepareDemo(elements);
  	    			}
  	    			bodyCount = SharedToolbox.bodyCountInc(bodyCount);
@@ -229,6 +231,7 @@ public class CrossSection {
  	    	
  	    restartSection.setOnAction(event -> {restart(seqOutText);});
 		
+ 	    skipToDemo.setOnAction(event -> {skipInfo(seqOutText);});
 	
 	}
 	
@@ -249,6 +252,11 @@ public class CrossSection {
 	private static void changeDir(boolean dir) {
     	forwardOrBack = dir;
     }
+	
+	private static void skipInfo(SequentialTransition seqOutText) {
+		bodyCount = 12;
+		seqOutText.playFromStart();
+	}
 	
 	private static void restart(SequentialTransition seqOutText) {
 		bodyCount = -1;
