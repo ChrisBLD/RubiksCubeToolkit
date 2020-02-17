@@ -603,7 +603,7 @@ public class CubeSolver {
 	private static void applyMovesLogically(String moves) {
 		char[] movesLeft = moves.toCharArray();
 		for (char move : movesLeft) {
-			/*switch (move) {
+			switch (move) {
 			case 'F': makeFmove(false); break;
 			case 'R': makeRmove(false); break;
 			case 'U': makeUmove(false); break;
@@ -619,9 +619,9 @@ public class CubeSolver {
 			case 'Y': makeYrotation(false); break;
 			case 'Q': makeYrotation(true); break;
 			case 'Z': makeZrotation(); break;
-			}*/
+			}
 			
-			  			switch (move) {
+		  /*switch (move) {
 			case 'F': makeFmove(false); UserInterface.makeFmove(false); break;
 			case 'R': makeRmove(false); UserInterface.makeRmove(false); break;
 			case 'U': makeUmove(false); UserInterface.makeUmove(false); break;
@@ -637,7 +637,7 @@ public class CubeSolver {
 			case 'Y': makeYrotation(false); UserInterface.makeYrotation(false); break;
 			case 'Q': makeYrotation(true); UserInterface.makeYrotation(true); break;
 			case 'Z': makeZrotation(); UserInterface.makeZrotation(false); break;
-			}
+			}*/
 			 
 		}
 		

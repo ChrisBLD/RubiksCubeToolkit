@@ -13,89 +13,49 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 
-public class SecondLayerEdgesSection {
-	
+public class LastLayerOrientSection {
 	static boolean forwardOrBack;
 	static int bodyCount, bodyCountFloor;
-	static final int MAX = 22;
+	static final int MAX = 30;
 	
 	
 	public static void begin(ArrayList<String> allMoves, SequentialTransition seqOut, SequentialTransition seqIn, ArrayList<Label> elements, Button forward, Button back, Button restartSection, Button skipToDemo) {
 		
-		String[] bodyText = {"Now that we've solved the first layer, we can move on to solving the edges of  " + 
-							 "the second layer - this is the only step required to solve the second layer, " + 
-							 "since the centres are already in place. Once this step is completed, there will  " + 
-							 "only be one layer left to solve.",
-							 
-							 "We can solve the edges of this layer in a similar way to how we solved the  " + 
-							 "corners of the first layer - first, we can bring the edge \"over\" its position, " + 
-							 "and then use one of two algorithms to solve it depending on which slot it needs " + 
-							 "to go into.",
-							 
-							 "When we say \"bring an edge over its location\", this means to place the edge " + 
-							 "in the top layer such that applying a single F move would put the edge in its  " + 
-							 "place. Since we're inserting middle layer edges, we are only looking at edges  " + 
-							 "that don't have a yellow sticker - those edges belong on the top layer.",
-							 
-							 "When getting an edge over its position, there are two cases for the location of " + 
-							 "the edge: It can either be on the top layer, or inserted into one of the four " + 
-							 "middle layer edge locations. ",
-							 
-							 "For edges already on the top layer, we just have to apply U moves until the " + 
-							 "edge is where we want it to be - just like we applied D moves to position the " + 
-							 "cross edges and the first layer corners.",
-							 
-							 "For edges that are already inserted into locations, we need to first get them out, " + 
-							 "and then move then above their proper location. Think of this step just like the " + 
-							 "first layer corners - if the corner we wanted was already inserted, we'd have to " + 
-							 "first get it out before we could deal with it.",
-							 
-							 "Now, when we've got the edge where we want it - above its location - we can solve " + 
-							 "it. We can solve this with one of two algorithms, depending on which way the edge " + 
-							 "is oriented.",
-
-							 "The first algorithm will be used when the side of the edge facing us matches the " + 
-							 "centre below it. This algorithm will insert this edge into its location without " + 
-							 "ruining any of our progress so far. It does this by taking the corner out that we " + 
-							 "solved previously, matching it with the edge, and inserting the pair back in.",
-							 
-							 "First, we take the corner out that we solved previously using the following moves... ",
-							 
-							 "...and then we pair it up with the edge and insert the whole pair back into the slot, "+
-							 "solving this edge.",
-							 
-							 "The second algorithm will be used when the side of the edge facing us does not match "+
-							 "the centre below it. This algorithm will do the same as the previous one, but just from "+
-							 "the other side of the puzzle.",
-							 
-							 "We solve this in the same way but with slight different moves: First, we take the corner "+
-							 "out using the following moves...",
-							 
-							 "...and then we pair it up with the edge and insert the whole pair back into the slot.",
-							 
-							 "If an edge is inserted into the wrong location, simply rotate so that the slot is in the "+
-							 "front position and perform the first algorithm to get the edge out. That long algorith from "+
-							 "earlier is doing just that!",
-
-							 "Now let's try it with your scramble: Place the first edge above its location with the moves "+
-							 "below...",
-							 
-							 "Nice! Now, let's insert that edge using the correct algorithm from the two we just saw: ",
-							 
-							 "Now for the second edge: Let's first place it above its location as shown previously...",
-							 
-							 "...and insert it into its position to solve the second edge on the middle layer",
-							 
-							 "Once again for the third edge, first placing it above its location...                         ",
-							 
-							 "...and then bringing it down into its location as shown below.",
-							 
-							 "One more time, we need to bring the final edge above its location...",
-							 
-							 "...and finally, we need to insert the last edge to complete the second layer...",
-							 
-							 "We've successfully completed the first two layers of the Rubik's Cube! Now it's time to "+
-							 "move on to completing the final layer and solving the Rubik's Cube completely."
+		String[] bodyText = {"We've now solved the first two layers of the Rubik's Cube! Now all that's left is " + 
+				 			 "the final challenge: The Last Layer. Unfortunately, as we've already built so much, " + 
+				 			 "we have to be extra careful when solving pieces here and it takes quite a few steps " + 
+				 			 "to solve them whilst maintaining our solved first two layers.",
+				 			 
+				 			 "We'll tackle this problem in two different steps. The first step will be to orient " + 
+				 			 "all of the remaining pieces correctly (get all yellow stickers facing upwards), and " + 
+				 			 "the second step will be to permute the pieces (move them around the top layers) until " + 
+				 			 "the cube is completely solved. We'll just look at the first step for now.",
+				 			 
+				 			 "We need to get all of the yellow stickers facing upwards. We can split this into two " + 
+				 			 "steps: Building a yellow cross on top, and then orienting the yellow corners. ",
+				 			 
+				 			 "To build the yellow cross, we need to see which of the four possible cases we have. " + 
+				 			 "We can either have an L shape (two adjacent edges oriented correctly), a bar (two " + 
+				 			 "opposite edges oriented correctly), a dot (no edges oriented correctly), or a cross " + 
+				 			 "(all edges oriented correctly).",
+				 			 
+				 			 "If you have an L shape, you need to place the adjacent pieces in the top left (so the " + 
+				 			 "solved pieces are in the back and left positions shown in the image), and perform the " + 
+				 			 "following algorithm:",
+				 			 
+				 			 "If you have a bar shape, you need to place the bar so it is horizontal (so the solved " + 
+				 			 "pieces are in the left and right positions shown in the image) and perform the following " + 
+				 			 "algorithm:",
+				 			
+				 			 "If you have a dot, then simply do the bar algorithm from any angle and you will get an " + 
+				 			 "L case. Then, solve that L case using the algorithm provided.",
+				 			  
+				 			 "Finally, if you have a cross (all four edges oriented correctly), then you're good to go! " + 
+				 			 "This step is already solved for you, so move on to the next one.", 
+				 			 
+				 			 
+				 			 
+				 			 
 		};
 		
 		String[] resources = {"solvedF2L.png", "NULL", "edgeLocationF2L.png", "twoCasesF2L.png", "topLayerF2L.png", 
@@ -110,12 +70,12 @@ public class SecondLayerEdgesSection {
 		seqOut.setOnFinished(new EventHandler<ActionEvent>() {
     		@Override
     		public void handle(ActionEvent event) {
-    			if (bodyCount == 22) {
+    			if (bodyCount == 30) {
 
     				elements.get(0).setText("");
     				elements.get(1).setText("                                                    "+
     										"                                                    ");
-    				LastLayerOrientSection.begin(allMoves, seqOut, seqIn, elements, forward, back, restartSection, skipToDemo);
+    				//SecondLayerEdgesSection.begin(allMoves, seqOut, seqIn, elements, forward, back);
     				System.out.println("we're done!");
     			} else {
 	    			forward.setDisable(false);
@@ -180,17 +140,15 @@ public class SecondLayerEdgesSection {
     				System.out.println("BODY COUNT: "+bodyCount+", STAGE: "+(bodyCount+3));
     				MoveManager.main(allMoves, elements, forward, back, bodyCount+3); 	    
  	    			seqInText.playFromStart(); 
- 	    		} else if (bodyCount == 21) {
+ 	    		} else if (bodyCount == 23) {
 	    			UserInterface.makeYrotation(false);
 	    			if (forwardOrBack) {
 	    				bodyCount = SharedToolbox.bodyCountInc(bodyCount);
-	    				System.out.println("correctly killing mm");
 	    				MoveManager.kill();
 	    				back.setDisable(false);
 	    				UserInterface.timeline2.play();
 	    			}
 	    			elements.get(1).setText(bodyText[bodyCount]);
-	    			System.out.println("text to display:"+ bodyText[bodyCount]);
 	    			elements.get(2).setText("");
 	    			elements.get(2).setGraphic(null);
 	    			elements.get(3).setText("");
