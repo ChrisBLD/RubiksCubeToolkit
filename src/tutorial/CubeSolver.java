@@ -147,57 +147,130 @@ public class CubeSolver {
 		if (count == 0) {
 			if (FLU[4] == YELLOW) {
 				allMoves.add("8RUTURUUT");
+				applyMovesLogically("RUTURUUT");
 				if (FLU[2] == YELLOW) {
 					allMoves.add("9RUTURUUT");
+					applyMovesLogically("RUTURUUT");
 				} else if (FRU[2] == YELLOW) {
 					allMoves.add("9URUTURUUT");
+					applyMovesLogically("URUTURUUT");
 				} else {
 					allMoves.add("9IRUTURUUT");
+					applyMovesLogically("IRUTURUUT");
 				}
 				
 			} else if (FRU[0] == YELLOW) {
 				allMoves.add("8URUTURUUT");
+				applyMovesLogically("URUTURUUT");
 				if (FLU[2] == YELLOW) {
 					allMoves.add("9RUTURUUT");
+					applyMovesLogically("RUTURUUT");
 				} else {
 					allMoves.add("9IRUTURUUT");
+					applyMovesLogically("IRUTURUUT");
 				}
 			} else {
 				allMoves.add("8UURUTURUUT");
+				applyMovesLogically("UURUTURUUT");
 				allMoves.add("9IRUTURUUT");
+				applyMovesLogically("IRUTURUUT");
 			}
-			allMoves.add("10*");
+			allMoves.add("A*");
 		} else if (count == 1) {
 			if (FLU[2] == YELLOW) {
-				pureSune("");
+				pureSune("", false);
 			} else if (FRU[2] == YELLOW) {
-				pureSune("U");
+				pureSune("U", false);
 			} else if (BRU[2] == YELLOW) {
-				pureSune("UU");
+				pureSune("UU", false);
 			} else {
-				pureSune("I");
+				pureSune("I", false);
 			}
 		} else if (count == 2) {
-			//if two corners oriented, make FLU sticker yellow then sune
+			if (FLU[0] == YELLOW) {
+				allMoves.add("8RUTURUUT");
+				applyMovesLogically("RUTURUUT");
+				if (FLU[2] == YELLOW) {
+					pureSune("", true);
+				} else if (FRU[2] == YELLOW) {
+					pureSune("U", true);
+				} else if (BRU[2] == YELLOW) {
+					pureSune("UU", true);
+				} else {
+					pureSune("I", true);
+				}
+			} else if (FRU[1] == YELLOW) {
+				allMoves.add("8URUTURUUT");
+				applyMovesLogically("URUTURUUT");
+				if (FLU[2] == YELLOW) {
+					pureSune("", true);
+				} else if (FRU[2] == YELLOW) {
+					pureSune("U", true);
+				} else if (BRU[2] == YELLOW) {
+					pureSune("UU", true);
+				} else {
+					pureSune("I", true);
+				}
+			} else if (BRU[3] == YELLOW) {
+				allMoves.add("8UURUTURUUT");
+				applyMovesLogically("UURUTURUUT");
+				if (FLU[2] == YELLOW) {
+					pureSune("", true);
+				} else if (FRU[2] == YELLOW) {
+					pureSune("U", true);
+				} else if (BRU[2] == YELLOW) {
+					pureSune("UU", true);
+				} else {
+					pureSune("I", true);
+				}
+			} else {
+				allMoves.add("8IRUTURUUT");
+				applyMovesLogically("IRUTURUUT");
+				if (FLU[2] == YELLOW) {
+					pureSune("", true);
+				} else if (FRU[2] == YELLOW) {
+					pureSune("U", true);
+				} else if (BRU[2] == YELLOW) {
+					pureSune("UU", true);
+				} else {
+					pureSune("I", true);
+				}
+			}
 		} else {
 			allMoves.add("8*");
 			allMoves.add("9*");
-			allMoves.add("10*");
+			allMoves.add("A*");
 		}
 		
 		
 		
 	}
 	
-	private static void pureSune(String pre) {
-		if (FRU[0] == YELLOW) {
-			allMoves.add("8"+pre+"RUTURUUT");
-			allMoves.add("9*");
-			allMoves.add("10*");
+	private static void pureSune(String pre, boolean var) {
+		if (!var) {
+			if (FRU[0] == YELLOW) {
+				allMoves.add("8"+pre+"RUTURUUT");
+				applyMovesLogically(pre+"RUTURUUT");
+				allMoves.add("9*");
+				allMoves.add("A*");
+			} else {
+				allMoves.add("8"+pre+"RUTURUUT");
+				applyMovesLogically(pre+"RUTURUUT");
+				allMoves.add("9UURUTURUUT");
+				applyMovesLogically("UURUTURUUT");
+				allMoves.add("A*");
+			}
 		} else {
-			allMoves.add("8"+pre+"RUTURUUT");
-			allMoves.add("9UURUTURUUT");
-			allMoves.add("10*");
+			if (FRU[0] == YELLOW) {
+				allMoves.add("9"+pre+"RUTURUUT");
+				applyMovesLogically(pre+"RUTURUUT");
+				allMoves.add("A*");
+			} else {
+				allMoves.add("9"+pre+"RUTURUUT");
+				applyMovesLogically(pre+"RUTURUUT");
+				allMoves.add("AUURUTURUUT");
+				applyMovesLogically("UURUTURUUT");
+			}
 		}
 	}
 	
@@ -530,7 +603,7 @@ public class CubeSolver {
 	private static void applyMovesLogically(String moves) {
 		char[] movesLeft = moves.toCharArray();
 		for (char move : movesLeft) {
-			switch (move) {
+			/*switch (move) {
 			case 'F': makeFmove(false); break;
 			case 'R': makeRmove(false); break;
 			case 'U': makeUmove(false); break;
@@ -546,9 +619,9 @@ public class CubeSolver {
 			case 'Y': makeYrotation(false); break;
 			case 'Q': makeYrotation(true); break;
 			case 'Z': makeZrotation(); break;
-			}
-			/*
-			 * 			switch (move) {
+			}*/
+			
+			  			switch (move) {
 			case 'F': makeFmove(false); UserInterface.makeFmove(false); break;
 			case 'R': makeRmove(false); UserInterface.makeRmove(false); break;
 			case 'U': makeUmove(false); UserInterface.makeUmove(false); break;
@@ -565,7 +638,7 @@ public class CubeSolver {
 			case 'Q': makeYrotation(true); UserInterface.makeYrotation(true); break;
 			case 'Z': makeZrotation(); UserInterface.makeZrotation(false); break;
 			}
-			 */
+			 
 		}
 		
 	}
