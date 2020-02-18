@@ -110,7 +110,7 @@ public class SecondLayerEdgesSection {
 		seqOut.setOnFinished(new EventHandler<ActionEvent>() {
     		@Override
     		public void handle(ActionEvent event) {
-    			if (bodyCount == 22) {
+    			if (bodyCount == MAX) {
 
     				elements.get(0).setText("");
     				elements.get(1).setText("                                                    "+

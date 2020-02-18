@@ -98,7 +98,7 @@ public class FirstLayerCornersSection {
 		seqOut.setOnFinished(new EventHandler<ActionEvent>() {
     		@Override
     		public void handle(ActionEvent event) {
-    			if (bodyCount == 18) {
+    			if (bodyCount == MAX) {
     				UserInterface.makeZ2rotation();
     				elements.get(0).setText("");
     				elements.get(1).setText("                                                    "+

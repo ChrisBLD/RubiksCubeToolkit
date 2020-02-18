@@ -53,15 +53,55 @@ public class LastLayerOrientSection {
 				 			 "Finally, if you have a cross (all four edges oriented correctly), then you're good to go! " + 
 				 			 "This step is already solved for you, so move on to the next one.", 
 				 			 
+				 			 "Let's see what moves we need to make to solve the yellow cross on your cube: ",
+				 			 
+				 			 "Next, we need to orient the corners of the last layer so that all yellow stickers are  " + 
+				 			 "facing upwards. ",
+
+				 			 "There is only one algorithm you need to know for this section, and depending on the case " + 
+				 			 "you have, you may need to repeat it up to three times. The algorithm is know as Sune. It " + 
+				 			 "is used to orient all corners when just one corner is oriented correctly, as shown below. ",
+
+				 			 "In the same way that we oriented the edges, we first need to see how many corners we " + 
+				 			 "already have correctly oriented. There are four possible cases for this also. No corners " + 
+				 			 "can be oriented correctly (1), A single corner can be oriented correctly (2), two  " + 
+				 			 "corners can be oriented correctly (3), or all four corners can be oriented correctly (4). ", 
+
+				 			 "In all cases, we're trying to set up to the Sune corner case. From there, we can apply the " + 
+				 			 "Sune algorithm one or two more time to orient all corners correctly. This is the base  " + 
+				 			 "case i.e. the case that we're trying to reach from wherever we are currently. ",
+
+				 			 "If just one corner is oriented correctly, then you're currently in the base case, and you " + 
+				 			 "can solve the puzzle like this: First, orient the top layer so that the single oriented " + 
+				 			 "corner is in the bottom left (as shown in the diagram), and then apply the Sune algorithm. " + 
+				 			 "If this works, great! If not, readjust the top layer and perform it again to finish this stage.",
+
+
+				 			 "If you have no corners oriented correctly, then you need to look at the sides of the puzzle. " + 
+				 			 "You need to turn the top layer so that you have a yellow sticker facing to the left, as " + 
+				 			 "shown in the diagram below. From here, apply the Sune algorithm. You will now be in the base " + 
+				 			 "case, and you can apply the Sune combination shown previously to finish orienting the corners. ",
+				 			 
+				 			 "If you have two corners oriented correctly, then you also need to look at the sides of the  " + 
+				 			 "puzzle. You need to turn the top layer so that you have a yellow sticker facing you, as " + 
+				 			 "shown in the diagram below. From here, apply the Sune algorithm. You will now be in the base " + 
+				 			 "case, and you can apply the Sune combination shown previously to finish orienting the corners. ",
+
+				 			 "Now, let's see what we have to do with your cube currently. First, let's see the moves we need "+
+				 			 "to do to get to the base case: ",
+				 			 
+				 			 "Now we're in the base case, let's perform the Sune algorithm (if we need to): ",
+				 			 
+				 			 "And finally, let's see if we need to do Sune one last time to finish orienting the corners:"
+				 			 
 				 			 
 				 			 
 				 			 
 		};
 		
-		String[] resources = {"solvedF2L.png", "NULL", "edgeLocationF2L.png", "twoCasesF2L.png", "topLayerF2L.png", 
-							  "middleLayerF2L.png", "edgeOrientationsF2L.png", "insertEdgeOverviewF2L.png", 
-							  "insertEdgeOneF2L.png", "insertEdgeTwoF2L.png", "insertEdgeOverviewBF2L.png", 
-							  "insertEdgeThreeF2L.png", "insertEdgeFourF2L.png", "middleLayerBF2L.png"};
+		String[] resources = {"NULL", "stepsToFinish.png", "stepsToOLL.png", "ollEdgeCases.png", "LshapeOLL.png", "BARshapeOLL.png", "DOTshapeOLL.png",
+							  "yellowCrossSolved.png", "NULL", "stepsToOLLcorners.png", "sune.png", "ollCornerCases.png", "setupToSune.png", 
+							  "oneCornerOriented.png", "noCornerOriented.png", "twoCornerOriented.png", "NULL", "NULL", "NULL"};
 
 		bodyCount = 0;
 		restartSection.setDisable(false);
@@ -80,10 +120,10 @@ public class LastLayerOrientSection {
     			} else {
 	    			forward.setDisable(false);
 	    			back.setDisable(false);
-	    	    	elements.get(0).setText("Solving the Second Layer Edges");
+	    	    	elements.get(0).setText("Orienting the Last Layer (OLL)");
 	    	    	elements.get(1).setText(bodyText[bodyCount]);
 	    	    	
-	    	    	elements.get(2).setGraphic(new ImageView(new Image("/resources/"+resources[bodyCount])));
+	    	    	elements.get(2).setGraphic(null);
 	    	    	HBox newBox = new HBox(elements.get(2));
 	    	    	newBox.setPadding(new Insets(40,0,0,0));
 	    	    	newBox.setAlignment(Pos.CENTER);
@@ -110,7 +150,7 @@ public class LastLayerOrientSection {
  	    	@Override
  	    	public void handle(ActionEvent event) {
  	    		System.out.println("BODY COUNT IS:"+bodyCount);
- 	    		if (bodyCount <= 12) {
+ 	    		if (bodyCount <= 6) {
  	    			if (forwardOrBack) {
 	 	    			bodyCount = SharedToolbox.bodyCountInc(bodyCount);
 	 	       			elements.get(1).setText(bodyText[bodyCount]);
@@ -127,33 +167,45 @@ public class LastLayerOrientSection {
 	       				elements.get(2).setGraphic(new ImageView(new Image("/resources/"+resources[bodyCount])));
 	 	    		}
 	 	    		seqInText.playFromStart();   
- 	    		} else if (bodyCount <=20) {
- 	    			if (bodyCount == 13) {
- 	    				skipToDemo.setDisable(true);
- 	    				restartSection.setDisable(true);
- 	    				MoveManager.prepareDemo(elements);
- 	    			} else if (bodyCount % 2 == 1) {
- 	    				UserInterface.makeYrotation(false);
+ 	    		} else if (bodyCount == 7 || bodyCount == 15) {
+	    			skipToDemo.setDisable(true);
+	    			restartSection.setDisable(true);
+	    			MoveManager.prepareDemo(elements);
+		    		bodyCount = SharedToolbox.bodyCountInc(bodyCount);
+					elements.get(1).setText(bodyText[bodyCount]);
+					if (bodyCount == 8) {
+						System.out.println("BODY COUNT: "+bodyCount+", STAGE: "+(25));
+						MoveManager.main(allMoves, elements, forward, back, 25); 
+					} else {
+						System.out.println("BODY COUNT: "+bodyCount+", STAGE: "+(26));
+						MoveManager.main(allMoves, elements, forward, back, 26); 
+					}
+	    			seqInText.playFromStart(); 
+ 	    		} else if (bodyCount <= 14) {
+ 	    			if (bodyCount == 8) {
+ 	    				MoveManager.kill();
+    					back.setDisable(true);
+    					UserInterface.timeline2.play();
+ 	    			} else {
+ 	    				back.setDisable(false);
  	    			}
- 	    			bodyCount = SharedToolbox.bodyCountInc(bodyCount);
-    				elements.get(1).setText(bodyText[bodyCount]);
-    				System.out.println("BODY COUNT: "+bodyCount+", STAGE: "+(bodyCount+3));
-    				MoveManager.main(allMoves, elements, forward, back, bodyCount+3); 	    
- 	    			seqInText.playFromStart(); 
- 	    		} else if (bodyCount == 23) {
-	    			UserInterface.makeYrotation(false);
-	    			if (forwardOrBack) {
-	    				bodyCount = SharedToolbox.bodyCountInc(bodyCount);
-	    				MoveManager.kill();
-	    				back.setDisable(false);
-	    				UserInterface.timeline2.play();
-	    			}
-	    			elements.get(1).setText(bodyText[bodyCount]);
-	    			elements.get(2).setText("");
-	    			elements.get(2).setGraphic(null);
-	    			elements.get(3).setText("");
-	    			seqInText.playFromStart();   
+ 	    			if (forwardOrBack) {
+	 	    			bodyCount = SharedToolbox.bodyCountInc(bodyCount);
+	 	       			elements.get(1).setText(bodyText[bodyCount]);
+	 	       		} else {
+	 	       			bodyCount = SharedToolbox.bodyCountDec(bodyCount);
+		       			elements.get(1).setText(bodyText[bodyCount]);
+	 	       		}	
+	 	    		if (resources[bodyCount].equals("NULL")) {
+	 	    			elements.get(2).setGraphic(null);
+	 	    			elements.get(2).setVisible(false);
+	 	    		} else {
+	 	    			elements.get(2).setVisible(true);
+	       				elements.get(2).setGraphic(new ImageView(new Image("/resources/"+resources[bodyCount])));
+	 	    		}
+	 	    		seqInText.playFromStart(); 
  	    		}
+ 	    			
  	    	}
     	});
     	
@@ -185,8 +237,13 @@ public class LastLayerOrientSection {
     }
 
 	private static void skipInfo(SequentialTransition seqOutText) {
-		bodyCount = 13;
-		seqOutText.playFromStart();
+		if (bodyCount <=6) {
+			bodyCount = 7;
+			seqOutText.playFromStart();
+		} else {
+			bodyCount = 15;
+			seqOutText.playFromStart();
+		}
 	}
 	
 	private static void restart(SequentialTransition seqOutText) {

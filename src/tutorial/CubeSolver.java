@@ -126,8 +126,8 @@ public class CubeSolver {
 		
 		solveYellowCorners();
 		
-		for (String s : allMoves) {
-			System.out.println(s);
+		for (int i = 0; i < allMoves.size(); i++) {
+			System.out.println(i+") "+allMoves.get(i));
 		}
 		//allMoves.add(movesToSolve);
 		
@@ -318,8 +318,8 @@ public class CubeSolver {
 			applyMovesLogically("UFURITG");
 			return;
 		} else {
-			allMoves.add("7FURITGUFRUTIG"); //dot case
-			applyMovesLogically("FURITGUFRUTIG");
+			allMoves.add("7FRUTIGUUUFURITG"); //dot case
+			applyMovesLogically("FRUTIGUUUFURITG");
 			return;
 		}
 	}
