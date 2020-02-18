@@ -108,7 +108,7 @@ public class FirstLayerCornersSection {
     			} else {
 	    			forward.setDisable(false);
 	    			back.setDisable(false);
-	    	    	elements.get(0).setText("Orienting the Last Layer (OLL)");
+	    	    	elements.get(0).setText("Solving the First Layer Corners");
 	    	    	elements.get(1).setText(bodyText[bodyCount]);
 	    	    	
 	    	    	elements.get(2).setGraphic(new ImageView(new Image("/resources/"+resources[bodyCount])));
@@ -142,7 +142,52 @@ public class FirstLayerCornersSection {
 	    			bodyCount = SharedToolbox.bodyCountInc(bodyCount);
  	       			elements.get(1).setText(bodyText[bodyCount]);
  	       			seqInText.playFromStart(); 
-	    		} 
+	    		} else if (bodyCount <= 8) {
+ 	    			
+ 	    			if (forwardOrBack) {
+	 	    			bodyCount = SharedToolbox.bodyCountInc(bodyCount);
+	 	       			elements.get(1).setText(bodyText[bodyCount]);
+	 	       		} else {
+	 	       			bodyCount = SharedToolbox.bodyCountDec(bodyCount);
+		       			elements.get(1).setText(bodyText[bodyCount]);
+	 	       		}	
+	 	    		if (resources[bodyCount].equals("NULL")) {
+	 	    			elements.get(2).setGraphic(null);
+	 	    			elements.get(2).setVisible(false);
+	 	    		} else {
+	 	    			elements.get(2).setVisible(true);
+	 	    			//System.out.println("setting graphic: "+resources[bodyCount]);
+	       				elements.get(2).setGraphic(new ImageView(new Image("/resources/"+resources[bodyCount])));
+	 	    		}
+	 	    		seqInText.playFromStart();   
+ 	    		} else if (bodyCount <=16) {
+ 	    			restartSection.setDisable(true);
+ 	    			if (bodyCount == 9) {
+ 	    				skipToDemo.setDisable(true);
+ 	    				MoveManager.prepareDemo(elements);
+ 	    			} else if (bodyCount % 2 == 1) {
+ 	    				UserInterface.makeYrotation(false);
+ 	    			}
+ 	    			bodyCount = SharedToolbox.bodyCountInc(bodyCount);
+    				elements.get(1).setText(bodyText[bodyCount]);
+    				System.out.println("BODY COUNT: "+bodyCount+", STAGE: "+(bodyCount-1));
+    				MoveManager.main(allMoves, elements, forward, back, bodyCount-1); 	    
+ 	    			seqInText.playFromStart(); 
+ 	    		} else if (bodyCount == 17) {
+	    			UserInterface.makeYrotation(false);
+	    			if (forwardOrBack) {
+	    				bodyCount = SharedToolbox.bodyCountInc(bodyCount);
+	    				MoveManager.kill();
+	    				back.setDisable(false);
+	    				UserInterface.timeline2.play();
+	    			}
+	    			elements.get(1).setText(bodyText[bodyCount]);
+	    			elements.get(2).setText("");
+	    			elements.get(2).setGraphic(null);
+	    			elements.get(3).setText("");
+	    			seqInText.playFromStart();   
+ 	    		}
+
  	    	}
     	});
     	
