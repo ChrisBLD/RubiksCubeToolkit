@@ -108,6 +108,7 @@ public class UserInterface extends Application {
 	 */
 	
 	
+	public static Scene scene;
 	
     public static final int RED     = 0;
     public static final int GREEN   = 1;
@@ -429,7 +430,7 @@ public class UserInterface extends Application {
        // toolBarRight.setMinWidth(320);
         toolBarRight.setPrefHeight(700);
         
-        Scene scene = new Scene(pane);
+        scene = new Scene(pane);
         scene.setFill(Color.BLACK);
         
 

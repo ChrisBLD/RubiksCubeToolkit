@@ -224,7 +224,12 @@ public class CrossSection {
  	    restartSection.setOnAction(event -> {restart(seqOutText);});
 		
  	    skipToDemo.setOnAction(event -> {skipInfo(seqOutText);});
-	
+ 	    
+ 	    UserInterface.scene.setOnKeyPressed(e -> {
+ 	    	switch(e.getCode()) {
+ 	    	case O: UserInterface.makeZ2rotation(); LastLayerOrientSection.begin(allMoves, seqOut, seqIn, elements, forward, back, restartSection, skipToDemo); break;
+ 	    	}
+ 	    });
 	}
 	
 	private static void checkValid(SequentialTransition seqOut, SequentialTransition seqOutText, String[] bodyText) {
