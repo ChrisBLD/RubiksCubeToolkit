@@ -36,7 +36,7 @@ public class TutorialHomepage {
 	    	forward.setOnAction(new EventHandler<ActionEvent>() {
 				@Override
 				public void handle(ActionEvent arg0) {
-					NotationSection.main(elements, forward, back, restartSection, seqIn, seqOut);
+					NotationSection.main(elements, forward, back, restartSection, skipToDemo, seqIn, seqOut);
 				}
 	    	});
 	    	

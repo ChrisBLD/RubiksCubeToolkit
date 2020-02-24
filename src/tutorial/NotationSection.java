@@ -19,10 +19,11 @@ public abstract class NotationSection {
 	static Button forward;
 	static Button back;
 	static Button restartSection;
+	static Button skipToDemo;
 	static SequentialTransition seqIn, seqOut;
 
 	
-	 public static void main(ArrayList<Label> elements, Button forward, Button back, Button restartSection, SequentialTransition seqIn, SequentialTransition seqOut) {
+	 public static void main(ArrayList<Label> elements, Button forward, Button back, Button restartSection, Button skipToDemo, SequentialTransition seqIn, SequentialTransition seqOut) {
  	   	
 		 NotationSection.elements = elements;
 		 NotationSection.forward = forward;
@@ -30,6 +31,7 @@ public abstract class NotationSection {
 		 NotationSection.seqIn = seqIn;
 		 NotationSection.seqOut = seqOut;
 		 NotationSection.restartSection = restartSection;
+		 NotationSection.skipToDemo = skipToDemo;
 		 
 	    String[] bodyText = {"Rubik's Cube Notation uses six letters to refer to each face of the puzzle:"
 				+ "\n\n R - Right Face Turn \n U - Upper Face Turn \n F - Front Face Turn \n L - Left Face Turn \n B - Back Face Turn \n D - Down Face Turn",
@@ -250,7 +252,7 @@ public abstract class NotationSection {
 	    
 	    public static void checkIfDone() {
 	    	if (bodyCount == 14) {
-	    		Setup.main(elements, forward, back, restartSection, seqIn, seqOut);
+	    		Setup.main(elements, forward, back, restartSection, skipToDemo, seqIn, seqOut);
 	    	}
 	    }
 	    

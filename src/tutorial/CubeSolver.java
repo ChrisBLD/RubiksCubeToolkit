@@ -111,7 +111,7 @@ public class CubeSolver {
 		applyMovesLogically(movesToSolve);
 		allMoves.add("1"+movesToSolve);
 		
-		//At this point all cross pieces should be in their place, but they might be flipped. If they're flipped, we need to check and fix
+		//At this point all croSs pieces should be in their place, but they might be flipped. If they're flipped, we need to check and fix
 		//them one by one by taking them out of their slot and sledging them back in. The below function will check this for each edge.
 		
 		orientCrossEdges();
@@ -126,6 +126,10 @@ public class CubeSolver {
 		
 		solveYellowCorners();
 		
+		permuteCorners();
+		
+		permuteEdges();
+		
 		for (int i = 0; i < allMoves.size(); i++) {
 			System.out.println(i+") "+allMoves.get(i));
 		}
@@ -133,7 +137,141 @@ public class CubeSolver {
 		
 		return allMoves;
 	}
-
+	
+	private static void permuteEdges() {
+		switch (FU[0]) {
+		case GREEN: 
+			if (CRU[1] == ORANGE) { 
+				allMoves.add("D*");
+				allMoves.add("E*");
+			} else {
+				uPerm('F');
+			} break;
+		case BLUE: 
+			if (BU[3] == GREEN) {
+				allMoves.add("DRIRURURITIRR");
+				allMoves.add("EURIRURURITIRRU");
+				applyMovesLogically("RIRURURITIRR");
+				applyMovesLogically("URIRURURITIRRI");
+			} else {
+				if (CRU[1] == ORANGE) {
+					uPerm('R');
+				} else {
+					uPerm('L');
+				}
+			} break;
+		case ORANGE: 
+			if (BU[3] == BLUE) {
+				uPerm('B');
+			} else if (CLU[4] == RED) {
+				uPerm('L');
+			} else {
+				allMoves.add("DRIRURURITIRR");
+				allMoves.add("EIRIRURURITIRRU");
+				applyMovesLogically("RIRURURITIRR");
+				applyMovesLogically("IRIRURURITIRRU");
+			} break;
+		case RED: 
+			if (BU[3] == BLUE) {
+				uPerm('B');
+			} else if (CRU[1] == ORANGE) {
+				uPerm('R');
+			} else {
+				allMoves.add("DRIRURURITIRR");
+				allMoves.add("EUURRURUTITITUTUU");
+				applyMovesLogically("RIRURURITIRR");
+				applyMovesLogically("UURRURUTITITUTUU");
+			} break;
+		}
+	}
+	
+	
+	
+	private static void permuteCorners() {
+		boolean[] headlightArray = {false, false, false, false};
+		int hlCount = 0;
+		
+		if (FRU[0] == FLU[0]) { //headlights on F
+			headlightArray[0] = true;
+			hlCount++;
+		}
+		if (FRU[1] == BRU[1]) { //headlights on R
+			headlightArray[1] = true;
+			hlCount++;
+		}
+		if (BRU[3] == BLU[3]) { //headlights on B
+			headlightArray[2] = true;
+			hlCount++;
+		}
+		if (BLU[4] == FLU[4]) { //headlights on L
+			headlightArray[3] = true;
+			hlCount++;
+		}
+		
+		if (hlCount == 0) { //E perm, 1/21 prob:
+			allMoves.add("BTFTBBRGTBBRR");
+			applyMovesLogically("TFTBBRGTBBRR");
+			applyMovesLogically("UTFTBBRGTBBRR");
+			switch (FRU[0]) {
+			case GREEN: allMoves.add("CUTFTBBRGTBBRR"); break;
+			case ORANGE: allMoves.add("CUTFTBBRGTBBRRI"); break;
+			case BLUE: allMoves.add("CUTFTBBRGTBBRRUU"); break;
+			case RED: allMoves.add("CUTFTBBRGTBBRRU"); break;
+			}
+		} if (hlCount == 1) { //Most likely case:
+			String pre = "*";
+			if (headlightArray[0]) {
+				pre = "UU";
+			} else if (headlightArray[1]) {
+				pre = "I";
+			} else if (headlightArray[3]) {
+				pre = "U";
+			} 
+			allMoves.add("B"+pre);
+			applyMovesLogically(pre+"TFTBBRGTBBRR");
+			switch (FRU[0]) {
+			case GREEN: allMoves.add("CTFTBBRGTBBRR"); break;
+			case ORANGE: allMoves.add("CTFTBBRGTBBRRI"); applyMovesLogically("I"); break;
+			case BLUE: allMoves.add("CTFTBBRGTBBRRUU"); applyMovesLogically("UU"); break;
+			case RED: allMoves.add("CTFTBBRGTBBRRU"); applyMovesLogically("U"); break;
+			}
+		} else { //CLL already solved
+			allMoves.add("B*");
+			switch (FRU[0]) {
+			case GREEN: allMoves.add("C*"); break;
+			case ORANGE: allMoves.add("CI"); applyMovesLogically("I"); break;
+			case BLUE: allMoves.add("CUU"); applyMovesLogically("UU"); break;
+			case RED: allMoves.add("CU"); applyMovesLogically("U"); break;
+			}
+			
+		}
+		
+		
+	}
+	
+	
+	private static void uPerm(char solved) {
+		String pre = "";
+		String und = "";
+		switch (solved) {
+		case 'F': pre = "UU"; und = "UU"; break;
+		case 'R': pre = "I"; und = "U"; break;
+		case 'L': pre = "U"; und = "I"; break;
+		}
+		
+		allMoves.add("D*");
+		
+		if (FU[0] == FRU[1]) {
+			allMoves.add("E"+pre+"RIRURURITIRR"+und);
+			applyMovesLogically(pre+"RIRURURITIRR"+und);
+		} else {
+			allMoves.add("E"+pre+"RRURUTITITUT"+und);
+			applyMovesLogically(pre+"RRURUTITITUT"+und);
+		}
+		
+		
+	}
+	
 	private static void solveYellowCorners() {
 		int[][] topCorners = {BLU, BRU, FRU, FLU};
 		int count = 0;
@@ -604,21 +742,21 @@ public class CubeSolver {
 		char[] movesLeft = moves.toCharArray();
 		for (char move : movesLeft) {
 			switch (move) {
-			case 'F': makeFmove(false); break;
-			case 'R': makeRmove(false); break;
-			case 'U': makeUmove(false); break;
-			case 'B': makeBmove(false); break;
-			case 'L': makeLmove(false); break;
-			case 'D': makeDmove(false); break;
-			case 'G': makeFmove(true); break;
-			case 'T': makeRmove(true); break;
-			case 'I': makeUmove(true); break;
-			case 'N': makeBmove(true); break;
-			case 'K': makeLmove(true); break;
-			case 'S': makeDmove(true); break;
-			case 'Y': makeYrotation(false); break;
-			case 'Q': makeYrotation(true); break;
-			case 'Z': makeZrotation(); break;
+				case 'F': makeFmove(false); break;
+				case 'R': makeRmove(false); break;
+				case 'U': makeUmove(false); break;
+				case 'B': makeBmove(false); break;
+				case 'L': makeLmove(false); break;
+				case 'D': makeDmove(false); break;
+				case 'G': makeFmove(true); break;
+				case 'T': makeRmove(true); break;
+				case 'I': makeUmove(true); break;
+				case 'N': makeBmove(true); break;
+				case 'K': makeLmove(true); break;
+				case 'S': makeDmove(true); break;
+				case 'Y': makeYrotation(false); break;
+				case 'Q': makeYrotation(true); break;
+				case 'Z': makeZrotation(); break;
 			}
 			
 		  /*switch (move) {
