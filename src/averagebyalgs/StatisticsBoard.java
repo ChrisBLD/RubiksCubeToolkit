@@ -10,6 +10,10 @@ import java.util.TreeMap;
 import javafx.scene.Group;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 
@@ -234,7 +238,7 @@ public abstract class StatisticsBoard {
 	    }
 	}
 
-	public static void calculate() {
+	public static boolean calculate() {
 		
 		bestTimeArray.clear();
 		bestScrambleArray.clear();
@@ -244,15 +248,19 @@ public abstract class StatisticsBoard {
 		}
 		
 		
-
-		for (double sixRes : sixAlgers) {if (Double.compare(sixRes, bestTimeArray.get(0)) < 0) {bestTimeArray.set(0, sixRes);}};
-		for (double sevenRes : sevenAlgers) {if (Double.compare(sevenRes, bestTimeArray.get(1)) < 0) {bestTimeArray.set(1, sevenRes);}};
-		for (double eightRes : eightAlgers) {if (Double.compare(eightRes, bestTimeArray.get(2)) < 0) {bestTimeArray.set(2, eightRes);}};
-		for (double nineRes : nineAlgers) {if (Double.compare(nineRes, bestTimeArray.get(3)) < 0) {bestTimeArray.set(3, nineRes);}};
-		for (double tenRes : tenAlgers) {if (Double.compare(tenRes, bestTimeArray.get(4)) < 0) {bestTimeArray.set(4, tenRes);}};
-		for (double elevenRes : elevenAlgers) {if (Double.compare(elevenRes, bestTimeArray.get(5)) < 0) {bestTimeArray.set(5, elevenRes);}};
-		for (double twelveRes : twelveAlgers) {if (Double.compare(twelveRes, bestTimeArray.get(6)) < 0) {bestTimeArray.set(6, twelveRes);}};
-		for (double thirteenRes : thirteenAlgers) {if (Double.compare(thirteenRes, bestTimeArray.get(7)) < 0) {bestTimeArray.set(7, thirteenRes);}};
+		try {
+			for (double sixRes : sixAlgers) {if (Double.compare(sixRes, bestTimeArray.get(0)) < 0) {bestTimeArray.set(0, sixRes);}};
+			for (double sevenRes : sevenAlgers) {if (Double.compare(sevenRes, bestTimeArray.get(1)) < 0) {bestTimeArray.set(1, sevenRes);}};
+			for (double eightRes : eightAlgers) {if (Double.compare(eightRes, bestTimeArray.get(2)) < 0) {bestTimeArray.set(2, eightRes);}};
+			for (double nineRes : nineAlgers) {if (Double.compare(nineRes, bestTimeArray.get(3)) < 0) {bestTimeArray.set(3, nineRes);}};
+			for (double tenRes : tenAlgers) {if (Double.compare(tenRes, bestTimeArray.get(4)) < 0) {bestTimeArray.set(4, tenRes);}};
+			for (double elevenRes : elevenAlgers) {if (Double.compare(elevenRes, bestTimeArray.get(5)) < 0) {bestTimeArray.set(5, elevenRes);}};
+			for (double twelveRes : twelveAlgers) {if (Double.compare(twelveRes, bestTimeArray.get(6)) < 0) {bestTimeArray.set(6, twelveRes);}};
+			for (double thirteenRes : thirteenAlgers) {if (Double.compare(thirteenRes, bestTimeArray.get(7)) < 0) {bestTimeArray.set(7, thirteenRes);}};
+		} catch (Exception n) {
+			return false;
+		}
+		
 		
 		
 		for (int a = 0; a < 8; a++) {
@@ -262,9 +270,49 @@ public abstract class StatisticsBoard {
 				System.out.println("No results with "+(a+6)+" algs.");
 			}
 		}
+		return true;
  	}
 
-	public static void display() {
+	public static void display(Pane p) {
+		
+		TableView tv = new TableView();
+	
+		TableColumn<String, AlgInfo> numAlgs = new TableColumn<>("Number of Algs");
+		TableColumn<String, AlgInfo> occ = new TableColumn<>("Occurences");
+		TableColumn<String, AlgInfo> percent = new TableColumn<>("Percent of Total");
+		TableColumn<String, AlgInfo> average = new TableColumn<>("Average Time");
+		TableColumn<String, AlgInfo> best = new TableColumn<>("Best Time");
+		
+		numAlgs.setCellValueFactory(new PropertyValueFactory<>("numAlgs"));
+		occ.setCellValueFactory(new PropertyValueFactory<>("occ"));
+		percent.setCellValueFactory(new PropertyValueFactory<>("percent"));
+		average.setCellValueFactory(new PropertyValueFactory<>("average"));
+		best.setCellValueFactory(new PropertyValueFactory<>("best"));
+		
+		numAlgs.setMaxWidth(140); numAlgs.setMinWidth(140);
+		occ.setMaxWidth(140); occ.setMinWidth(140);
+		percent.setMaxWidth(140); percent.setMinWidth(140);
+		average.setMaxWidth(140); average.setMinWidth(140);
+		best.setMaxWidth(140); best.setMinWidth(140);
+		
+		tv.getColumns().addAll(numAlgs, occ, percent, average, best);
+		tv.setLayoutX(750);
+		tv.setLayoutY(90);
+		tv.setMaxHeight(170); tv.setMinHeight(170); 
+		tv.setMaxWidth(700); tv.setMinWidth(700); 
+		
+		tv.getItems().add(new AlgInfo("6", algCountByNum.get(0).intValue(), round(((algCountByNum.get(0)/totalResults)*100), 2), meanArray.get(0), bestTimeArray.get(0)));
+		tv.getItems().add(new AlgInfo("7", algCountByNum.get(1).intValue(), round(((algCountByNum.get(1)/totalResults)*100), 2), meanArray.get(1), bestTimeArray.get(1)));
+		tv.getItems().add(new AlgInfo("8", algCountByNum.get(2).intValue(), round(((algCountByNum.get(2)/totalResults)*100), 2), meanArray.get(2), bestTimeArray.get(2)));
+		tv.getItems().add(new AlgInfo("9", algCountByNum.get(3).intValue(), round(((algCountByNum.get(3)/totalResults)*100), 2), meanArray.get(3), bestTimeArray.get(3)));
+		tv.getItems().add(new AlgInfo("10", algCountByNum.get(4).intValue(), round(((algCountByNum.get(4)/totalResults)*100), 2), meanArray.get(4), bestTimeArray.get(4)));
+		tv.getItems().add(new AlgInfo("11", algCountByNum.get(5).intValue(), round(((algCountByNum.get(5)/totalResults)*100), 2), meanArray.get(5), bestTimeArray.get(5)));
+		tv.getItems().add(new AlgInfo("12", algCountByNum.get(6).intValue(), round(((algCountByNum.get(6)/totalResults)*100), 2), meanArray.get(6), bestTimeArray.get(6)));
+		tv.getItems().add(new AlgInfo("13", algCountByNum.get(7).intValue(), round(((algCountByNum.get(7)/totalResults)*100), 2), meanArray.get(7), bestTimeArray.get(7)));
+		tv.getItems().add(new AlgInfo("14+", algCountByNum.get(8).intValue(), round(((algCountByNum.get(8)/totalResults)*100), 2)));
+		
+		p.getChildren().add(tv);
+		
 		
 		
 		System.out.println("This session had "+totalResults+" total successess");

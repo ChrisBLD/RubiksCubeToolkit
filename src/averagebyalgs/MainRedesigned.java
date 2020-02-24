@@ -189,12 +189,11 @@ public class MainRedesigned extends Application {
         loading.setVisible(false);
         
         Button go = new Button("");
-        go.setMaxHeight(100);
-        go.setMinHeight(100);
-        go.setMaxWidth(45);
-        go.setMinWidth(45);
-        go.setLayoutX(700);
-        go.setLayoutY(600);
+        go.setGraphic(new ImageView( new Image("/resources/goButton.png")));
+        go.setMaxHeight(67); go.setMinHeight(67);
+        go.setMaxWidth(62);  go.setMinWidth(62);
+        go.setLayoutX(760);
+        go.setLayoutY(640);
         go.setOnAction(new EventHandler<ActionEvent> () {
         	
         	@Override
@@ -230,9 +229,11 @@ public class MainRedesigned extends Application {
         		p.getChildren().add(barArray.get(6));
         		p.getChildren().add(barArray.get(7));
         		
-        		StatisticsBoard.calculate();
-        		StatisticsBoard.display();
-        		
+        		boolean b = StatisticsBoard.calculate();
+        		if (b) {
+        			StatisticsBoard.display(p);
+        			
+        		}
         		
         	}
         });
