@@ -214,11 +214,11 @@ public class CubeSolver {
 			applyMovesLogically("UTFTBBRGTBBRR");
 			switch (FRU[0]) {
 			case GREEN: allMoves.add("CUTFTBBRGTBBRR"); break;
-			case ORANGE: allMoves.add("CUTFTBBRGTBBRRI"); break;
-			case BLUE: allMoves.add("CUTFTBBRGTBBRRUU"); break;
-			case RED: allMoves.add("CUTFTBBRGTBBRRU"); break;
+			case ORANGE: allMoves.add("CUTFTBBRGTBBRRI"); applyMovesLogically("I"); break;
+			case BLUE: allMoves.add("CUTFTBBRGTBBRRUU"); applyMovesLogically("UU");  break;
+			case RED: allMoves.add("CUTFTBBRGTBBRRU"); applyMovesLogically("U"); break;
 			}
-		} if (hlCount == 1) { //Most likely case:
+		} else if (hlCount == 1) { //Most likely case:
 			String pre = "*";
 			if (headlightArray[0]) {
 				pre = "UU";

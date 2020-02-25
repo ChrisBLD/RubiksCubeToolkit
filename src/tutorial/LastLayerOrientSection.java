@@ -113,12 +113,12 @@ public class LastLayerOrientSection {
 		seqOut.setOnFinished(new EventHandler<ActionEvent>() {
     		@Override
     		public void handle(ActionEvent event) {
-    			if (bodyCount == 19) {
+    			if (bodyCount == MAX) {
 
     				elements.get(0).setText("");
     				elements.get(1).setText("                                                    "+
     										"                                                    ");
-    				//SecondLayerEdgesSection.begin(allMoves, seqOut, seqIn, elements, forward, back);
+    				LastLayerPermuteSection.begin(allMoves, seqOut, seqIn, elements, forward, back, restartSection, skipToDemo);
     				System.out.println("we're done!");
     			} else {
 	    			forward.setDisable(false);
