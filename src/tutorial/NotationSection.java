@@ -50,8 +50,8 @@ public abstract class NotationSection {
 		    	+ " than once in order to achieve the desired outcome", "R", "U", "R'", "U'",
 		    	"Repeating these moves six times will return the cube to a solved state. This is not true for all algorithms, but it's an example of something"
 		    	+ " similar to what we will use later in the tutorial.",
-		    	"There will be numerous algorithm demonstrations similar to the one just shown during the tutorial. Just press the back button at any stage of"
-		    	+ " the algorithm to undo the moves made and watch it happen again"};
+		    	"There will be numerous algorithm demonstrations similar to the one just shown during the tutorial. You'll be able to navigate through the moves"
+		    	+ " at your own pace and spend as long as you like on any algorithm."};
 		
 	    String[] moveText = {"Turn the Right Face 90 degrees Clockwise", "Turn the Right Face 90 degrees Counter-Clockwise", "Turn the Right Face 180 degrees",
 	    		"Turn the Right Face 90 degrees Clockwise", "Turn the Upper Face 90 degrees Clockwise", "Turn the Right Face 90 degrees Counter-Clockwise", 
@@ -60,6 +60,7 @@ public abstract class NotationSection {
 	    bodyCount = 0;
 	    forwardOrBack = true;
 	    seqOut.playFromStart();
+	    skipToDemo.setDisable(true);
 	    seqOut.setOnFinished(new EventHandler<ActionEvent>() {
 	    	@Override
 	    	public void handle(ActionEvent event) {
