@@ -74,7 +74,7 @@ public class SecondLayerEdgesSection {
 							 "...and then we pair it up with the edge and insert the whole pair back into the slot.",
 							 
 							 "If an edge is inserted into the wrong location, simply rotate so that the slot is in the "+
-							 "front position and perform the first algorithm to get the edge out. That long algorith from "+
+							 "front position and perform the first algorithm to get the edge out. That long algorithm from "+
 							 "earlier is doing just that!",
 
 							 "Now let's try it with your scramble: Place the first edge above its location with the moves "+
@@ -189,17 +189,36 @@ public class SecondLayerEdgesSection {
 	 	    		seqInText.playFromStart();   
  	    		} else if (bodyCount <=20) {
  	    			if (bodyCount == 13) {
- 	    				buttonValueArray[2] = true;
- 	    				buttonValueArray[3] = true;
- 	    				MoveManager.prepareDemo(elements);
+ 	    				if (!forwardOrBack) {
+ 	    					System.out.println("noticed backward, made it here. forwardorback = "+forwardOrBack);
+ 		 	       			bodyCount = SharedToolbox.bodyCountDec(bodyCount);
+ 		 	       			if (bodyCount == bodyCountFloor) {
+ 		 	       				buttonValueArray[1] = true;
+ 		 	       			}
+ 			       			elements.get(1).setText(bodyText[bodyCount]);
+ 			       			if (resources[bodyCount].equals("NULL")) {
+ 			       				elements.get(2).setGraphic(null);
+ 			       				elements.get(2).setVisible(false);
+ 			       			} else {
+ 			       				elements.get(2).setVisible(true);
+ 			       				elements.get(2).setGraphic(new ImageView(new Image("/resources/"+resources[bodyCount])));
+ 			       			}
+ 			       			seqInText.playFromStart(); 
+ 	    				} else {
+ 	    					buttonValueArray[2] = true;
+ 	    					buttonValueArray[3] = true;
+ 	    					MoveManager.prepareDemo(elements);
+ 	    				}
  	    			} else if (bodyCount % 2 == 1) {
  	    				UserInterface.makeYrotation(false);
  	    			}
- 	    			bodyCount = SharedToolbox.bodyCountInc(bodyCount);
-    				elements.get(1).setText(bodyText[bodyCount]);
-    				System.out.println("BODY COUNT: "+bodyCount+", STAGE: "+(bodyCount+3));
-    				MoveManager.main(allMoves, elements, forward, back, bodyCount+3); 	    
- 	    			seqInText.playFromStart(); 
+ 	    			if (forwardOrBack) {
+	 	    			bodyCount = SharedToolbox.bodyCountInc(bodyCount);
+	    				elements.get(1).setText(bodyText[bodyCount]);
+	    				System.out.println("BODY COUNT: "+bodyCount+", STAGE: "+(bodyCount+3));
+	    				MoveManager.main(allMoves, elements, forward, back, bodyCount+3); 	    
+	 	    			seqInText.playFromStart(); 
+ 	    			}
  	    		} else if (bodyCount == 21) {
 	    			UserInterface.makeYrotation(false);
 	    			if (forwardOrBack) {
