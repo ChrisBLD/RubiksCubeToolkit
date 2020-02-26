@@ -216,14 +216,33 @@ public class CrossSection {
 	 	    		seqInText.playFromStart();   
  	    		} else if (bodyCount <=15) {
  	    			if (bodyCount == 12) {
- 	    				buttonValueArray[3] = true;
- 	    				MoveManager.prepareDemo(elements);
+ 	    				if (!forwardOrBack) {
+ 	    					System.out.println("noticed backward, made it here");
+ 		 	       			bodyCount = SharedToolbox.bodyCountDec(bodyCount);
+ 		 	       			if (bodyCount == bodyCountFloor) {
+ 		 	       				buttonValueArray[1] = true;
+ 		 	       			}
+ 			       			elements.get(1).setText(bodyText[bodyCount]);
+ 			       			if (resources[bodyCount].equals("NULL")) {
+ 			       				elements.get(2).setGraphic(null);
+ 			       				elements.get(2).setVisible(false);
+ 			       			} else {
+ 			       				elements.get(2).setVisible(true);
+ 			       				elements.get(2).setGraphic(new ImageView(new Image("/resources/"+resources[bodyCount])));
+ 			       			}
+ 			       			seqInText.playFromStart();   
+ 	    				} else {
+	 	    				buttonValueArray[3] = true;
+	 	    				MoveManager.prepareDemo(elements);
+ 	    				}
  	    			}
- 	    			bodyCount = SharedToolbox.bodyCountInc(bodyCount);
-    				elements.get(1).setText(bodyText[bodyCount]);
-    				System.out.println("BODY COUNT: "+bodyCount+", STAGE: "+(bodyCount-12));
-    				MoveManager.main(allMoves, elements, forward, back, bodyCount-12); 	    
- 	    			seqInText.playFromStart(); 
+ 	    			if (forwardOrBack) {
+	 	    			bodyCount = SharedToolbox.bodyCountInc(bodyCount);
+	    				elements.get(1).setText(bodyText[bodyCount]);
+	    				System.out.println("BODY COUNT: "+bodyCount+", STAGE: "+(bodyCount-12));
+	    				MoveManager.main(allMoves, elements, forward, back, bodyCount-12); 	    
+	 	    			seqInText.playFromStart(); 
+ 	    			}
  	    		}
  	    		else if (bodyCount <= 22) {
  	    			if (bodyCount == 19) {
@@ -280,7 +299,8 @@ public class CrossSection {
  	    
  	    UserInterface.scene.setOnKeyPressed(e -> {
  	    	switch(e.getCode()) {
- 	    	case O: UserInterface.makeZ2rotation(); LastLayerOrientSection.begin(allMoves, seqOut, seqIn, elements, forward, back, restartSection, skipToDemo); break;
+ 	    	case O: //UserInterface.makeZ2rotation(); 
+ 	    		FirstLayerCornersSection.begin(allMoves, seqOut, seqIn, elements, forward, back, restartSection, skipToDemo); break;
  	    	}
  	    });
 	}
@@ -320,6 +340,7 @@ public class CrossSection {
 	
 	private static void skipInfo(SequentialTransition seqOutText) {
 		bodyCount = 12;
+		forwardOrBack = true;
 		seqOutText.playFromStart();
 	}
 	
