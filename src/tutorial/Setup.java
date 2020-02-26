@@ -60,8 +60,9 @@ public class Setup {
 		Setup.back = back;
 		Setup.restartSection = restartSection;
 		Setup.skipToDemo = skipToDemo;
-		restartSection.setDisable(true);
-		skipToDemo.setDisable(true);
+		
+		boolean[] buttonValueArray = {false, false, true, true}; //forward, back, restartSection, skipToDemo
+    	disableButtons(forward, back, restartSection, skipToDemo);
     	seqOut.playFromStart();
     	seqOut.setOnFinished(new EventHandler<ActionEvent>() {
     		@Override
@@ -76,10 +77,10 @@ public class Setup {
     	
     	seqIn.setOnFinished(new EventHandler<ActionEvent>() {
     		@Override
-    		public void handle(ActionEvent event) {
-    			forward.setDisable(false);
-    			back.setDisable(false);
-    		}
+ 	    	public void handle(ActionEvent event) {
+    			System.out.println("active");
+ 	    		enableButtons(forward, back, restartSection, skipToDemo, buttonValueArray);
+ 	    	}
     	});
     	
     	ArrayList<Label> hasCube = new ArrayList<Label>();
@@ -92,12 +93,15 @@ public class Setup {
     		@Override
     		public void handle(ActionEvent event) {
     			if (bodyCount < 3) {
+    				buttonValueArray[1] = true;
 	    			elements.get(1).setText(bodyText[bodyCount]);
 	    			elements.get(2).setText("");
 	    			if (bodyCount == 2) {
+	    				buttonValueArray[0] = true;
 	    				generateInputButton();
 	    			}
     			} else {
+    				buttonValueArray[1] = true;
     				if (bodyCount == 4) {
     					UserInterface.yushengScramble();
     					UserInterface.timeline.playFromStart();
@@ -120,9 +124,17 @@ public class Setup {
     		}
     	});
     	
+    	seqInText.setOnFinished(new EventHandler<ActionEvent>() {
+    		@Override
+    		public void handle(ActionEvent event) {
+    			enableButtons(forward, back, restartSection, skipToDemo, buttonValueArray);
+    		}
+    	});
+    	
     	forward.setOnAction(new EventHandler<ActionEvent>() {
     		@Override
     		public void handle(ActionEvent event) {
+    			disableButtons(forward, back, restartSection, skipToDemo);
     			System.out.println("bodycount: "+bodyCount);
     			bodyCount = SharedToolbox.bodyCountInc(bodyCount);
     			System.out.println("bodycount: "+bodyCount);
@@ -133,6 +145,7 @@ public class Setup {
     	back.setOnAction(new EventHandler<ActionEvent>() {
     		@Override
     		public void handle(ActionEvent event) {
+    	    	disableButtons(forward, back, restartSection, skipToDemo);
     			bodyCount = SharedToolbox.bodyCountInc(bodyCount);
     			bodyCount = SharedToolbox.bodyCountInc(bodyCount);
     			bodyCount = SharedToolbox.bodyCountInc(bodyCount);
@@ -174,6 +187,20 @@ public class Setup {
 		test.setPadding(new Insets(70,70,70,70));
 		TutorialHomepage.toolBarRight.getItems().set(2,test);
 
+	}
+	
+	private static void disableButtons(Button forward, Button back, Button restartSection, Button skipToDemo) {
+		forward.setDisable(true);
+		back.setDisable(true);
+		restartSection.setDisable(true);
+		skipToDemo.setDisable(true);
+	}
+	
+	private static void enableButtons(Button forward, Button back, Button restartSection, Button skipToDemo, boolean[] buttonValueArray) {
+		forward.setDisable(buttonValueArray[0]);
+		back.setDisable(buttonValueArray[1]);
+		restartSection.setDisable(buttonValueArray[2]);
+		skipToDemo.setDisable(buttonValueArray[3]);
 	}
 	
 	private static void setupVirtualCube(ArrayList<Label> elements) {
