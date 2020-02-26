@@ -106,9 +106,11 @@ public class LastLayerOrientSection {
 							  "yellowCrossSolved.png", "NULL", "stepsToOLLcorners.png", "sune.png", "ollCornerCases.png", "setupToSune.png", 
 							  "oneCornerOriented.png", "noCornerOriented.png", "twoCornerOriented.png", "NULL", "NULL", "NULL", "NULL"};
 
+		boolean[] buttonValueArray = {false, false, false, false}; //forward, back, restartSection, skipToDemo
+    	
 		bodyCount = 0;
-		restartSection.setDisable(false);
-		skipToDemo.setDisable(false);
+		//restartSection.setDisable(false);
+		//skipToDemo.setDisable(false);
 		seqOut.playFromStart();
 		seqOut.setOnFinished(new EventHandler<ActionEvent>() {
     		@Override
@@ -131,7 +133,7 @@ public class LastLayerOrientSection {
 	    	    	newBox.setPadding(new Insets(40,0,0,0));
 	    	    	newBox.setAlignment(Pos.CENTER);
 	    	    	TutorialHomepage.toolBarRight.getItems().set(2, newBox);
-	    	    	back.setDisable(true);
+	    	    	buttonValueArray[1] = true;
 	    	    	elements.get(2).setText("");
 	    	    	elements.get(3).setText("");
 	    	    	
@@ -141,6 +143,13 @@ public class LastLayerOrientSection {
 	    			seqIn.playFromStart();
     			}
     		}
+		});
+		
+		seqIn.setOnFinished(new EventHandler<ActionEvent>() {
+ 	    	@Override
+ 	    	public void handle(ActionEvent event) {
+ 	    		enableButtons(forward, back, restartSection, skipToDemo, buttonValueArray);
+ 	    	}
 		});
 		
 		@SuppressWarnings("unchecked")
@@ -153,13 +162,27 @@ public class LastLayerOrientSection {
  	    	@Override
  	    	public void handle(ActionEvent event) {
  	    		System.out.println("BODY COUNT IS:"+bodyCount);
- 	    		if (bodyCount <= 6) {
+ 	    		buttonValueArray[0] = false;
+ 	    		buttonValueArray[1] = false;
+ 	    		buttonValueArray[2] = false;
+ 	    		buttonValueArray[3] = false;
+ 	    		if (bodyCount == -1) {
+ 	    			buttonValueArray[1] = true;
+	    			bodyCount = SharedToolbox.bodyCountInc(bodyCount);
+ 	       			elements.get(1).setText(bodyText[bodyCount]);
+ 	       			elements.get(2).setText("");
+ 	       			elements.get(2).setGraphic(null);
+ 	       			seqInText.playFromStart(); 
+ 	    		} else if (bodyCount <= 6) {
  	    			if (forwardOrBack) {
 	 	    			bodyCount = SharedToolbox.bodyCountInc(bodyCount);
 	 	       			elements.get(1).setText(bodyText[bodyCount]);
 	 	       		} else {
 	 	       			bodyCount = SharedToolbox.bodyCountDec(bodyCount);
 		       			elements.get(1).setText(bodyText[bodyCount]);
+		       			if (bodyCount == bodyCountFloor) {
+	 	       				buttonValueArray[1] = true;
+	 	       			}
 	 	       		}	
 	 	    		if (resources[bodyCount].equals("NULL")) {
 	 	    			elements.get(2).setGraphic(null);
@@ -171,30 +194,55 @@ public class LastLayerOrientSection {
 	 	    		}
 	 	    		seqInText.playFromStart();   
  	    		} else if (bodyCount == 7 || bodyCount == 15) {
-	    			skipToDemo.setDisable(true);
-	    			restartSection.setDisable(true);
-	    			MoveManager.prepareDemo(elements);
-		    		bodyCount = SharedToolbox.bodyCountInc(bodyCount);
-					elements.get(1).setText(bodyText[bodyCount]);
-					if (bodyCount == 8) {
-						System.out.println("BODY COUNT: "+bodyCount+", STAGE: "+(25));
-						MoveManager.main(allMoves, elements, forward, back, 25); 
-					} else {
-						System.out.println("BODY COUNT: "+bodyCount+", STAGE: "+(26));
-						MoveManager.main(allMoves, elements, forward, back, 26); 
-					}
-	    			seqInText.playFromStart(); 
+ 	    			if (!forwardOrBack) {
+    					System.out.println("noticed backward, made it here. forwardorback = "+forwardOrBack);
+	 	       			bodyCount = SharedToolbox.bodyCountDec(bodyCount);
+	 	       			if (bodyCount == bodyCountFloor) {
+	 	       				buttonValueArray[1] = true;
+	 	       			}
+		       			elements.get(1).setText(bodyText[bodyCount]);
+		       			if (resources[bodyCount].equals("NULL")) {
+		       				elements.get(2).setGraphic(null);
+		       				elements.get(2).setVisible(false);
+		       			} else {
+		       				elements.get(2).setVisible(true);
+		       				elements.get(2).setGraphic(new ImageView(new Image("/resources/"+resources[bodyCount])));
+		       			}
+		       			seqInText.playFromStart(); 
+    				} else {
+	 	    			buttonValueArray[2] = true;
+		    			buttonValueArray[3] = true;
+		    			MoveManager.prepareDemo(elements);
+			    		bodyCount = SharedToolbox.bodyCountInc(bodyCount);
+						elements.get(1).setText(bodyText[bodyCount]);
+						if (bodyCount == 8) {
+							System.out.println("BODY COUNT: "+bodyCount+", STAGE: "+(25));
+							MoveManager.main(allMoves, elements, forward, back, 25); 
+						} else {
+							System.out.println("BODY COUNT: "+bodyCount+", STAGE: "+(26));
+							MoveManager.main(allMoves, elements, forward, back, 26); 
+						}
+		    			seqInText.playFromStart(); 
+    				}
  	    		} else if (bodyCount <= 14 || bodyCount == 18){
+ 	    			buttonValueArray[2] = true;
  	    			if (bodyCount == 8 || bodyCount == 18) {
+ 	    				if (bodyCount == 18) {
+ 	    					buttonValueArray[0] = false;
+ 	    					buttonValueArray[1] = true;
+ 	    					buttonValueArray[2] = true;
+ 	    					buttonValueArray[3] = true;
+ 	    				} else {
+ 	    					buttonValueArray[3] = false;
+ 	    				}
  	    				MoveManager.kill();
-    					back.setDisable(true);
+    					buttonValueArray[1] = true;
     					elements.get(2).setText("");
     					if (bodyCount == 18) {
     						UserInterface.timeline2.playFromStart();
     					}
-    					skipToDemo.setDisable(false);
  	    			} else {
- 	    				back.setDisable(false);
+ 	    				buttonValueArray[1] = false;
  	    			}
  	    			if (forwardOrBack) {
 	 	    			bodyCount = SharedToolbox.bodyCountInc(bodyCount);
@@ -223,13 +271,41 @@ public class LastLayerOrientSection {
  	    	}
     	});
     	
-    	forward.setOnAction(event -> {changeDir(true); checkValid(seqOut, seqOutText, bodyText);});
+   	 	seqInText.setOnFinished(new EventHandler<ActionEvent>() {
+	    	@Override
+	    	public void handle(ActionEvent event) {
+	    		if (bodyCount == 8 || bodyCount == 16 || bodyCount == 17 || bodyCount == 18) {
+	    			
+	    		} else {
+	    			enableButtons(forward, back, restartSection, skipToDemo, buttonValueArray);
+	    		}
+	    	}
+ 	 });
+ 	
+    	
+    	forward.setOnAction(event -> {disableButtons(forward, back, restartSection, skipToDemo); changeDir(true); checkValid(seqOut, seqOutText, bodyText);});
  	    
- 	    back.setOnAction(event -> {changeDir(false); checkValid(seqOut, seqOutText,bodyText);});
+ 	    back.setOnAction(event -> {if (bodyCount != 0) {disableButtons(forward, back, restartSection, skipToDemo); changeDir(false); checkValid(seqOut, seqOutText,bodyText);}});
  	    
- 	    restartSection.setOnAction(event -> {restart(seqOutText);});
+ 	    restartSection.setOnAction(event -> {disableButtons(forward, back, restartSection, skipToDemo); restart(seqOutText);});
+		
+ 	    skipToDemo.setOnAction(event -> {disableButtons(forward, back, restartSection, skipToDemo); skipInfo(seqOutText);});
  	    
- 	    skipToDemo.setOnAction(event -> {skipInfo(seqOutText);});
+		
+	}
+	
+	private static void disableButtons(Button forward, Button back, Button restartSection, Button skipToDemo) {
+		forward.setDisable(true);
+		back.setDisable(true);
+		restartSection.setDisable(true);
+		skipToDemo.setDisable(true);
+	}
+	
+	private static void enableButtons(Button forward, Button back, Button restartSection, Button skipToDemo, boolean[] buttonValueArray) {
+		forward.setDisable(buttonValueArray[0]);
+		back.setDisable(buttonValueArray[1]);
+		restartSection.setDisable(buttonValueArray[2]);
+		skipToDemo.setDisable(buttonValueArray[3]);
 	}
 	
     private static void checkValid(SequentialTransition seqOut, SequentialTransition seqOutText, String[] bodyText) {
@@ -251,6 +327,7 @@ public class LastLayerOrientSection {
     }
 
 	private static void skipInfo(SequentialTransition seqOutText) {
+		forwardOrBack = true;
 		if (bodyCount <=6) {
 			bodyCount = 7;
 			seqOutText.playFromStart();
