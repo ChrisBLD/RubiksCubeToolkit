@@ -104,7 +104,8 @@ public class CrossSection {
 							  "solvedCross.png", "NULL", "NULL", "NULL", "NULL", "NULL", "NULL"};
 		
 														 
-		
+    	boolean[] buttonValueArray = {false, false, false, false}; //forward, back, restartSection, skipToDemo
+    	
 		seqOut.playFromStart();
 		skipToDemo.setDisable(false);
 		seqOut.setOnFinished(new EventHandler<ActionEvent>() {
@@ -116,8 +117,7 @@ public class CrossSection {
     										"                                                    ");
     				FirstLayerCornersSection.begin(allMoves, seqOut, seqIn, elements, forward, back, restartSection, skipToDemo);
     			} else {
-	    			forward.setDisable(false);
-	    			back.setDisable(false);
+	    			//disableButtons(forward, back, restartSection, skipToDemo);
 	    	    	elements.get(0).setText("Solving the Cross");
 	    	    	elements.get(1).setText(bodyText[bodyCount]);  
 	    	    	HBox newBox = new HBox(elements.get(2));
@@ -137,6 +137,8 @@ public class CrossSection {
 		});
 		
 		
+		
+		
 		@SuppressWarnings("unchecked")
 		ArrayList<Label> text = (ArrayList<Label>) elements.clone();
 		text.remove(0);
@@ -150,21 +152,31 @@ public class CrossSection {
  	    	@Override
  	    	public void handle(ActionEvent event) {
  	    		System.out.println("BODY COUNT IS:"+bodyCount);
+ 	    		buttonValueArray[0] = false;
+ 	    		buttonValueArray[1] = false;
+ 	    		buttonValueArray[2] = false;
+ 	    		buttonValueArray[3] = false;
  	    		if (bodyCount == -1) {
- 	    			bodyCount = SharedToolbox.bodyCountInc(bodyCount);
+ 	    			//bodyCount = SharedToolbox.bodyCountInc(bodyCount);
  	    			bodyCount = SharedToolbox.bodyCountInc(bodyCount);
  	    			elements.get(2).setGraphic(null);
  	    			elements.get(2).setVisible(false);
  	       			elements.get(1).setText(bodyText[bodyCount]);
- 	       			seqInText.playFromStart();  
+ 	       			seqInText.playFromStart();  	    			
  	    		} else if (bodyCount <=11 || bodyCount == 16 || bodyCount == 17 || bodyCount == 18 || bodyCount == 23) {
+ 	    			if (!(bodyCount <= 11)) {
+ 	    				buttonValueArray[0] = false;
+ 	 	    			buttonValueArray[1] = false;
+ 	 	    			buttonValueArray[2] = true;
+ 	 	    			buttonValueArray[3] = true;
+ 	    			}
  	    			if (bodyCount == 16 || bodyCount == 23) {
  	    				if (bodyCount == 23) {
  	    					UserInterface.makeYrotation(false);
  	    				} 
  	    				if (forwardOrBack) {
  	    					MoveManager.kill();
- 	    					back.setDisable(false);
+ 	    					buttonValueArray[1] = true;
  	    					UserInterface.timeline2.play();
  	    				}
  	    				elements.get(2).setText("");
@@ -172,13 +184,16 @@ public class CrossSection {
  	    			if (bodyCount == 16) {
  	    				bodyCountFloor = 17;
  	    			} else if (bodyCount == 23) {
- 	    				back.setDisable(true);
+ 	    				buttonValueArray[1] = true;
  	    			}
 	 	    		if (forwardOrBack) {
 	 	    			bodyCount = SharedToolbox.bodyCountInc(bodyCount);
 	 	       			elements.get(1).setText(bodyText[bodyCount]);
 	 	       		} else {
 	 	       			bodyCount = SharedToolbox.bodyCountDec(bodyCount);
+	 	       			if (bodyCount == bodyCountFloor) {
+	 	       				buttonValueArray[1] = true;
+	 	       			}
 		       			elements.get(1).setText(bodyText[bodyCount]);
 	 	       		}	
 	 	    		if (resources[bodyCount].equals("NULL")) {
@@ -190,9 +205,8 @@ public class CrossSection {
 	 	    		}
 	 	    		seqInText.playFromStart();   
  	    		} else if (bodyCount <=15) {
- 	    			restartSection.setDisable(true);
  	    			if (bodyCount == 12) {
- 	    				skipToDemo.setDisable(true);
+ 	    				buttonValueArray[3] = true;
  	    				MoveManager.prepareDemo(elements);
  	    			}
  	    			bodyCount = SharedToolbox.bodyCountInc(bodyCount);
@@ -216,20 +230,44 @@ public class CrossSection {
  	    	}
  	    });
     	 
+    	 seqInText.setOnFinished(new EventHandler<ActionEvent>() {
+ 	    	@Override
+ 	    	public void handle(ActionEvent event) {
+ 	    		if (bodyCount == 13 || bodyCount == 14 || bodyCount == 15 || bodyCount == 16 || bodyCount == 20 || bodyCount == 21 || bodyCount == 22 || bodyCount == 23) {
+ 	    			
+ 	    		} else {
+ 	    			enableButtons(forward, back, restartSection, skipToDemo, buttonValueArray);
+ 	    		}
+ 	    	}
+    	 });
     	
-    	forward.setOnAction(event -> {changeDir(true); checkValid(seqOut, seqOutText, bodyText);});
+    	forward.setOnAction(event -> {disableButtons(forward, back, restartSection, skipToDemo); changeDir(true); checkValid(seqOut, seqOutText, bodyText);});
  	    
- 	    back.setOnAction(event -> {changeDir(false); checkValid(seqOut, seqOutText,bodyText);});
- 	    	
- 	    restartSection.setOnAction(event -> {restart(seqOutText);});
+ 	    back.setOnAction(event -> {if (bodyCount != 0) {disableButtons(forward, back, restartSection, skipToDemo); changeDir(false); checkValid(seqOut, seqOutText,bodyText);}});
+ 	    
+ 	    restartSection.setOnAction(event -> {disableButtons(forward, back, restartSection, skipToDemo); restart(seqOutText);});
 		
- 	    skipToDemo.setOnAction(event -> {skipInfo(seqOutText);});
+ 	    skipToDemo.setOnAction(event -> {disableButtons(forward, back, restartSection, skipToDemo); skipInfo(seqOutText);});
  	    
  	    UserInterface.scene.setOnKeyPressed(e -> {
  	    	switch(e.getCode()) {
  	    	case O: UserInterface.makeZ2rotation(); LastLayerOrientSection.begin(allMoves, seqOut, seqIn, elements, forward, back, restartSection, skipToDemo); break;
  	    	}
  	    });
+	}
+	
+	private static void disableButtons(Button forward, Button back, Button restartSection, Button skipToDemo) {
+		forward.setDisable(true);
+		back.setDisable(true);
+		restartSection.setDisable(true);
+		skipToDemo.setDisable(true);
+	}
+	
+	private static void enableButtons(Button forward, Button back, Button restartSection, Button skipToDemo, boolean[] buttonValueArray) {
+		forward.setDisable(buttonValueArray[0]);
+		back.setDisable(buttonValueArray[1]);
+		restartSection.setDisable(buttonValueArray[2]);
+		skipToDemo.setDisable(buttonValueArray[3]);
 	}
 	
 	private static void checkValid(SequentialTransition seqOut, SequentialTransition seqOutText, String[] bodyText) {
