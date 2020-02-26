@@ -91,10 +91,13 @@ public class FirstLayerCornersSection {
 		String[] resources = {"solvedLayer1.png", "stepsForFirstLayer.png", "incorrectLocation.png", "twoCasesFLC.png", "bottomLayerFLC.png", "topLayerFLC.png",
 							  "placingCornerCasesFLC.png", "solveWhiteRightFLC.png", "solveWhiteFrontFLC.png", "solveWhiteBottomFLC.png", "NULL"};
 		System.out.println("here!");
+		
+		boolean[] buttonValueArray = {false, false, false, false}; //forward, back, restartSection, skipToDemo
+    	
 		bodyCount = 0;
 		seqOut.playFromStart();
-		restartSection.setDisable(false);
-		skipToDemo.setDisable(false);
+		//restartSection.setDisable(false);
+		//skipToDemo.setDisable(false);
 		seqOut.setOnFinished(new EventHandler<ActionEvent>() {
     		@Override
     		public void handle(ActionEvent event) {
@@ -106,8 +109,6 @@ public class FirstLayerCornersSection {
     				SecondLayerEdgesSection.begin(allMoves, seqOut, seqIn, elements, forward, back, restartSection, skipToDemo);
     				System.out.println("we're done!");
     			} else {
-	    			forward.setDisable(false);
-	    			back.setDisable(false);
 	    	    	elements.get(0).setText("Solving the First Layer Corners");
 	    	    	elements.get(1).setText(bodyText[bodyCount]);
 	    	    	
@@ -116,7 +117,7 @@ public class FirstLayerCornersSection {
 	    	    	newBox.setPadding(new Insets(40,0,0,0));
 	    	    	newBox.setAlignment(Pos.CENTER);
 	    	    	TutorialHomepage.toolBarRight.getItems().set(2, newBox);
-	    	    	back.setDisable(true);
+	    	    	buttonValueArray[1] = true;
 	    	    	elements.get(2).setText("");
 	    	    	elements.get(3).setText("");
 	    	    	
@@ -126,6 +127,14 @@ public class FirstLayerCornersSection {
 	    			seqIn.playFromStart();
     			}
     		}
+		});
+		
+		
+		seqIn.setOnFinished(new EventHandler<ActionEvent>() {
+ 	    	@Override
+ 	    	public void handle(ActionEvent event) {
+ 	    		enableButtons(forward, back, restartSection, skipToDemo, buttonValueArray);
+ 	    	}
 		});
 		
 		@SuppressWarnings("unchecked")
@@ -138,9 +147,16 @@ public class FirstLayerCornersSection {
  	    	@Override
  	    	public void handle(ActionEvent event) {
  	    		System.out.println("BODY COUNT IS:"+bodyCount);
+ 	    		buttonValueArray[0] = false;
+ 	    		buttonValueArray[1] = false;
+ 	    		buttonValueArray[2] = false;
+ 	    		buttonValueArray[3] = false;
  	    		if (bodyCount == -1) {
+ 	    			buttonValueArray[1] = true;
 	    			bodyCount = SharedToolbox.bodyCountInc(bodyCount);
  	       			elements.get(1).setText(bodyText[bodyCount]);
+ 	       			elements.get(2).setText("");
+ 	       			elements.get(2).setGraphic(new ImageView(new Image("/resources/"+resources[bodyCount])));
  	       			seqInText.playFromStart(); 
 	    		} else if (bodyCount <= 8) {
  	    			
@@ -148,6 +164,9 @@ public class FirstLayerCornersSection {
 	 	    			bodyCount = SharedToolbox.bodyCountInc(bodyCount);
 	 	       			elements.get(1).setText(bodyText[bodyCount]);
 	 	       		} else {
+	 	       			if (bodyCount == bodyCountFloor) {
+	 	       				buttonValueArray[1] = true;
+	 	       			}
 	 	       			bodyCount = SharedToolbox.bodyCountDec(bodyCount);
 		       			elements.get(1).setText(bodyText[bodyCount]);
 	 	       		}	
@@ -161,24 +180,47 @@ public class FirstLayerCornersSection {
 	 	    		}
 	 	    		seqInText.playFromStart();   
  	    		} else if (bodyCount <=16) {
- 	    			restartSection.setDisable(true);
+ 	    			buttonValueArray[2] = true;
  	    			if (bodyCount == 9) {
- 	    				skipToDemo.setDisable(true);
- 	    				MoveManager.prepareDemo(elements);
+ 	    				if (!forwardOrBack) {
+ 	    					System.out.println("noticed backward, made it here. forwardorback = "+forwardOrBack);
+ 		 	       			bodyCount = SharedToolbox.bodyCountDec(bodyCount);
+ 		 	       			if (bodyCount == bodyCountFloor) {
+ 		 	       				buttonValueArray[1] = true;
+ 		 	       			}
+ 			       			elements.get(1).setText(bodyText[bodyCount]);
+ 			       			if (resources[bodyCount].equals("NULL")) {
+ 			       				elements.get(2).setGraphic(null);
+ 			       				elements.get(2).setVisible(false);
+ 			       			} else {
+ 			       				elements.get(2).setVisible(true);
+ 			       				elements.get(2).setGraphic(new ImageView(new Image("/resources/"+resources[bodyCount])));
+ 			       			}
+ 			       			seqInText.playFromStart(); 
+ 	    				} else {
+ 	    					buttonValueArray[3] = true;
+ 	    					MoveManager.prepareDemo(elements);
+ 	    				}
  	    			} else if (bodyCount % 2 == 1) {
  	    				UserInterface.makeYrotation(false);
  	    			}
- 	    			bodyCount = SharedToolbox.bodyCountInc(bodyCount);
-    				elements.get(1).setText(bodyText[bodyCount]);
-    				System.out.println("BODY COUNT: "+bodyCount+", STAGE: "+(bodyCount-1));
-    				MoveManager.main(allMoves, elements, forward, back, bodyCount-1); 	    
- 	    			seqInText.playFromStart(); 
+ 	    			if (forwardOrBack) {
+	 	    			bodyCount = SharedToolbox.bodyCountInc(bodyCount);
+	    				elements.get(1).setText(bodyText[bodyCount]);
+	    				System.out.println("BODY COUNT: "+bodyCount+", STAGE: "+(bodyCount-1));
+	    				MoveManager.main(allMoves, elements, forward, back, bodyCount-1); 	    
+	 	    			seqInText.playFromStart(); 
+ 	    			}
  	    		} else if (bodyCount == 17) {
 	    			UserInterface.makeYrotation(false);
 	    			if (forwardOrBack) {
+	    				buttonValueArray[0] = false;
+	     	    		buttonValueArray[1] = true;
+	     	    		buttonValueArray[2] = true;
+	     	    		buttonValueArray[3] = true;
 	    				bodyCount = SharedToolbox.bodyCountInc(bodyCount);
 	    				MoveManager.kill();
-	    				back.setDisable(false);
+	    				//buttonValueArray[1] = false;
 	    				UserInterface.timeline2.play();
 	    			}
 	    			elements.get(1).setText(bodyText[bodyCount]);
@@ -191,16 +233,43 @@ public class FirstLayerCornersSection {
  	    	}
     	});
     	
+    	seqInText.setOnFinished(new EventHandler<ActionEvent>() {
+    		@Override
+    		public void handle(ActionEvent event) {
+  	    		if (bodyCount == 10 || bodyCount == 11 || bodyCount == 12 || bodyCount == 13 || bodyCount == 14 || bodyCount == 15 || bodyCount == 16 || bodyCount == 17) {
+  	    			
+  	    		} else {
+  	    			enableButtons(forward, back, restartSection, skipToDemo, buttonValueArray);
+  	    		}
+  	    	}
+     	 });
     	
-    	forward.setOnAction(event -> {changeDir(true); checkValid(seqOut, seqOutText, bodyText);});
+    	
+    	forward.setOnAction(event -> {disableButtons(forward, back, restartSection, skipToDemo); changeDir(true); checkValid(seqOut, seqOutText, bodyText);});
  	    
- 	    back.setOnAction(event -> {changeDir(false); checkValid(seqOut, seqOutText,bodyText);});
+ 	    back.setOnAction(event -> {if (bodyCount != 0) {disableButtons(forward, back, restartSection, skipToDemo); changeDir(false); checkValid(seqOut, seqOutText,bodyText);}});
  	    
- 	    restartSection.setOnAction(event -> {restart(seqOutText);});
+ 	    restartSection.setOnAction(event -> {disableButtons(forward, back, restartSection, skipToDemo); restart(seqOutText);});
+		
+ 	    skipToDemo.setOnAction(event -> {disableButtons(forward, back, restartSection, skipToDemo); skipInfo(seqOutText);});
  	    
- 	    skipToDemo.setOnAction(event -> {skipInfo(seqOutText);});
 		
 	}
+	
+	private static void disableButtons(Button forward, Button back, Button restartSection, Button skipToDemo) {
+		forward.setDisable(true);
+		back.setDisable(true);
+		restartSection.setDisable(true);
+		skipToDemo.setDisable(true);
+	}
+	
+	private static void enableButtons(Button forward, Button back, Button restartSection, Button skipToDemo, boolean[] buttonValueArray) {
+		forward.setDisable(buttonValueArray[0]);
+		back.setDisable(buttonValueArray[1]);
+		restartSection.setDisable(buttonValueArray[2]);
+		skipToDemo.setDisable(buttonValueArray[3]);
+	}
+	
     	
     private static void checkValid(SequentialTransition seqOut, SequentialTransition seqOutText, String[] bodyText) {
     		if (forwardOrBack) {
@@ -222,6 +291,7 @@ public class FirstLayerCornersSection {
 	
 	private static void skipInfo(SequentialTransition seqOutText) {
 		bodyCount = 9;
+		forwardOrBack = true;
 		seqOutText.playFromStart();
 	}
 	
