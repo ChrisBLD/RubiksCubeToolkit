@@ -74,17 +74,21 @@ public class LastLayerPermuteSection {
 							 "So, as before, first we have to orient the top layer. Let's move the bar to the back (or, if " + 
 							 "we don't have a bar, we'll do a Ua permutation to get one, and put that bar in the back). ",
 							 
-							 "Now we have a bar in the back, let's perform either a Ua or a Ub permutation to finish the cube!"
+							 "Now we have a bar in the back, let's perform either a Ua or a Ub permutation to finish the cube!",
+							 
+							 "Congratulations! You've solved the Rubik's Cube!                                                     "
 				 			 
 				 			 
 		};
 		
 		String[] resources = {"stepsToSolvePLL.png", "twoStepsPLL.png", "NULL", "aperm.png", "headlights.png", "headlightsInBack.png", "NULL", "NULL",
-				              "stepsToSolvePLLedges.png", "NULL", "uPermBoth.png", "uPermCC.png", "uPermC.png", "solvedBar.png", "NULL", "NULL"};
+				              "stepsToSolvePLLedges.png", "NULL", "uPermBoth.png", "uPermCC.png", "uPermC.png", "solvedBar.png", "NULL", "NULL", "NULL"};
 
+		boolean[] buttonValueArray = {false, false, false, false}; //forward, back, restartSection, skipToDemo
+    	
 		bodyCount = 0;
-		restartSection.setDisable(false);
-		skipToDemo.setDisable(false);
+		//restartSection.setDisable(false);
+		//skipToDemo.setDisable(false);
 		seqOut.playFromStart();
 		seqOut.setOnFinished(new EventHandler<ActionEvent>() {
     		@Override
@@ -97,8 +101,6 @@ public class LastLayerPermuteSection {
     				//LastLayerPermuteSection.begin(allMoves, seqOut, seqIn, elements, forward, back);
     				System.out.println("we're done!");
     			} else {
-	    			forward.setDisable(false);
-	    			back.setDisable(false);
 	    	    	elements.get(0).setText("Permuting the Last Layer (PLL)");
 	    	    	elements.get(1).setText(bodyText[bodyCount]);
 	    	    	
@@ -107,7 +109,7 @@ public class LastLayerPermuteSection {
 	    	    	newBox.setPadding(new Insets(40,0,0,0));
 	    	    	newBox.setAlignment(Pos.CENTER);
 	    	    	TutorialHomepage.toolBarRight.getItems().set(2, newBox);
-	    	    	back.setDisable(true);
+	    	    	buttonValueArray[1] = true;
 	    	    	elements.get(2).setText("");
 	    	    	elements.get(3).setText("");
 	    	    	
@@ -117,6 +119,13 @@ public class LastLayerPermuteSection {
 	    			seqIn.playFromStart();
     			}
     		}
+		});
+		
+		seqIn.setOnFinished(new EventHandler<ActionEvent>() {
+ 	    	@Override
+ 	    	public void handle(ActionEvent event) {
+ 	    		enableButtons(forward, back, restartSection, skipToDemo, buttonValueArray);
+ 	    	}
 		});
 		
 		@SuppressWarnings("unchecked")
@@ -129,13 +138,27 @@ public class LastLayerPermuteSection {
  	    	@Override
  	    	public void handle(ActionEvent event) {
  	    		System.out.println("BODY COUNT IS:"+bodyCount);
- 	    		if (bodyCount <= 4) {
+ 	    		buttonValueArray[0] = false;
+ 	    		buttonValueArray[1] = false;
+ 	    		buttonValueArray[2] = false;
+ 	    		buttonValueArray[3] = false;
+ 	    		if (bodyCount == -1) {
+ 	    			buttonValueArray[1] = true;
+	    			bodyCount = SharedToolbox.bodyCountInc(bodyCount);
+ 	       			elements.get(1).setText(bodyText[bodyCount]);
+ 	       			elements.get(2).setText("");
+ 	       			elements.get(2).setGraphic(new ImageView(new Image("/resources/"+resources[bodyCount])));
+ 	       			seqInText.playFromStart(); 
+ 	    		} else if (bodyCount <= 4) {
  	    			if (forwardOrBack) {
 	 	    			bodyCount = SharedToolbox.bodyCountInc(bodyCount);
 	 	       			elements.get(1).setText(bodyText[bodyCount]);
 	 	       		} else {
 	 	       			bodyCount = SharedToolbox.bodyCountDec(bodyCount);
 		       			elements.get(1).setText(bodyText[bodyCount]);
+		       			if (bodyCount == bodyCountFloor) {
+	 	       				buttonValueArray[1] = true;
+	 	       			}
 	 	       		}	
 	 	    		if (resources[bodyCount].equals("NULL")) {
 	 	    			elements.get(2).setGraphic(null);
@@ -147,41 +170,69 @@ public class LastLayerPermuteSection {
 	 	    		}
 	 	    		seqInText.playFromStart();   
  	    		} else if (bodyCount == 5 || bodyCount == 13 || bodyCount == 6 || bodyCount == 14) {
-	    			skipToDemo.setDisable(true);
-	    			restartSection.setDisable(true);
-	    			MoveManager.prepareDemo(elements);
-		    		bodyCount = SharedToolbox.bodyCountInc(bodyCount);
-					elements.get(1).setText(bodyText[bodyCount]);
-					if (bodyCount == 6) {
-						System.out.println("BODY COUNT: "+bodyCount+", STAGE: 28");
-						MoveManager.main(allMoves, elements, forward, back, 29); 
-					} else if (bodyCount == 7) {
-						System.out.println("BODY COUNT: "+bodyCount+", STAGE: 29");
-						MoveManager.main(allMoves, elements, forward, back, 30); 
-					} else if (bodyCount == 14) {					
-						System.out.println("BODY COUNT: "+bodyCount+", STAGE: 30");
-						MoveManager.main(allMoves, elements, forward, back, 31); 
-					} else {
-						System.out.println("BODY COUNT: "+bodyCount+", STAGE: 32");
-	 	    			MoveManager.main(allMoves, elements, forward, back, 32); 	
-					}
-	    			seqInText.playFromStart(); 
+ 	    			if (!forwardOrBack) {
+    					System.out.println("noticed backward, made it here. forwardorback = "+forwardOrBack);
+	 	       			bodyCount = SharedToolbox.bodyCountDec(bodyCount);
+	 	       			if (bodyCount == bodyCountFloor) {
+	 	       				buttonValueArray[1] = true;
+	 	       			}
+		       			elements.get(1).setText(bodyText[bodyCount]);
+		       			if (resources[bodyCount].equals("NULL")) {
+		       				elements.get(2).setGraphic(null);
+		       				elements.get(2).setVisible(false);
+		       			} else {
+		       				elements.get(2).setVisible(true);
+		       				elements.get(2).setGraphic(new ImageView(new Image("/resources/"+resources[bodyCount])));
+		       			}
+		       			seqInText.playFromStart(); 
+    				} else {
+    					buttonValueArray[2] = true;
+		    			buttonValueArray[3] = true;
+		    			MoveManager.prepareDemo(elements);
+			    		bodyCount = SharedToolbox.bodyCountInc(bodyCount);
+						elements.get(1).setText(bodyText[bodyCount]);
+						if (bodyCount == 6) {
+							System.out.println("BODY COUNT: "+bodyCount+", STAGE: 28");
+							MoveManager.main(allMoves, elements, forward, back, 29); 
+						} else if (bodyCount == 7) {
+							System.out.println("BODY COUNT: "+bodyCount+", STAGE: 29");
+							MoveManager.main(allMoves, elements, forward, back, 30); 
+						} else if (bodyCount == 14) {					
+							System.out.println("BODY COUNT: "+bodyCount+", STAGE: 30");
+							MoveManager.main(allMoves, elements, forward, back, 31); 
+						} else {
+							System.out.println("BODY COUNT: "+bodyCount+", STAGE: 32");
+		 	    			MoveManager.main(allMoves, elements, forward, back, 32); 	
+						}
+		    			seqInText.playFromStart();
+    				}
  	    		} else if (bodyCount <= 12 || bodyCount == 15){
+ 	    			buttonValueArray[2] = true;
  	    			if (bodyCount == 7 || bodyCount == 15) {
+ 	    				if (bodyCount == 15) {
+ 	    					buttonValueArray[0] = false;
+ 	    					buttonValueArray[1] = true;
+ 	    					buttonValueArray[2] = true;
+ 	    					buttonValueArray[3] = true;
+ 	    				} else {
+ 	    					buttonValueArray[3] = false;
+ 	    				}
  	    				MoveManager.kill();
-    					back.setDisable(true);
+ 	    				buttonValueArray[1] = true;
     					elements.get(2).setText("");
     					if (bodyCount == 15) {
     						UserInterface.timeline2.playFromStart();
     					}
-    					skipToDemo.setDisable(false);
  	    			} else {
- 	    				back.setDisable(false);
+ 	    				buttonValueArray[1] = false;
  	    			}
  	    			if (forwardOrBack) {
 	 	    			bodyCount = SharedToolbox.bodyCountInc(bodyCount);
 	 	       			elements.get(1).setText(bodyText[bodyCount]);
 	 	       		} else {
+	 	       			if (bodyCount == 9) {
+	 	       				buttonValueArray[1] = true;
+	 	       			}
 	 	       			bodyCount = SharedToolbox.bodyCountDec(bodyCount);
 		       			elements.get(1).setText(bodyText[bodyCount]);
 	 	       		}	
@@ -192,20 +243,52 @@ public class LastLayerPermuteSection {
 	 	    			elements.get(2).setVisible(true);
 	       				elements.get(2).setGraphic(new ImageView(new Image("/resources/"+resources[bodyCount])));
 	 	    		}
+	 	    		if (bodyCount == 16) {
+	 	    			buttonValueArray[0] = true;
+	 	    			buttonValueArray[1] = true;
+	 	    			buttonValueArray[2] = true;
+	 	    			buttonValueArray[3] = true;
+	 	    		}
 	 	    		seqInText.playFromStart(); 
 
  	    		}
- 	    			
  	    	}
     	});
     	
-    	forward.setOnAction(event -> {changeDir(true); checkValid(seqOut, seqOutText, bodyText);});
+    	seqInText.setOnFinished(new EventHandler<ActionEvent>() {
+	    	@Override
+	    	public void handle(ActionEvent event) {
+	    		if (bodyCount == 6 || bodyCount == 7 || bodyCount == 14 || bodyCount == 15) {
+	    			
+	    		} else {
+	    			enableButtons(forward, back, restartSection, skipToDemo, buttonValueArray);
+	    		}
+	    	}
+    	});
+    	
+    	forward.setOnAction(event -> {disableButtons(forward, back, restartSection, skipToDemo); changeDir(true); checkValid(seqOut, seqOutText, bodyText);});
  	    
- 	    back.setOnAction(event -> {changeDir(false); checkValid(seqOut, seqOutText,bodyText);});
+ 	    back.setOnAction(event -> {if (bodyCount != 0) {disableButtons(forward, back, restartSection, skipToDemo); changeDir(false); checkValid(seqOut, seqOutText,bodyText);}});
  	    
- 	    restartSection.setOnAction(event -> {restart(seqOutText);});
+ 	    restartSection.setOnAction(event -> {disableButtons(forward, back, restartSection, skipToDemo); restart(seqOutText);});
+		
+ 	    skipToDemo.setOnAction(event -> {disableButtons(forward, back, restartSection, skipToDemo); skipInfo(seqOutText);});
  	    
- 	    skipToDemo.setOnAction(event -> {skipInfo(seqOutText);});
+		
+	}
+	
+	private static void disableButtons(Button forward, Button back, Button restartSection, Button skipToDemo) {
+		forward.setDisable(true);
+		back.setDisable(true);
+		restartSection.setDisable(true);
+		skipToDemo.setDisable(true);
+	}
+	
+	private static void enableButtons(Button forward, Button back, Button restartSection, Button skipToDemo, boolean[] buttonValueArray) {
+		forward.setDisable(buttonValueArray[0]);
+		back.setDisable(buttonValueArray[1]);
+		restartSection.setDisable(buttonValueArray[2]);
+		skipToDemo.setDisable(buttonValueArray[3]);
 	}
 	
     private static void checkValid(SequentialTransition seqOut, SequentialTransition seqOutText, String[] bodyText) {
@@ -227,6 +310,7 @@ public class LastLayerPermuteSection {
     }
 
 	private static void skipInfo(SequentialTransition seqOutText) {
+		forwardOrBack = true;
 		if (bodyCount <=5) {
 			bodyCount = 5;
 			seqOutText.playFromStart();

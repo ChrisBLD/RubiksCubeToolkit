@@ -111,6 +111,8 @@ public class Setup {
 		    			seqInText.playFromStart();
     				} else if (bodyCount == 5) {
     					elements.get(2).setGraphic(null);
+    					elements.get(2).setText("                                                                                     ");
+    					elements.get(1).setText("");
     					ArrayList<String> allMoves = CubeSolver.deriveSolution(buttonArray);
     					CrossSection.begin(allMoves, seqOut, seqIn, elements, forward, back, restartSection, skipToDemo);
     				} else {
@@ -179,6 +181,7 @@ public class Setup {
 				UserInterface.makeDmove(false); UserInterface.makeLmove(false); UserInterface.makeFmove(false); UserInterface.makeUmove(false); UserInterface.makeRmove(false);
 				ArrayList<String> allMoves = CubeSolver.deriveSolution(buttonArray);
 				getColours.setVisible(false);
+				
 				CrossSection.begin(allMoves, seqOut, seqIn, elements, forward, back, restartSection, skipToDemo);
 			}
 		});

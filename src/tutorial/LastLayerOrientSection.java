@@ -123,8 +123,6 @@ public class LastLayerOrientSection {
     				LastLayerPermuteSection.begin(allMoves, seqOut, seqIn, elements, forward, back, restartSection, skipToDemo);
     				System.out.println("we're done!");
     			} else {
-	    			forward.setDisable(false);
-	    			back.setDisable(false);
 	    	    	elements.get(0).setText("Orienting the Last Layer (OLL)");
 	    	    	elements.get(1).setText(bodyText[bodyCount]);
 	    	    	
@@ -248,6 +246,9 @@ public class LastLayerOrientSection {
 	 	    			bodyCount = SharedToolbox.bodyCountInc(bodyCount);
 	 	       			elements.get(1).setText(bodyText[bodyCount]);
 	 	       		} else {
+	 	       			if (bodyCount == 10) {
+	 	       				buttonValueArray[1] = true;
+	 	       			}
 	 	       			bodyCount = SharedToolbox.bodyCountDec(bodyCount);
 		       			elements.get(1).setText(bodyText[bodyCount]);
 	 	       		}	
