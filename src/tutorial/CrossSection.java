@@ -105,9 +105,9 @@ public class CrossSection {
 		
 														 
     	boolean[] buttonValueArray = {false, false, false, false}; //forward, back, restartSection, skipToDemo
-    	
+    	disableButtons(forward, back, restartSection, skipToDemo);
 		seqOut.playFromStart();
-		skipToDemo.setDisable(false);
+		//skipToDemo.setDisable(false);
 		seqOut.setOnFinished(new EventHandler<ActionEvent>() {
     		@Override
     		public void handle(ActionEvent event) {
@@ -118,7 +118,8 @@ public class CrossSection {
     				FirstLayerCornersSection.begin(allMoves, seqOut, seqIn, elements, forward, back, restartSection, skipToDemo);
     			} else {
 	    			//disableButtons(forward, back, restartSection, skipToDemo);
-	    	    	elements.get(0).setText("Solving the Cross");
+	    	    	buttonValueArray[1] = true;
+    				elements.get(0).setText("Solving the Cross");
 	    	    	elements.get(1).setText(bodyText[bodyCount]);  
 	    	    	HBox newBox = new HBox(elements.get(2));
 	    	    	newBox.setPadding(new Insets(40,0,0,0));
@@ -134,6 +135,13 @@ public class CrossSection {
 	    			seqIn.playFromStart();
     			}
     		}
+		});
+		
+		seqIn.setOnFinished(new EventHandler<ActionEvent>() {
+ 	    	@Override
+ 	    	public void handle(ActionEvent event) {
+ 	    		enableButtons(forward, back, restartSection, skipToDemo, buttonValueArray);
+ 	    	}
 		});
 		
 		
@@ -157,6 +165,7 @@ public class CrossSection {
  	    		buttonValueArray[2] = false;
  	    		buttonValueArray[3] = false;
  	    		if (bodyCount == -1) {
+ 	    			buttonValueArray[1] = true;
  	    			//bodyCount = SharedToolbox.bodyCountInc(bodyCount);
  	    			bodyCount = SharedToolbox.bodyCountInc(bodyCount);
  	    			elements.get(2).setGraphic(null);
@@ -190,6 +199,7 @@ public class CrossSection {
 	 	    			bodyCount = SharedToolbox.bodyCountInc(bodyCount);
 	 	       			elements.get(1).setText(bodyText[bodyCount]);
 	 	       		} else {
+	 	       			System.out.println("noticed backward, made it here");
 	 	       			bodyCount = SharedToolbox.bodyCountDec(bodyCount);
 	 	       			if (bodyCount == bodyCountFloor) {
 	 	       				buttonValueArray[1] = true;
@@ -217,15 +227,34 @@ public class CrossSection {
  	    		}
  	    		else if (bodyCount <= 22) {
  	    			if (bodyCount == 19) {
- 	    				System.out.println("BODY COUNT IS 20");
- 	    				MoveManager.prepareDemo(elements);
+ 	    				if (!forwardOrBack) {
+ 	    					System.out.println("noticed backward, made it here");
+ 		 	       			bodyCount = SharedToolbox.bodyCountDec(bodyCount);
+ 		 	       			if (bodyCount == bodyCountFloor) {
+ 		 	       				buttonValueArray[1] = true;
+ 		 	       			}
+ 			       			elements.get(1).setText(bodyText[bodyCount]);
+ 			       			if (resources[bodyCount].equals("NULL")) {
+ 			       				elements.get(2).setGraphic(null);
+ 			       				elements.get(2).setVisible(false);
+ 			       			} else {
+ 			       				elements.get(2).setVisible(true);
+ 			       				elements.get(2).setGraphic(new ImageView(new Image("/resources/"+resources[bodyCount])));
+ 			       			}
+ 			       			seqInText.playFromStart();   
+ 	    				} else {
+ 	    					System.out.println("BODY COUNT IS 20");
+ 	    					MoveManager.prepareDemo(elements);
+ 	    				}
  	    			} else {
  	    				UserInterface.makeYrotation(false);
  	    			}
- 	    			bodyCount = SharedToolbox.bodyCountInc(bodyCount);
-    				elements.get(1).setText(bodyText[bodyCount]);
-    				MoveManager.main(allMoves, elements, forward, back, bodyCount-15);    
- 	    			seqInText.playFromStart(); 
+ 	    			if (forwardOrBack) {
+ 	    				bodyCount = SharedToolbox.bodyCountInc(bodyCount);
+ 	    				elements.get(1).setText(bodyText[bodyCount]);
+ 	    				MoveManager.main(allMoves, elements, forward, back, bodyCount-15);    
+ 	 	    			seqInText.playFromStart(); 
+ 	    			}
  	    		}
  	    	}
  	    });
@@ -285,6 +314,7 @@ public class CrossSection {
 	}
 	
 	private static void changeDir(boolean dir) {
+		System.out.println("DIR NOW "+dir);
     	forwardOrBack = dir;
     }
 	
