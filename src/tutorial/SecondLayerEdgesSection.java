@@ -203,6 +203,10 @@ public class SecondLayerEdgesSection {
  	    		} else if (bodyCount == 21) {
 	    			UserInterface.makeYrotation(false);
 	    			if (forwardOrBack) {
+	    				buttonValueArray[0] = false;
+	     	    		buttonValueArray[1] = true;
+	     	    		buttonValueArray[2] = true;
+	     	    		buttonValueArray[3] = true;
 	    				bodyCount = SharedToolbox.bodyCountInc(bodyCount);
 	    				System.out.println("correctly killing mm");
 	    				MoveManager.kill();
@@ -222,7 +226,7 @@ public class SecondLayerEdgesSection {
     	seqInText.setOnFinished(new EventHandler<ActionEvent>() {
     		@Override
     		public void handle(ActionEvent event) {
-  	    		if (bodyCount == 10 || bodyCount == 11 || bodyCount == 12 || bodyCount == 13 || bodyCount == 14 || bodyCount == 15 || bodyCount == 16 || bodyCount == 17) {
+  	    		if (bodyCount == 14 || bodyCount == 15 || bodyCount == 16 || bodyCount == 17 || bodyCount == 18 || bodyCount == 19 || bodyCount == 20 || bodyCount == 21) {
   	    			
   	    		} else {
   	    			enableButtons(forward, back, restartSection, skipToDemo, buttonValueArray);
