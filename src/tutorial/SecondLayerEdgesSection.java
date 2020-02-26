@@ -104,8 +104,10 @@ public class SecondLayerEdgesSection {
 							  "insertEdgeThreeF2L.png", "insertEdgeFourF2L.png", "middleLayerBF2L.png"};
 
 		bodyCount = 0;
-		restartSection.setDisable(false);
-		skipToDemo.setDisable(false);
+		boolean[] buttonValueArray = {false, false, false, false}; //forward, back, restartSection, skipToDemo
+    	
+		//restartSection.setDisable(false);
+		//skipToDemo.setDisable(false);
 		seqOut.playFromStart();
 		seqOut.setOnFinished(new EventHandler<ActionEvent>() {
     		@Override
@@ -118,8 +120,8 @@ public class SecondLayerEdgesSection {
     				LastLayerOrientSection.begin(allMoves, seqOut, seqIn, elements, forward, back, restartSection, skipToDemo);
     				System.out.println("we're done!");
     			} else {
-	    			forward.setDisable(false);
-	    			back.setDisable(false);
+	    			//forward.setDisable(false);
+	    			//back.setDisable(false);
 	    	    	elements.get(0).setText("Solving the Second Layer Edges");
 	    	    	elements.get(1).setText(bodyText[bodyCount]);
 	    	    	
@@ -131,13 +133,20 @@ public class SecondLayerEdgesSection {
 	    	    	back.setDisable(true);
 	    	    	elements.get(2).setText("");
 	    	    	elements.get(3).setText("");
-	    	    	
+	    	    	buttonValueArray[1] = true;
 	    	    	elements.get(2).setVisible(true);
 	    	    	elements.get(3).setVisible(false);
 	    	    	//TutorialHomepage.toolBarRight.getItems().remove(TutorialHomepage.toolBarRight.getItems().size()-1);
 	    			seqIn.playFromStart();
     			}
     		}
+		});
+		
+		seqIn.setOnFinished(new EventHandler<ActionEvent>() {
+ 	    	@Override
+ 	    	public void handle(ActionEvent event) {
+ 	    		enableButtons(forward, back, restartSection, skipToDemo, buttonValueArray);
+ 	    	}
 		});
 		
 		@SuppressWarnings("unchecked")
@@ -150,7 +159,18 @@ public class SecondLayerEdgesSection {
  	    	@Override
  	    	public void handle(ActionEvent event) {
  	    		System.out.println("BODY COUNT IS:"+bodyCount);
- 	    		if (bodyCount <= 12) {
+ 	    		buttonValueArray[0] = false;
+ 	    		buttonValueArray[1] = false;
+ 	    		buttonValueArray[2] = false;
+ 	    		buttonValueArray[3] = false;
+ 	    		if (bodyCount == -1) {
+ 	    			buttonValueArray[1] = true;
+	    			bodyCount = SharedToolbox.bodyCountInc(bodyCount);
+ 	       			elements.get(1).setText(bodyText[bodyCount]);
+ 	       			elements.get(2).setText("");
+ 	       			elements.get(2).setGraphic(new ImageView(new Image("/resources/"+resources[bodyCount])));
+ 	       			seqInText.playFromStart(); 
+ 	    		} else if (bodyCount <= 12) {
  	    			if (forwardOrBack) {
 	 	    			bodyCount = SharedToolbox.bodyCountInc(bodyCount);
 	 	       			elements.get(1).setText(bodyText[bodyCount]);
@@ -169,8 +189,8 @@ public class SecondLayerEdgesSection {
 	 	    		seqInText.playFromStart();   
  	    		} else if (bodyCount <=20) {
  	    			if (bodyCount == 13) {
- 	    				skipToDemo.setDisable(true);
- 	    				restartSection.setDisable(true);
+ 	    				buttonValueArray[2] = true;
+ 	    				buttonValueArray[3] = true;
  	    				MoveManager.prepareDemo(elements);
  	    			} else if (bodyCount % 2 == 1) {
  	    				UserInterface.makeYrotation(false);
@@ -199,13 +219,40 @@ public class SecondLayerEdgesSection {
  	    	}
     	});
     	
-    	forward.setOnAction(event -> {changeDir(true); checkValid(seqOut, seqOutText, bodyText);});
+    	seqInText.setOnFinished(new EventHandler<ActionEvent>() {
+    		@Override
+    		public void handle(ActionEvent event) {
+  	    		if (bodyCount == 10 || bodyCount == 11 || bodyCount == 12 || bodyCount == 13 || bodyCount == 14 || bodyCount == 15 || bodyCount == 16 || bodyCount == 17) {
+  	    			
+  	    		} else {
+  	    			enableButtons(forward, back, restartSection, skipToDemo, buttonValueArray);
+  	    		}
+  	    	}
+     	 });
+    	
+    	forward.setOnAction(event -> {disableButtons(forward, back, restartSection, skipToDemo); changeDir(true); checkValid(seqOut, seqOutText, bodyText);});
  	    
- 	    back.setOnAction(event -> {changeDir(false); checkValid(seqOut, seqOutText,bodyText);});
+ 	    back.setOnAction(event -> {if (bodyCount != 0) {disableButtons(forward, back, restartSection, skipToDemo); changeDir(false); checkValid(seqOut, seqOutText,bodyText);}});
  	    
- 	    restartSection.setOnAction(event -> {restart(seqOutText);});
+ 	    restartSection.setOnAction(event -> {disableButtons(forward, back, restartSection, skipToDemo); restart(seqOutText);});
+		
+ 	    skipToDemo.setOnAction(event -> {disableButtons(forward, back, restartSection, skipToDemo); skipInfo(seqOutText);});
  	    
- 	    skipToDemo.setOnAction(event -> {skipInfo(seqOutText);});
+		
+	}
+	
+	private static void disableButtons(Button forward, Button back, Button restartSection, Button skipToDemo) {
+		forward.setDisable(true);
+		back.setDisable(true);
+		restartSection.setDisable(true);
+		skipToDemo.setDisable(true);
+	}
+	
+	private static void enableButtons(Button forward, Button back, Button restartSection, Button skipToDemo, boolean[] buttonValueArray) {
+		forward.setDisable(buttonValueArray[0]);
+		back.setDisable(buttonValueArray[1]);
+		restartSection.setDisable(buttonValueArray[2]);
+		skipToDemo.setDisable(buttonValueArray[3]);
 	}
 	
     private static void checkValid(SequentialTransition seqOut, SequentialTransition seqOutText, String[] bodyText) {
@@ -228,6 +275,7 @@ public class SecondLayerEdgesSection {
 
 	private static void skipInfo(SequentialTransition seqOutText) {
 		bodyCount = 13;
+		forwardOrBack = true;
 		seqOutText.playFromStart();
 	}
 	

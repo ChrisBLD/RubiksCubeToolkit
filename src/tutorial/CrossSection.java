@@ -300,7 +300,7 @@ public class CrossSection {
  	    UserInterface.scene.setOnKeyPressed(e -> {
  	    	switch(e.getCode()) {
  	    	case O: //UserInterface.makeZ2rotation(); 
- 	    		FirstLayerCornersSection.begin(allMoves, seqOut, seqIn, elements, forward, back, restartSection, skipToDemo); break;
+ 	    		SecondLayerEdgesSection.begin(allMoves, seqOut, seqIn, elements, forward, back, restartSection, skipToDemo); break;
  	    	}
  	    });
 	}

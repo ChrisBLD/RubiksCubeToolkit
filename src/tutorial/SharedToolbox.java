@@ -12,7 +12,8 @@ import javafx.util.Duration;
 
 public class SharedToolbox {
 	
-	static Label info;
+	static Label info, infoSmol;
+	static Font smolFont, bigFont;
 
     public static SequentialTransition initSeqTrans(ArrayList<Label> elements, boolean dir) {
     	SequentialTransition seq = new SequentialTransition();
@@ -44,10 +45,15 @@ public class SharedToolbox {
     public void createInfoLabel() {
     	info = new Label();
     	info.setTextFill(Color.rgb(213,225,227));
-        info.setFont(Font.loadFont(getClass().getResourceAsStream("/resources/ihfont.otf"), 23));
+        info.setFont(Font.loadFont(getClass().getResourceAsStream("/resources/ihfont.otf"), 20));
         info.setWrapText(true);
         info.setMaxWidth(500);
         info.setTextAlignment(TextAlignment.CENTER);
+        
+        smolFont = Font.loadFont(getClass().getResourceAsStream("/resources/ihfont.otf"), 40);
+        bigFont = Font.loadFont(getClass().getResourceAsStream("/resources/ihfont.otf"), 60);
+        
+        
 	}
     
 }

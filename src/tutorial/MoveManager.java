@@ -45,7 +45,7 @@ public class MoveManager {
 	static ArrayList<String> movesToUserList;
 	static int count;
 	static int numMoves;
-	static boolean size = false;
+	static int size = 1;
 
 	public static void main(ArrayList<String> allMoves, ArrayList<Label> elements, Button forward, Button back, int stage) {
 		
@@ -82,11 +82,17 @@ public class MoveManager {
 			SharedToolbox.info.setVisible(true);
 		} else {
 			SharedToolbox.info.setVisible(false);
-			if (movesToUserList.size() >= 7) {
-				size = true;
+			if (movesToUserList.size() <= 5) {
+				size = 1;
+				elements.get(2).setFont(SharedToolbox.bigFont);
+			} else if (movesToUserList.size() <= 8){
+				size = 2;
+				elements.get(2).setFont(SharedToolbox.bigFont);
 			} else {
-				size = false;
+				size = 3;
+				elements.get(2).setFont(SharedToolbox.smolFont);
 			}
+			
 			generateIndicators(movesToUserList);
 			count = 0;
 			
@@ -107,10 +113,12 @@ public class MoveManager {
 		globalForward.setDisable(true);
 		if (count != 0) {
 			count--;
-			if (size) {
+			if (size == 2) {
 				((Label) buttonRow.getChildren().get(count+1)).setGraphic(new ImageView(new Image("/resources/moveIndicatorRedSMALL.png")));
-			} else {
+			} else if (size == 1) {
 				((Label) buttonRow.getChildren().get(count+1)).setGraphic(new ImageView(new Image("/resources/moveIndicatorRed.png")));
+			} else {
+				((Label) buttonRow.getChildren().get(count+1)).setGraphic(new ImageView(new Image("/resources/moveIndicatorRedTINY.png")));
 			}
 			String move = movesToUserList.get(count);
 			if (count == 0) {
@@ -145,10 +153,12 @@ public class MoveManager {
 	private static void doMove() {
 		if (count != numMoves) {
 			String move = movesToUserList.get(count);
-			if (size) {
+			if (size == 2) {
 				((Label) buttonRow.getChildren().get(count+1)).setGraphic(new ImageView(new Image("/resources/moveIndicatorGreenSMALL.png")));
-			} else {
+			} else if (size == 1) {
 				((Label) buttonRow.getChildren().get(count+1)).setGraphic(new ImageView(new Image("/resources/moveIndicatorGreen.png")));
+			} else {
+				((Label) buttonRow.getChildren().get(count+1)).setGraphic(new ImageView(new Image("/resources/moveIndicatorGreenTINY.png")));
 			}
 			count++;
 			if (count == numMoves) {
@@ -230,10 +240,12 @@ public class MoveManager {
 
 	private static void generateIndicators(ArrayList<String> movesToUserList) {
 		String graphic = "";
-		if (size) {
+		if (size == 1) {
+			graphic = "/resources/moveIndicatorRed.png";
+		} else if (size == 2) {
 			graphic = "/resources/moveIndicatorRedSMALL.png";
 		} else {
-			graphic = "/resources/moveIndicatorRed.png";
+			graphic = "/resources/moveIndicatorRedTINY.png";
 		}
 		for (String move : movesToUserList) {
 			Label l = new Label("");
@@ -256,7 +268,7 @@ public class MoveManager {
 		localBackward.setGraphic(new ImageView (new Image("/resources/leftArrow.png")));
 		localBackward.setMinSize(50,50); localBackward.setMaxSize(50,50);
 		buttonRow = new HBox(localBackward); buttonRow.setAlignment(Pos.CENTER);
-		buttonRow.setSpacing(3);
+		buttonRow.setSpacing(0);
 		SharedToolbox.info.setVisible(false);
 		SharedToolbox.info.setText("Click the buttons to apply the moves to the cube!");
 		infoRow = new HBox(SharedToolbox.info); infoRow.setAlignment(Pos.CENTER);
