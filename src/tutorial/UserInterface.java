@@ -378,9 +378,11 @@ public class UserInterface extends Application {
         Button restartSection = new Button();
         restartSection.setGraphic(new ImageView(new Image("/resources/sectionStartButton.png")));
         restartSection.setMinSize(111,67); restartSection.setMaxSize(111,67);
+        restartSection.setDisable(true);
         Button skipToDemo = new Button();
         skipToDemo.setGraphic(new ImageView(new Image("/resources/skipToDemoButton.png")));
         skipToDemo.setMinSize(111,67); skipToDemo.setMaxSize(111,67);
+        skipToDemo.setDisable(true);
         
         HBox h = new HBox(10);
         h.getChildren().addAll(s1, back, forward, s2, restartSection, skipToDemo);
