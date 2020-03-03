@@ -76,7 +76,7 @@ public class LastLayerPermuteSection {
 							 
 							 "Now we have a bar in the back, let's perform either a Ua or a Ub permutation to finish the cube!",
 							 
-							 "Congratulations! You've solved the Rubik's Cube!                                                     "
+							 "Congratulations! You've solved the Rubik's Cube! Restart the application to go through a new scramble!"
 				 			 
 				 			 
 		};
@@ -214,6 +214,7 @@ public class LastLayerPermuteSection {
  	    					buttonValueArray[1] = true;
  	    					buttonValueArray[2] = true;
  	    					buttonValueArray[3] = true;
+ 	    					elements.get(0).setText("Complete!");
  	    				} else {
  	    					buttonValueArray[3] = false;
  	    				}

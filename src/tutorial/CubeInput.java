@@ -9,6 +9,7 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
@@ -34,9 +35,23 @@ public class CubeInput {
 	String[][] redCorners = {{"G","W"},{"W","B"},{"B","Y"},{"Y","G"}};
 	String[][] orangeCorners = {{"W","G"},{"G","Y"},{"Y","B"},{"B","W"}};
 	
+	String[][][] changes = {{{"Uw"},{"U","U"},{"D","D"},{"F","R"},{"R","B"},{"B","L"},{"L","F"}},
+					       {{"Uw'"},{"U","U"},{"D","D"},{"F","L"},{"R","F"},{"B","R"},{"L","B"}},
+						   {{"Uw2"},{"U","U"},{"D","D"},{"F","B"},{"R","L"},{"B","F"},{"L","R"}},
+			
+						   {{"Fw"},{"U","L"},{"D","R"},{"F","F"},{"R","U"},{"B","B"},{"L","D"}},
+						   {{"Fw'"},{"U","R"},{"D","L"},{"F","F"},{"R","D"},{"B","B"},{"L","U"}},
+						   {{"Fw2"},{"U","D"},{"D","U"},{"F","F"},{"R","L"},{"B","B"},{"L","R"}},
+			
+						   {{"Rw"},{"U","F"},{"D","B"},{"F","D"},{"R","B"},{"B","U"},{"L","F"}},
+						   {{"Rw'"},{"U","B"},{"D","F"},{"F","U"},{"R","B"},{"B","D"},{"L","F"}},
+						   {{"Rw2"},{"U","D"},{"D","U"},{"F","B"},{"R","R"},{"B","F"},{"L","L"}}};
+
+	
 	int[][] allEdges = {{1,46},{3,28},{5,37},{7,10},{19,16},{21,34},{23,43},{25,52},{12,32},{14,39},{48,41},{50,30}};
 	
 	ArrayList<Button> buttonArray;
+	ArrayList<String> moves;
 	
 	public CubeInput() {
 		Pane p = new Pane();
@@ -52,7 +67,7 @@ public class CubeInput {
 		inputWindow.setResizable(false);
 		
 		Label colourPick = new Label("Click the colours and select white (W), yellow (Y), green (G), blue (B), "
-								   + "orange (O) or red (R) with your keyboard!");
+								   + "orange (O) or red (R) with your keyboard, or enter a scramble.");
         colourPick.setTextFill(Color.WHITE);
         colourPick.setWrapText(true);
         colourPick.setMaxWidth(300);
@@ -61,7 +76,9 @@ public class CubeInput {
         
         colourPick.setLayoutX(300);
         colourPick.setLayoutY(30);
+        
         p.getChildren().add(colourPick);
+        
         
         buttonArray = new ArrayList<Button>();
         for (int face = 1; face < 7; face++) {
@@ -74,7 +91,7 @@ public class CubeInput {
             }
         }
         
-        Button submit = new Button("Submit");
+        Button submit = new Button();
         submit.setOnAction(event -> {
         	int result = verifyInput();
         	switch(result) {
@@ -90,8 +107,10 @@ public class CubeInput {
         	case 9: colourPick.setText("Woops! You have an edge that is flipped, so the cube isn't solvable. Take out an edge, flip it, and put it back in, then try entering it again!"); break;
         	}
         });
-        submit.setLayoutX(400);
+        submit.setMinSize(125, 59); submit.setMaxSize(125, 59);
+        submit.setLayoutX(355);
         submit.setLayoutY(300);
+        submit.setGraphic(new ImageView(new Image("/resources/submitButton.png")));
         
         p.getChildren().add(submit);
         
@@ -263,6 +282,7 @@ public class CubeInput {
 	}
 	
 	int verifyInput() {
+
 		Button b1, b2, b3;
 		String foundPair;
 		ArrayList<String> pairsPresent = new ArrayList<String>();
@@ -408,7 +428,6 @@ public class CubeInput {
 		
 		
 	}
-	
 	
 	void show() {
 		inputWindow.show();

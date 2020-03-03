@@ -150,7 +150,7 @@ public class CubeSolver {
 		case BLUE: 
 			if (BU[3] == GREEN) {
 				allMoves.add("DRIRURURITIRR");
-				allMoves.add("EURIRURURITIRRU");
+				allMoves.add("EURIRURURITIRRI");
 				applyMovesLogically("RIRURURITIRR");
 				applyMovesLogically("URIRURURITIRRI");
 			} else {
@@ -260,13 +260,14 @@ public class CubeSolver {
 		}
 		
 		allMoves.add("D*");
+		applyMovesLogically(pre);
 		
 		if (FU[0] == FRU[1]) {
 			allMoves.add("E"+pre+"RIRURURITIRR"+und);
-			applyMovesLogically(pre+"RIRURURITIRR"+und);
+			applyMovesLogically("RIRURURITIRR"+und);
 		} else {
 			allMoves.add("E"+pre+"RRURUTITITUT"+und);
-			applyMovesLogically(pre+"RRURUTITITUT"+und);
+			applyMovesLogically("RRURUTITITUT"+und);
 		}
 		
 		
@@ -276,11 +277,15 @@ public class CubeSolver {
 		int[][] topCorners = {BLU, BRU, FRU, FLU};
 		int count = 0;
 		
+		System.out.println("BLU: "+BLU[0]+BLU[1]+BLU[2]+BLU[3]+BLU[4]+BLU[5]);
 		for (int i = 0; i < 4; i++) {
 			if (topCorners[i][2] == YELLOW) {
+				System.out.println("topCorners["+i+"][2] is yellow");
 				count++;
 			}
 		}
+		
+		System.out.println("count: "+count);
 		
 		if (count == 0) {
 			if (FLU[4] == YELLOW) {
@@ -414,6 +419,15 @@ public class CubeSolver {
 	
 	private static void solveYellowCross() {
 		
+		System.out.println(""+BLU[0]+BLU[1]+BLU[2]+BLU[3]+BLU[4]+BLU[5]);
+		System.out.println(""+BU[0]+BU[1]+BU[2]+BU[3]+BU[4]+BU[5]);
+		System.out.println(""+BRU[0]+BRU[1]+BRU[2]+BRU[3]+BRU[4]+BRU[5]);
+		System.out.println(""+CRU[0]+CRU[1]+CRU[2]+CRU[3]+CRU[4]+CRU[5]);
+		System.out.println(""+FRU[0]+FRU[1]+FRU[2]+FRU[3]+FRU[4]+FRU[5]);
+		System.out.println(""+FU[0]+FU[1]+FU[2]+FU[3]+FU[4]+FU[5]);
+		System.out.println(""+FLU[0]+FLU[1]+FLU[2]+FLU[3]+FLU[4]+FLU[5]);
+		System.out.println(""+CLU[0]+CLU[1]+CLU[2]+CLU[3]+CLU[4]+CLU[5]);
+		
 		int[][] topEdges = {BU, CRU, FU, CLU};
 		boolean[] edgeOrientations = {false, false, false, false};
 		
@@ -456,8 +470,8 @@ public class CubeSolver {
 			applyMovesLogically("UFURITG");
 			return;
 		} else {
-			allMoves.add("7FRUTIGUUUFURITG"); //dot case
-			applyMovesLogically("FRUTIGUUUFURITG");
+			allMoves.add("7FRUTIGUUFURITG"); //dot case
+			applyMovesLogically("FRUTIGUUFURITG");
 			return;
 		}
 	}
@@ -562,16 +576,14 @@ public class CubeSolver {
 		} else if (slEdgeLoc.toCharArray()[0] == 'F') {
 			switch (slEdgeLoc.toCharArray()[1]) {
 			case 'R': return checkFlipped();
-			case 'L': return ("QRUTIGIFIY");
+			case 'L': return ("QRUTIGIFUY");
 			}
 		} else if (slEdgeLoc.toCharArray()[0] == 'B') {
 			switch (slEdgeLoc.toCharArray()[1]) {
 			case 'R': return ("YRUTIGIFIQ");
-			case 'L': return ("YYRUTIGIFIQQ");
+			case 'L': return ("YYRUTIGIFQQ");
 			}
 		}
-		
-		
 		
 		return "";
 	}
@@ -758,6 +770,7 @@ public class CubeSolver {
 				case 'Q': makeYrotation(true); break;
 				case 'Z': makeZrotation(); break;
 			}
+			
 			
 		  /*switch (move) {
 			case 'F': makeFmove(false); UserInterface.makeFmove(false); break;

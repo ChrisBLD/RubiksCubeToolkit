@@ -146,6 +146,9 @@ public class MoveManager {
 				case "B2": UserInterface.makeB2move(); break;
 				case "L2": UserInterface.makeL2move(); break;
 				case "D2": UserInterface.makeD2move(); break;
+				case "y": UserInterface.makeYrotation(true); break;
+				case "y'": UserInterface.makeYrotation(false); break;
+				case "y2": UserInterface.makeY2rotation(); break;
 			}
 		}
 	}
