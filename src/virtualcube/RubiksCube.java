@@ -373,7 +373,7 @@ public class RubiksCube extends Application {
         ToolBar toolBar = new ToolBar(sep, scramble, sep2, enter, sep3, timerLab, sep4, helpMenu);
         toolBar.setOrientation(Orientation.HORIZONTAL);
         //toolBar.setBackground(new Background(new BackgroundFill(Color.rgb(51,51,51), CornerRadii.EMPTY, Insets.EMPTY)));
-        toolBar.setBackground(new Background(new BackgroundImage(new Image("/resources/timerFrame.png"),
+        toolBar.setBackground(new Background(new BackgroundImage(new Image("/resources/timerframe.png"),
                 BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT,
                 BackgroundSize.DEFAULT)));
         pane.setBottom(toolBar);

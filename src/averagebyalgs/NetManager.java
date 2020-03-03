@@ -13,12 +13,12 @@ import javafx.scene.layout.Pane;
 
 public class NetManager {
 
-	static private Image white = new Image("resources/CubeWHITE.png");
-	static private Image yellow = new Image("resources/CubeYELLOW.png");
-	static private Image red= new Image("resources/CubeRED.png");
-	static private Image green = new Image("resources/CubeGREEN.png");
-	static private Image orange = new Image("resources/CubeORANGE.png");
-	static private Image blue = new Image("resources/CubeBLUE.png");
+	static private Image white = new Image("/resources/CubeWHITE.png");
+	static private Image yellow = new Image("/resources/CubeYELLOW.png");
+	static private Image red= new Image("/resources/CubeRED.png");
+	static private Image green = new Image("/resources/CubeGREEN.png");
+	static private Image orange = new Image("/resources/CubeORANGE.png");
+	static private Image blue = new Image("/resources/CubeBLUE.png");
 	
 	private ImageView whiteIV = new ImageView(white);
 	private ImageView yellowIV = new ImageView(yellow);
@@ -34,22 +34,22 @@ public class NetManager {
 	private ImageView orangeIV2 = new ImageView(orange);
 	private ImageView blueIV2 = new ImageView(blue);
 	
-	private ImageView whiteIVNS = new ImageView(new Image("resources/CubeWHITE-NS.png"));
-	private ImageView yellowIVNS = new ImageView(new Image("resources/CubeYELLOW-NS.png"));
-	private ImageView redIVNS = new ImageView(new Image("resources/CubeRED-NS.png"));
-    private ImageView greenIVNS = new ImageView(new Image("resources/CubeGREEN-NS.png"));
-	private ImageView orangeIVNS = new ImageView(new Image("resources/CubeORANGE-NS.png"));
-	private ImageView blueIVNS = new ImageView(new Image("resources/CubeBLUE-NS.png"));
+	private ImageView whiteIVNS = new ImageView(new Image("/resources/CubeWHITE-NS.png"));
+	private ImageView yellowIVNS = new ImageView(new Image("/resources/CubeYELLOW-NS.png"));
+	private ImageView redIVNS = new ImageView(new Image("/resources/CubeRED-NS.png"));
+    private ImageView greenIVNS = new ImageView(new Image("/resources/CubeGREEN-NS.png"));
+	private ImageView orangeIVNS = new ImageView(new Image("/resources/CubeORANGE-NS.png"));
+	private ImageView blueIVNS = new ImageView(new Image("/resources/CubeBLUE-NS.png"));
 	
-	private ImageView whiteIVS = new ImageView(new Image("resources/CubeWHITE-S.png"));
-	private ImageView yellowIVS = new ImageView(new Image("resources/CubeYELLOW-S.png"));
-	private ImageView redIVS = new ImageView(new Image("resources/CubeRED-S.png"));
-    private ImageView greenIVS = new ImageView(new Image("resources/CubeGREEN-S.png"));
-	private ImageView orangeIVS = new ImageView(new Image("resources/CubeORANGE-S.png"));
-	private ImageView blueIVS = new ImageView(new Image("resources/CubeBLUE-S.png"));
+	private ImageView whiteIVS = new ImageView(new Image("/resources/CubeWHITE-S.png"));
+	private ImageView yellowIVS = new ImageView(new Image("/resources/CubeYELLOW-S.png"));
+	private ImageView redIVS = new ImageView(new Image("/resources/CubeRED-S.png"));
+    private ImageView greenIVS = new ImageView(new Image("/resources/CubeGREEN-S.png"));
+	private ImageView orangeIVS = new ImageView(new Image("/resources/CubeORANGE-S.png"));
+	private ImageView blueIVS = new ImageView(new Image("/resources/CubeBLUE-S.png"));
 	
 	
-	private Image cubeNet = new Image("resources/CubeNet.png");
+	private Image cubeNet = new Image("/resources/CubeNet.png");
     private ImageView iv1 = new ImageView();
 	
 	public ArrayList<Image> colours = new ArrayList<Image>();
@@ -73,12 +73,12 @@ public class NetManager {
 	    iv1.setLayoutY(netY);
 	        
 
-	    colours.add(new Image("resources/CubeWHITE.png"));
-	    colours.add(new Image("resources/CubeGREEN.png"));
-	    colours.add(new Image("resources/CubeYELLOW.png"));
-	    colours.add(new Image("resources/CubeORANGE.png"));
-	    colours.add(new Image("resources/CubeRED.png"));
-	    colours.add(new Image("resources/CubeBLUE.png"));
+	    colours.add(new Image("/resources/CubeWHITE.png"));
+	    colours.add(new Image("/resources/CubeGREEN.png"));
+	    colours.add(new Image("/resources/CubeYELLOW.png"));
+	    colours.add(new Image("/resources/CubeORANGE.png"));
+	    colours.add(new Image("/resources/CubeRED.png"));
+	    colours.add(new Image("/resources/CubeBLUE.png"));
 	      
 	    scaleColours();
 	        
