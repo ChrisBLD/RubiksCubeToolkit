@@ -53,7 +53,9 @@ import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Transform;
 import javafx.scene.transform.Translate;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import javafx.util.Duration;
+import main.Home;
 
 public class RubiksCube extends Application {
 	
@@ -247,7 +249,7 @@ public class RubiksCube extends Application {
     
     @Override
     public void start(Stage primaryStage) {
-
+    	sceneRoot = new Group();
         SubScene subScene = new SubScene(sceneRoot, 500, 500, true, SceneAntialiasing.BALANCED);
         subScene.setFill(Color.rgb(66,66,66));
         Translate pivot = new Translate();
@@ -512,6 +514,15 @@ public class RubiksCube extends Application {
         	}});
 
         //test
+        
+        primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+        	@Override
+        	public void handle(WindowEvent e) {
+        		System.out.println("called");
+        		Home.onCloseVirt();
+        		System.exit(0);
+        	}
+        });
         
         
         primaryStage.setTitle("Virtual Rubik's Cube");

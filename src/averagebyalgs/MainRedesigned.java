@@ -30,7 +30,9 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import javafx.util.Duration;
+import main.Home;
  
 public class MainRedesigned extends Application {
 	
@@ -239,7 +241,15 @@ public class MainRedesigned extends Application {
         });
         p.getChildren().add(go);
         
-        
+        primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+        	@Override
+        	public void handle(WindowEvent e) {
+        		System.out.println("called");
+        		Home.onCloseABA();
+        		System.exit(0);
+        		
+        	}
+        });
         
         
 

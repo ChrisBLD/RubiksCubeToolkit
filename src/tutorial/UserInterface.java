@@ -14,6 +14,7 @@ import javafx.animation.RotateTransition;
 import javafx.animation.SequentialTransition;
 import javafx.animation.Timeline;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -57,7 +58,9 @@ import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Transform;
 import javafx.scene.transform.Translate;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import javafx.util.Duration;
+import main.Home;
 
 public class UserInterface extends Application {
 	
@@ -147,6 +150,8 @@ public class UserInterface extends Application {
     static int[] FU   = new int[]{GREEN, GRAY, WHITE, GRAY, GRAY, GRAY};
     static int[] FRU  = new int[]{GREEN, RED, WHITE, GRAY, GRAY, GRAY};
     
+    
+    
     private static Point3D pFLD   = new Point3D(-1.04,  1.04, -1.04);
     private static Point3D pFD    = new Point3D(   0,  1.04, -1.04);
     private static Point3D pFRD   = new Point3D( 1.04,  1.04, -1.04);
@@ -198,6 +203,7 @@ public class UserInterface extends Application {
     private static Point3D pBLU   = new Point3D(-1.04, -1.04, 1.04);
     private static Point3D pBU    = new Point3D(   0, -1.04, 1.04);
     private static Point3D pBRU   = new Point3D( 1.04, -1.04, 1.04);
+    
     
     private static List<int[]> patternFaceF = Arrays.asList(    		
             FLD, FD, FRD, FL, F, FR, FLU, FU, FRU,
@@ -307,7 +313,8 @@ public class UserInterface extends Application {
     
     @Override
     public void start(Stage primaryStage) {
-
+    	System.out.println("test");
+    	sceneRoot = new Group();
         SubScene subScene = new SubScene(sceneRoot, 500, 500, true, SceneAntialiasing.BALANCED);
         subScene.setFill(Color.rgb(51,51,51));
         Translate pivot = new Translate();
@@ -482,13 +489,21 @@ public class UserInterface extends Application {
         	}
         });
 
+        primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+        	@Override
+        	public void handle(WindowEvent e) {
+        		System.out.println("called");
+        		Home.onCloseTut();
+        		System.exit(0);
+        	}
+        });
         
         TutorialHomepage.main(elements, back, forward, restartSection, skipToDemo, toolBarRight, toolBar);
         
         //beginTutorial(stepLabel, description, moves, bottom, back, forward, toolBarRight, toolBar);
     }
 
-
+   
 	private static void buildMesh(Group sceneRoot, PhongMaterial mat, Group meshGroup) {
 		meshGroup = new Group();
 		sceneRoot.getChildren().clear();
@@ -1845,6 +1860,8 @@ public class UserInterface extends Application {
     	makeR2move(); makeU2move();
     	//F U2 L2 B2 F' U L2 U R2 D2 L' B L2 B' R2 U2
     }
+    
+    
     
     public void playRotate() {
     	timeline.play();
