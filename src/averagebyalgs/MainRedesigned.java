@@ -133,12 +133,13 @@ public class MainRedesigned extends Application {
         inputHelp.setTooltip(ttco);
         p.getChildren().add(inputHelp);
         
-        Button swapMode = new Button("Swap");
+        Button swapMode = new Button();
+        swapMode.setGraphic(new ImageView(new Image("/resources/changeInp.png")));
         swapMode.setMaxHeight(30);
         swapMode.setMaxWidth(30);
         swapMode.setMinWidth(30);
         swapMode.setMinHeight(30);
-        swapMode.setLayoutX(560);
+        swapMode.setLayoutX(555);
         swapMode.setLayoutY(535);
         swapMode.setOnAction(new EventHandler<ActionEvent>() {
 

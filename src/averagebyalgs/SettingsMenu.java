@@ -15,7 +15,12 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.BackgroundImage;
+import javafx.scene.layout.BackgroundPosition;
+import javafx.scene.layout.BackgroundRepeat;
+import javafx.scene.layout.BackgroundSize;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
@@ -34,7 +39,7 @@ public class SettingsMenu {
 	
 	public SettingsMenu() {
 		g = new Group();
-		settingsScene = new Scene(g, 400,600);
+		settingsScene = new Scene(g, 400,600, Color.rgb(66,66,66));
 		settingsWindow = new Stage();
 		settingsWindow.setScene(settingsScene);
 		
@@ -42,42 +47,46 @@ public class SettingsMenu {
 		int initY = 40;
 		
         Label parAvd = new Label("Parity Swap:");
-        parAvd.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
+        parAvd.setFont(Font.loadFont(getClass().getResourceAsStream("/resources/ihfont.otf"), 30));
         parAvd.setLayoutX(initX);
+        parAvd.setTextFill(Color.rgb(213,225,227));
         parAvd.setLayoutY(initY);
         g.getChildren().add(parAvd);
         paritySwap = new CheckBox();
-        paritySwap.setLayoutX(initX+190);
+        paritySwap.setLayoutX(initX+240);
         paritySwap.setLayoutY(initY+3);
         g.getChildren().add(paritySwap);
         
         Label quad = new Label("Quad Flip:");
-        quad.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
+        quad.setFont(Font.loadFont(getClass().getResourceAsStream("/resources/ihfont.otf"), 30));
         quad.setLayoutX(initX);
+        quad.setTextFill(Color.rgb(213,225,227));
         quad.setLayoutY(initY+40);
         g.getChildren().add(quad);
         quadFlip = new CheckBox();
-        quadFlip.setLayoutX(initX+190);
+        quadFlip.setLayoutX(initX+240);
         quadFlip.setLayoutY(initY+43);
         g.getChildren().add(quadFlip);
         
         Label adjacentTwists = new Label("Adj. Double Twists:");
-        adjacentTwists.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
+        adjacentTwists.setTextFill(Color.rgb(213,225,227));
+        adjacentTwists.setFont(Font.loadFont(getClass().getResourceAsStream("/resources/ihfont.otf"), 30));
         adjacentTwists.setLayoutX(initX);
         adjacentTwists.setLayoutY(initY+80);
         g.getChildren().add(adjacentTwists);
         dtBox = new CheckBox();
-        dtBox.setLayoutX(initX+190);
+        dtBox.setLayoutX(initX+240);
         dtBox.setLayoutY(initY+83);
         g.getChildren().add(dtBox);
         
         Label oppositeTwists = new Label("Opp. Double Twists:");
-        oppositeTwists.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
+        oppositeTwists.setTextFill(Color.rgb(213,225,227));
+        oppositeTwists.setFont(Font.loadFont(getClass().getResourceAsStream("/resources/ihfont.otf"), 30));
         oppositeTwists.setLayoutX(initX);
         oppositeTwists.setLayoutY(initY+120);
         g.getChildren().add(oppositeTwists);
         otBox = new CheckBox();
-        otBox.setLayoutX(initX+190);
+        otBox.setLayoutX(initX+240);
         otBox.setLayoutY(initY+123);
         g.getChildren().add(otBox);
         
@@ -117,7 +126,8 @@ public class SettingsMenu {
         g.getChildren().add(save);
         
         Label cornerBuffer = new Label("Corner Buffer:");
-        cornerBuffer.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
+        cornerBuffer.setFont(Font.loadFont(getClass().getResourceAsStream("/resources/ihfont.otf"), 30));
+        cornerBuffer.setTextFill(Color.rgb(213,225,227));
         cornerBuffer.setLayoutX(initX);
         cornerBuffer.setLayoutY(initY+160);
         g.getChildren().add(cornerBuffer);
@@ -128,8 +138,9 @@ public class SettingsMenu {
         g.getChildren().add(cBuff);
         
         Label edgeBuffer = new Label("Edge Buffer:");
-        edgeBuffer.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
+        edgeBuffer.setFont(Font.loadFont(getClass().getResourceAsStream("/resources/ihfont.otf"), 30));
         edgeBuffer.setLayoutX(initX);
+        edgeBuffer.setTextFill(Color.rgb(213,225,227));
         edgeBuffer.setLayoutY(initY+200);
         g.getChildren().add(edgeBuffer);
         eBuff = new ComboBox<String>(edgeBufList);
