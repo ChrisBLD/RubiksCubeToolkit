@@ -39,7 +39,7 @@ public class SettingsMenu {
 	
 	public SettingsMenu() {
 		g = new Group();
-		settingsScene = new Scene(g, 400,600, Color.rgb(66,66,66));
+		settingsScene = new Scene(g, 400,600, Color.rgb(51,51,51));
 		settingsWindow = new Stage();
 		settingsWindow.setScene(settingsScene);
 		
@@ -110,10 +110,11 @@ public class SettingsMenu {
         //g.getChildren().add(ttHelp);
         g.getChildren().add(otHelp);
         
-        Button save = new Button("Save");
+        Button save = new Button();
         save.setLayoutX(10);
         save.setLayoutY(500);
-        
+        save.setMinSize(125, 59); save.setMaxSize(125, 59);
+        save.setGraphic(new ImageView(new Image("/resources/submitButton.png")));
         save.setOnAction(new EventHandler<ActionEvent>() {
 
 			@Override

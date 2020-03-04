@@ -115,7 +115,7 @@ public class MainRedesigned extends Application {
         
         Label modeSelect = new Label("");
         modeSelect.setGraphic(cstimer);
-        modeSelect.setLayoutX(315);
+        modeSelect.setLayoutX(280);
         modeSelect.setLayoutY(537);
         p.getChildren().add(modeSelect);
         
