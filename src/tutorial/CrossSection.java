@@ -297,12 +297,6 @@ public class CrossSection {
 		
  	    skipToDemo.setOnAction(event -> {disableButtons(forward, back, restartSection, skipToDemo); skipInfo(seqOutText);});
  	    
- 	    UserInterface.scene.setOnKeyPressed(e -> {
- 	    	switch(e.getCode()) {
- 	    	case O: UserInterface.makeZ2rotation(); 
- 	    		LastLayerPermuteSection.begin(allMoves, seqOut, seqIn, elements, forward, back, restartSection, skipToDemo); break;
- 	    	}
- 	    });
 	}
 	
 	private static void disableButtons(Button forward, Button back, Button restartSection, Button skipToDemo) {

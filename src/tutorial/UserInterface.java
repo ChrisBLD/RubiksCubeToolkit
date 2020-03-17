@@ -64,52 +64,6 @@ import main.Home;
 
 public class UserInterface extends Application {
 	
-	/*
-	 * User Interface would ideally look something like this:
-	 * Solved cube is shown to the user by default. User is first asked if they know the notation of a Rubik's Cube
-	 * If they do, then they can skip this section. Otherwise, a short animation can be shown displaying each move that can be made on the cube
-	 * Perhaps some buttons could appear to let them try the moves themselves?
-	 * Once they're happy, they can proceed.
-	 * 
-	 * I might need some form of colour scheme selection? At the moment, the colours for faces are hard coded but are irrelevant to the actual functionality
-	 * So implementing a way for a user to enter their own colour scheme isn't out of the question. Probably just going to assume they use standard for now though.
-	 * 
-	 * The user is asked if their physical cube is scrambled or solved. We're assuming most people will have a scrambled puzzle - if it's solved, they can
-	 * be instructed to scramble it and proceed entering its state. This will *probably* be easier than getting them to execute a scramble in notation.
-	 * I will most likely have to allow the user multiple attempts at this.
-	 * 
-	 * From here on we're assuming that the scramble input onto the cube on the screen matches the cube in their hands.
-	 * Here, we can actually compute the solution for the puzzle. It will likely follow these steps:
-	 * 
-	 * 1) Solve cross by means of placing edge above edge location and either inserting with a half turn or some sledge variant.
-	 * 2) Solve corners of the first layer by placing them above their location and using RDRD style trigger.
-	 * 3) Solve edges of the second layer by placing them above their location and using U R U R' U' F' U' F and mirror.
-	 * 4) I can either teach them rudimentary OLL+PLL or go for a full beginner solution by solving edges and corners separately. I haven't decided yet.
-	 * 
-	 * I would like to allow users to move back and forward between steps as much as they like. However, implementing Get-Out-Of-Jail-Free mechanisms to resolve their
-	 * probable fuck ups will be far too unpredictable to actually implement. As such, the user will probably have to just start again if they do something wrong.
-	 * So I have to make my tutorial simple enough to understand so that fuck ups are as infrequent as possible. Having to restart often will probably put a lot
-	 * of people off.
-	 * 
-	 * For the cross I'd like to demonstrate what the end result should look like. Perhaps I can use the derived cross solution to demonstrate what the final result
-	 * should be of a solved cross, and then go through it piece by piece by going back to the start in a manner the user can follow along. I'll probably also include
-	 * some form of progress tracker for the current step (applies to all stages of the solve)
-	 * 
-	 * For the corners of the first layer, I can basically do a similar thing - show the user the end result (a solved first layer), then allow them to see how to solve
-	 * each piece one at a time. 
-	 * 
-	 * Writing the above has made me realise that we might have edge cases where the user gets a scramble that doesn't actually show the user some states. For example,
-	 * for corners of the first layer, it could happen that each corner on the scramble is on the top layer when it needs to be. This might confuse the user as to how to
-	 * get corners out of the slots if they're inserted either in wrong slots or twisted in place.
-	 * 
-	 * For second layer edges, it would be a similar thing. I imagine the process for developing the first three steps is going to be very similar and present
-	 * similar problems, so by the time I come to implement this it should be pretty efficient.
-	 * 
-	 *  
-	 * 
-	 * 
-	 */
-	
 	
 	public static Scene scene;
 	
@@ -470,26 +424,6 @@ public class UserInterface extends Application {
    			 * L' = K
    			 * D' = S
    		*/
-        scene.setOnKeyPressed(e -> {
-        	switch(e.getCode()) {
-        		case F: makeFmove(false); break;
-	        	case R: makeRmove(false); break;
-	        	case U: makeUmove(false); break;
-	        	case B: makeBmove(false); break;
-	        	case L: makeLmove(false); break;
-	        	case D: makeDmove(false); break;
-	        	case G: makeFmove(true); break;
-	        	case T: makeRmove(true); break;
-	        	case I: makeUmove(true); break;
-	        	case N: makeBmove(true); break;
-	        	case K: makeLmove(true); break;
-	        	case S: makeDmove(true); break;
-	        	case Q: makeYrotation(true); break;
-	        	case Y: makeYrotation(false); break;
-	        	default: break;
-
-        	}
-        });
 
         primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
         	@Override
@@ -608,9 +542,11 @@ public class UserInterface extends Application {
 			cycleColours(FRD, U_FACE, F_FACE, D_FACE);
 		} else {
 			int[] temp1 = FRD; int[] temp2 = FR;		
-			FR = CRD; FRD = BRD; CRD = BR; BRD = BRU; BR = CRU; BRU = FRU; CRU = temp2; FRU = temp1;
+			FR = CRD; FRD = BRD; CRD = BR; BRD = BRU; BR = CRU; 
+			BRU = FRU; CRU = temp2; FRU = temp1;
 			Point3D ptemp1 = pFRD; Point3D ptemp2 = pFR;
-			pFR = pCRD; pFRD = pBRD; pCRD = pBR; pBRD = pBRU; pBR = pCRU; pBRU = pFRU; pCRU = ptemp2; pFRU = ptemp1;
+			pFR = pCRD; pFRD = pBRD; pCRD = pBR; pBRD = pBRU; 
+			pBR = pCRU; pBRU = pFRU; pCRU = ptemp2; pFRU = ptemp1;
 			cycleColours(FR, D_FACE, F_FACE, U_FACE);
 			cycleColours(FRU, D_FACE, F_FACE, U_FACE);
 			cycleColours(CRU, F_FACE, U_FACE, B_FACE);
@@ -629,6 +565,7 @@ public class UserInterface extends Application {
 	            BLD, BD, BRD, BL, B, BR, BLU, BU, BRU);
 		
 		isSolved();
+		
 	}
 	
 	static void makeFmove(boolean prime) {

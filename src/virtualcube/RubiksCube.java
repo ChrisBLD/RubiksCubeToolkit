@@ -295,9 +295,9 @@ public class RubiksCube extends Application {
         scramble.setPromptText("Enter a scramble here");
         scramble.setPrefWidth(250);
         //scramble.setPrefHeight(50);
-        Button helpMenu = new Button();
-        helpMenu.setGraphic(new ImageView(new Image("/resources/helpButton.png")));
-        helpMenu.setMaxSize(100,55); helpMenu.setMinSize(100, 55);
+        //Button helpMenu = new Button();
+        //helpMenu.setGraphic(new ImageView(new Image("/resources/helpButton.png")));
+        //helpMenu.setMaxSize(100,55); helpMenu.setMinSize(100, 55);
         Text timerLab = new Text("0:00.000");
         timerLab.setFont(new Font(45));
         timer = new Timeline(new KeyFrame(Duration.millis(1), new EventHandler<ActionEvent>() {
@@ -370,7 +370,7 @@ public class RubiksCube extends Application {
         sep3.setPrefWidth(50);
         sep4.setPrefWidth(35);
         
-        ToolBar toolBar = new ToolBar(sep, scramble, sep2, enter, sep3, timerLab, sep4, helpMenu);
+        ToolBar toolBar = new ToolBar(sep, scramble, sep2, enter, sep3, timerLab, sep4);
         toolBar.setOrientation(Orientation.HORIZONTAL);
         //toolBar.setBackground(new Background(new BackgroundFill(Color.rgb(51,51,51), CornerRadii.EMPTY, Insets.EMPTY)));
         toolBar.setBackground(new Background(new BackgroundImage(new Image("/resources/timerframe.png"),
