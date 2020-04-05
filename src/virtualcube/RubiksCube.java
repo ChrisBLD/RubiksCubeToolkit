@@ -2163,7 +2163,6 @@ public class RubiksCube extends Application {
     					moves.add(Character.toString(c));
     				}
     			} catch (Exception e) {
-    				//System.out.println("FUCK");
     				moves.add(Character.toString(c));
     			}
     		}

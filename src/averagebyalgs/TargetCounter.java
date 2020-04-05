@@ -60,15 +60,6 @@ public class TargetCounter {
 	public TargetCounter(ScrambleManager sm, ArrayList<ImageView> cubieArray) {
 		
 		
-		
-		/*
-		 * Program parity avoidance technique (UL-UB swap)
-		 * Allow user to select custom orientation
-		 * Allow user to enter buffers (just UI needed)
-		 * General UI work
-		 * And then average calculation :)
-		 */
-		
 		String edgeBuffer = MainRedesigned.edgeBuf;
 		String cornerBuffer = MainRedesigned.cornerBuf;
 		
