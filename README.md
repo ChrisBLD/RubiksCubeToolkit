@@ -16,7 +16,7 @@ If you do want to use your own puzzle, you will be able to enter its state eithe
 
 ![Input Scramble](https://github.com/ChrisBLD/RubiksCubeToolkit/blob/master/src/resources/rct-input.png)
 
-![Input Colour](https://github.com/ChrisBLD/RubiksCubeToolkit/blob/master/src/resources/rct-colourinput.mp4)
+![Input Colour](https://github.com/ChrisBLD/RubiksCubeToolkit/blob/master/src/resources/rct-inputcolour.png)
 
 
 The end result of either of these entry states will be this:
@@ -72,9 +72,13 @@ a and b are a string of zero or more apostrophes representing the number of flip
 
 This notation is commonly used to rate scrambles on a pure by-target basis. Whilst the number of algorithms is certainly useful, there can exist big differences within a fixed n algorithm count depending on individual preferences, therefore both pieces of information are visible.
 
+![AverageByAlgs Main](https://github.com/ChrisBLD/RubiksCubeToolkit/blob/master/src/resources/aba-main.png)
+
 
 ### Virtual Cube
 This system also includes a simple Virtual Cube. This can be scrambled using a text scramble and solved using either the GUI (by clicking on the buttons to make moves) or using the CSTimer Virtual Cube keymapping (shown below). The solve is also timed, beginning when the first move is made and ending once the last is completed and the puzzle is solved. Alternatively, it can be used to learn the notation of the puzzle better and play around with algorithms you learn during the main tutorial.
+
+![Virtual Cube Main](https://github.com/ChrisBLD/RubiksCubeToolkit/blob/master/src/resources/vc-main.png)
 
 
 ### Running this program
