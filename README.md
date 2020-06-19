@@ -8,9 +8,20 @@ This tool allows for you to take a physical Rubik's Cube that you own, enter its
 
 First, the tutorial system will ask if you would like to learn the *Notation for the Rubik's Cube*. This is a side-section that teaches basics moves that can be made to the puzzle. These are used throughout the tutorial to demonstrate the moves that must be made at each stage to complete it.
 
+![Notation Screen](https://github.com/ChrisBLD/RubiksCubeToolkit/blob/master/src/resources/rct-notation.png)
+
 Next, you will be asked if you have you own puzzle in front of you that you would like to use to learn how to solve it. If you don't you will be able to complete the tutorial using an example cube state. 
 
-If you do want to use your own puzzle, you will be able to enter its state either as a written scramble (a time-saving option for returning users) or a colour palette entry system. The end result of either of these entry states will be this:
+If you do want to use your own puzzle, you will be able to enter its state either as a written scramble (a time-saving option for returning users) or a colour palette entry system.
+
+![Input Scramble](https://github.com/ChrisBLD/RubiksCubeToolkit/blob/master/src/resources/rct-input.png)
+
+![Input Colour](https://github.com/ChrisBLD/RubiksCubeToolkit/blob/master/src/resources/rct-inputcolour.mp4)
+
+
+The end result of either of these entry states will be this:
+
+![Matching](https://github.com/ChrisBLD/RubiksCubeToolkit/blob/master/src/resources/rct-matching.jpg)
 
 A Virtual Cube that matches your physical cube exactly.
 
