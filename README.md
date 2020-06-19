@@ -16,7 +16,7 @@ If you do want to use your own puzzle, you will be able to enter its state eithe
 
 ![Input Scramble](https://github.com/ChrisBLD/RubiksCubeToolkit/blob/master/src/resources/rct-input.png)
 
-![Input Colour](https://github.com/ChrisBLD/RubiksCubeToolkit/blob/master/src/resources/rct-inputcolour.mp4)
+![Input Colour](https://github.com/ChrisBLD/RubiksCubeToolkit/blob/master/src/resources/rct-colourinput.mp4)
 
 
 The end result of either of these entry states will be this:
@@ -36,7 +36,11 @@ Each of these stages has two sections - the tutorial phase and the demo phase.
 
 The tutorial phase is a series of written paragraphs and diagrams demonstrating possible situations that can occur in the given stage and the different algorithms that can be used to solve them. This can be navigated through at one's own pace and also skipped if desired.
 
+![Tutorial](https://github.com/ChrisBLD/RubiksCubeToolkit/blob/master/src/resources/rct-tutorial.png)
+
 The demo phase is where your puzzle comes into it - the system will show you the moves that you need to make and allow you to navigate through them to see how they are applied to the virtual cube. The goal is to follow these moves to make your physical cube match the virtual cube as each move is applied to eventually complete each stage. At all times, your cube should match the virtual cube exactly.
+
+![Demo](https://github.com/ChrisBLD/RubiksCubeToolkit/blob/master/src/resources/rct-demo.png)
 
 #### Solving the Puzzle
 This system uses the state of the puzzle you submit to derive a solution in its own notation that is passed throughout the program to each stage handler when necessary. It will follow the tutorial that will be shown to the user - cross, first-layer corners etc. - and solve each step using the same algorithms that are shown to the user in the tutorial phase. 
