@@ -1,7 +1,7 @@
 # Rubik's Cube Tool - Final Year Project
 A multi-purpose Rubik's Cube speedsolving tool. Final Year Project at the University of Birmingham. Below is a full detailed list of the tools that are included in this system.
 
-![Image of Homepage Screen]
+![Image of Homepage Screen](https://github.com/ChrisBLD/RubiksCubeToolkit/blob/master/src/resources/rct-homepage.png)
 
 ### Rubik's Cube Interactive Tutorial
 This tool allows for you to take a physical Rubik's Cube that you own, enter its state using the input options available, and then progress through an interactive tutorial that teaches you how to solve the Rubik's Cube using your own puzzle as the example.
