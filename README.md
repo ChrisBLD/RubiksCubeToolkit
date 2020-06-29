@@ -1,5 +1,5 @@
 # Rubik's Cube Tool - Final Year Project
-A multi-purpose Rubik's Cube speedsolving tool. Final Year Project at the University of Birmingham. Below is a full detailed list of the tools that are included in this system.
+A multi-purpose Rubik's Cube speedsolving tool. Final Year Project at the University of Birmingham, for which a obtained a First Class result (75%). Below is a full detailed list of the tools that are included in this system.
 
 ![Image of Homepage Screen](https://github.com/ChrisBLD/RubiksCubeToolkit/blob/master/src/resources/rct-homepage.png)
 
